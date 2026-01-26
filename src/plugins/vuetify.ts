@@ -16,4 +16,30 @@ export default createVuetify({
 	theme: {
 		defaultTheme: "system",
 	},
+	defaults: {
+		VBtn: {
+			class: "text-none",
+			elevation: 0,
+		},
+		VTextField: {
+			variant: "outlined",
+			density: "compact",
+			class: "mt-1",
+		},
+		VNumberInput: {
+			variant: "outlined",
+			density: "compact",
+			class: "mt-1",
+		},
+		VSelect: {
+			variant: "outlined",
+			density: "compact",
+			class: "mt-1",
+		},
+		VTextarea: {
+			variant: "outlined",
+			density: "compact",
+			class: "mt-1",
+		},
+	},
 })
