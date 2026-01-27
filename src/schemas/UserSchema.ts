@@ -13,11 +13,16 @@ const UserSignUpSchema = z.object({
     password: z.string().min(8),
 })
 
+const UserForgotPasswordSchema = z.object({
+    email: z.email(),
+})
+
 //
 
 type UserSignInSchema = z.infer<typeof UserSignInSchema>
 type UserSignUpSchema = z.infer<typeof UserSignUpSchema>
+type UserForgotPasswordSchema = z.infer<typeof UserForgotPasswordSchema>
 
 //
 
-export { UserSignInSchema, UserSignUpSchema }
+export { UserSignInSchema, UserSignUpSchema, UserForgotPasswordSchema }
