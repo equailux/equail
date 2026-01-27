@@ -4,15 +4,8 @@
             <v-col class="w-100 h-75 bg-white pa-0 d-flex flex-column align-center rounded-t-pill">
                 <div class="w-100 d-flex flex-column align-center">
                     <v-img style="margin-top: -30dvw;" class="w-75" :src="`/logo.png`"></v-img>
-                    <span>Create your account</span>
-                    <v-form class="w-100 d-flex flex-column align-center" @submit.prevent="onSubmitSignUpForm">
-                        <v-text-field
-                            class="w-75"
-                            label="Name"
-                            v-model="name"
-                            :disabled="isSubmitting"
-                            :error-messages="nameError"
-                        ></v-text-field>
+                    <span>Login to continue</span>
+                    <v-form class="w-100 d-flex flex-column align-center" @submit.prevent="onSubmitSignInForm">
                         <v-text-field
                             type="email"
                             class="w-75"
@@ -31,15 +24,18 @@
                             :append-inner-icon="showPasswordIcon"
                             @click:append-inner="showPassword = !showPassword"
                         ></v-text-field>
+                        <router-link to="/auth/forgot-password" class="w-75 text-end text-decoration-none text-black">
+                            <span>Forgot Password</span>
+                        </router-link>
                         <v-btn
                             type="submit"
-                            text="Sign up"
+                            text="Log In"
                             class="w-75 my-2" 
                             color="light-green-darken-2"
                             :loading="isSubmitting"
                         ></v-btn>
-                        <router-link to="/auth/sign-in" class="mt-5 text-decoration-none text-black">
-                            <span>Already have an account? Log In</span>
+                        <router-link to="/auth/sign-up" class="mt-5 text-decoration-none text-black">
+                            <span>Don't have an account? Sign up</span>
                         </router-link>
                     </v-form>
                 </div>
@@ -49,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import { UserSignUpSchema } from '@/schemas/UserSchema';
+import { UserSignInSchema } from '@/schemas/UserSchema';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useField, useForm } from 'vee-validate';
 import { computed, ref } from 'vue';
@@ -57,9 +53,8 @@ import { useRouter } from 'vue-router';
 
 //
 
-const { handleSubmit, isSubmitting } = useForm({ validationSchema: toTypedSchema(UserSignUpSchema) })
+const { handleSubmit, isSubmitting } = useForm({ validationSchema: toTypedSchema(UserSignInSchema) })
 
-const { value: name, errorMessage: nameError } = useField<string>("name")
 const { value: email, errorMessage: emailError } = useField<string>("email")
 const { value: password, errorMessage: passwordError } = useField<string>("password")
 
@@ -71,10 +66,10 @@ const router = useRouter()
 
 //
 
-const onSubmitSignUpForm = handleSubmit(async (values, ctx) => {
+const onSubmitSignInForm = handleSubmit(async (values, ctx) => {
     // --- Temporary while no API
     await new Promise((res) => setTimeout(res, 1000))
-    router.push("/auth/sign-in")
+    router.push("/dashboard")
 })
 
 //
