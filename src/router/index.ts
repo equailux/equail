@@ -1,13 +1,24 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import WelcomeView from '@/views/WelcomeView.vue'
+import { createRouter, createWebHistory } from "vue-router"
+import WelcomeView from "@/views/WelcomeView.vue"
+import SignUpView from "@/views/SignUpView.vue"
 
 //
 
 const routes = [
     {
-        path: '/',
-        name: 'welcome',
+        path: "/",
+        name: "welcome",
         component: WelcomeView,
+    },
+    {
+        path: "/auth",
+        children: [
+            {
+                path: "sign-up",
+                name: "Sign Up",
+                component: SignUpView,
+            },
+        ],
     },
 ]
 
