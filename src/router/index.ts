@@ -3,6 +3,7 @@ import WelcomeView from "@/views/WelcomeView.vue"
 import SignUpView from "@/views/auth/SignUpView.vue"
 import SignInView from "@/views/auth/SignInView.vue"
 import ForgotPasswordView from "@/views/auth/ForgotPasswordView.vue"
+import DashboardView from "@/views/app/DashboardView.vue"
 
 //
 
@@ -31,6 +32,17 @@ const routes: RouteRecordRaw[] = [
                 path: "forgot-password",
                 name: "Forgot Password",
                 component: ForgotPasswordView,
+            },
+        ],
+    },
+    {
+        path: "/app",
+        meta: { layout: "app" },
+        children: [
+            {
+                path: "dashboard",
+                name: "Dashboard",
+                component: DashboardView,
             },
         ],
     },

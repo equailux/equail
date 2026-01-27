@@ -65,7 +65,7 @@ const router = useRouter()
 const onSubmitSignInForm = handleSubmit(async (values, ctx) => {
     // --- Temporary while no API
     await new Promise((res) => setTimeout(res, 1000))
-    router.push("/dashboard")
+    router.push("/app/dashboard")
 })
 
 //
