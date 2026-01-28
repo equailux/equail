@@ -5,7 +5,7 @@
                 <v-card color="white" elevation="0">
                     <template #prepend>
                         <v-avatar color="white">
-                            <v-img eager src="/icon/light-bulb.png"></v-img>
+                            <v-img eager src="/icon/notification.png"></v-img>
                         </v-avatar>
                     </template>
                     <template #title>
