@@ -4,6 +4,7 @@ import SignUpView from "@/views/auth/SignUpView.vue"
 import SignInView from "@/views/auth/SignInView.vue"
 import ForgotPasswordView from "@/views/auth/ForgotPasswordView.vue"
 import DashboardView from "@/views/app/DashboardView.vue"
+import ControlsView from "@/views/app/ControlsView.vue"
 
 //
 
@@ -43,6 +44,11 @@ const routes: RouteRecordRaw[] = [
                 path: "dashboard",
                 name: "Dashboard",
                 component: DashboardView,
+            },
+            {
+                path: "controls",
+                name: "Controls",
+                component: ControlsView,
             },
         ],
     },
