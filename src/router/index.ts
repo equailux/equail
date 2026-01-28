@@ -9,6 +9,7 @@ import SettingsView from "@/views/app/SettingsView.vue"
 import MonthlyEggsView from "@/views/app/analytics/MonthlyEggsView.vue"
 import EnvironmentView from "@/views/app/analytics/EnvironmentView.vue"
 import FeedUsageView from "@/views/app/analytics/FeedUsageView.vue"
+import MortalityView from "@/views/app/analytics/MortalityView.vue"
 
 //
 
@@ -77,6 +78,11 @@ const routes: RouteRecordRaw[] = [
                         path: "feed-usage",
                         name: "Feed Usage",
                         component: FeedUsageView,
+                    },
+                    {
+                        path: "mortality",
+                        name: "Mortality",
+                        component: MortalityView,
                     },
                 ],
             },
