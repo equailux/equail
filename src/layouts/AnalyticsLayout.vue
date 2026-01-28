@@ -26,9 +26,8 @@
                                 active-class="text-white bg-light-green-darken-2"
                             >Controls</router-link>
                             <router-link  
-                                to="/app/analytics"
-                                class="px-2 py-1 rounded text-decoration-none text-black text-subtitle-2"
-                                active-class="text-white bg-light-green-darken-2"
+                                class="px-2 py-1 rounded text-decoration-none text-white text-subtitle-2 bg-light-green-darken-2"
+                                :to="$route.path"
                             >Analytics</router-link>
                             <router-link  
                                 to="/app/settings"

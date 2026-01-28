@@ -4,7 +4,7 @@
             <v-col>
                 <v-card id="pdfContent" color="white" elevation="0">
                     <template #title>
-                        <span class="pb-0 text-subtitle-2">Monthly Environment Condition</span>
+                        <span class="pb-0 text-subtitle-2">Feed Usage Production</span>
                     </template>
                     <template #append>
                         <v-btn
@@ -16,15 +16,15 @@
                         ></v-btn>
                     </template>
                     <template #subtitle>
-                        <span class="pb-0 text-subtitle-2 font-weight-regular text-wrap">
-                            Average temperature and humidity per month
+                        <span class="pb-0 text-subtitle-2 font-weight-regular">
+                            Feed Production per month
                         </span>
                     </template>
                     <template #text>
-                        <MonthlyEnvironmentConditionChart 
+                        <MonthlyFeedUsageChart 
                             class="w-100"
-                            :environment-condition-per-month
-                        ></MonthlyEnvironmentConditionChart>
+                            :feed-usage-per-month
+                        ></MonthlyFeedUsageChart>
                     </template>
                 </v-card>
             </v-col>
@@ -33,12 +33,12 @@
 </template>
 
 <script setup lang="ts">
-import MonthlyEnvironmentConditionChart from '@/components/app/analytics/MonthlyEnvironmentConditionChart.vue';
+import MonthlyFeedUsageChart from '@/components/app/analytics/MonthlyFeedUsageChart.vue';
 import { nextTick, reactive, ref } from 'vue';
 
 //
 
-const environmentConditionPerMonth = reactive<Record<string, number>>({
+const feedUsagePerMonth = reactive<Record<string, number>>({
     "January": 8,
     "February": 13,
     "March": 17,
@@ -98,7 +98,7 @@ const onClickPrintPDF = async () => {
         heightLeft -= pdfHeight
     }
 
-    pdf.save(`environment-condition-chart.pdf`)
+    pdf.save(`monthly-feed-usage-chart.pdf`)
     isPrinting.value = false
 }
 

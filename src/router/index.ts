@@ -8,6 +8,7 @@ import ControlsView from "@/views/app/ControlsView.vue"
 import SettingsView from "@/views/app/SettingsView.vue"
 import MonthlyEggsView from "@/views/app/analytics/MonthlyEggsView.vue"
 import EnvironmentView from "@/views/app/analytics/EnvironmentView.vue"
+import FeedUsageView from "@/views/app/analytics/FeedUsageView.vue"
 
 //
 
@@ -71,6 +72,11 @@ const routes: RouteRecordRaw[] = [
                         path: "environment",
                         name: "Environment",
                         component: EnvironmentView,
+                    },
+                    {
+                        path: "feed-usage",
+                        name: "Feed Usage",
+                        component: FeedUsageView,
                     },
                 ],
             },
