@@ -7,6 +7,7 @@ import DashboardView from "@/views/app/DashboardView.vue"
 import ControlsView from "@/views/app/ControlsView.vue"
 import SettingsView from "@/views/app/SettingsView.vue"
 import MonthlyEggsView from "@/views/app/analytics/MonthlyEggsView.vue"
+import EnvironmentView from "@/views/app/analytics/EnvironmentView.vue"
 
 //
 
@@ -65,6 +66,11 @@ const routes: RouteRecordRaw[] = [
                         path: "monthly-eggs",
                         name: "Monthly Eggs",
                         component: MonthlyEggsView,
+                    },
+                    {
+                        path: "environment",
+                        name: "Environment",
+                        component: EnvironmentView,
                     },
                 ],
             },
