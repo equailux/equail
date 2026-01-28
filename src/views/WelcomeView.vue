@@ -12,8 +12,5 @@
 </script>
 
 <style scoped>
-.rounded-t-pill {
-    border-top-left-radius: 32dvw !important;
-    border-top-right-radius: 32dvw !important;
-}
+
 </style>
