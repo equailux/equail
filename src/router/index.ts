@@ -5,6 +5,7 @@ import SignInView from "@/views/auth/SignInView.vue"
 import ForgotPasswordView from "@/views/auth/ForgotPasswordView.vue"
 import DashboardView from "@/views/app/DashboardView.vue"
 import ControlsView from "@/views/app/ControlsView.vue"
+import SettingsView from "@/views/app/SettingsView.vue"
 
 //
 
@@ -49,6 +50,11 @@ const routes: RouteRecordRaw[] = [
                 path: "controls",
                 name: "Controls",
                 component: ControlsView,
+            },
+            {
+                path: "settings",
+                name: "Settings",
+                component: SettingsView,
             },
         ],
     },
