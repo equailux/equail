@@ -6,6 +6,7 @@ import ForgotPasswordView from "@/views/auth/ForgotPasswordView.vue"
 import DashboardView from "@/views/app/DashboardView.vue"
 import ControlsView from "@/views/app/ControlsView.vue"
 import SettingsView from "@/views/app/SettingsView.vue"
+import MonthlyEggsView from "@/views/app/analytics/MonthlyEggsView.vue"
 
 //
 
@@ -55,6 +56,17 @@ const routes: RouteRecordRaw[] = [
                 path: "settings",
                 name: "Settings",
                 component: SettingsView,
+            },
+            {
+                path: "analytics",
+                meta: { layout: "analytics" },
+                children: [
+                    {
+                        path: "monthly-eggs",
+                        name: "Monthly Eggs",
+                        component: MonthlyEggsView,
+                    },
+                ],
             },
         ],
     },
