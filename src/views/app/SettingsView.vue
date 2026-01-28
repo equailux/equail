@@ -4,7 +4,7 @@
             <v-col>
                 <v-card color="white" elevation="0">
                     <template #prepend>
-                        <v-avatar color="white">
+                        <v-avatar color="white" class="overflow-visible">
                             <v-img eager src="/icon/notification.png"></v-img>
                         </v-avatar>
                     </template>
