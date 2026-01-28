@@ -65,6 +65,17 @@
                 </v-card>
             </v-col>
         </v-row>
+        <v-row no-gutters class="pt-2">
+            <v-col>
+                <v-btn
+                    to="/"
+                    text="Logout"
+                    color="white"
+                    class="w-100"
+                    prepend-icon="mdi-logout"
+                ></v-btn>
+            </v-col>
+        </v-row>
     </v-container>
 </template>
 
