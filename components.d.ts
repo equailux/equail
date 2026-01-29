@@ -11,8 +11,15 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    MonthlyEggProductionChart: typeof import('./src/components/app/analytics/MonthlyEggProductionChart.vue')['default']
+    MonthlyEnvironmentConditionChart: typeof import('./src/components/app/analytics/MonthlyEnvironmentConditionChart.vue')['default']
+    MonthlyFeedUsageChart: typeof import('./src/components/app/analytics/MonthlyFeedUsageChart.vue')['default']
+    MonthlyMortalityRateChart: typeof import('./src/components/app/analytics/MonthlyMortalityRateChart.vue')['default']
+    QuailDeathCreateForm: typeof import('./src/components/app/QuailDeathCreateForm.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    UserForgotPasswordForm: typeof import('./src/components/auth/UserForgotPasswordForm.vue')['default']
+    UserSignInForm: typeof import('./src/components/auth/UserSignInForm.vue')['default']
+    UserSignUpForm: typeof import('./src/components/auth/UserSignUpForm.vue')['default']
   }
 }
