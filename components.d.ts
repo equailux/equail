@@ -11,6 +11,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    AppDownloadNotification: typeof import('./src/components/AppDownloadNotification.vue')['default']
     MonthlyEggProductionChart: typeof import('./src/components/app/analytics/MonthlyEggProductionChart.vue')['default']
     MonthlyEnvironmentConditionChart: typeof import('./src/components/app/analytics/MonthlyEnvironmentConditionChart.vue')['default']
     MonthlyFeedUsageChart: typeof import('./src/components/app/analytics/MonthlyFeedUsageChart.vue')['default']
