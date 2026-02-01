@@ -1,19 +1,22 @@
 <template>
 	<v-app>
 		<router-view #="{ Component, route }">
-			<Motion 
-				as-child
-				:initial="{ opacity: 0, transform: `translateY(-10dvh)` }"
-				:animate="{ opacity: 1, transform: `translateY(0)` }"
-				:transition="{ type: `spring` }"
-			>
-				<AppDownloadNotification 
-					v-if="mustRecommendAppDownload"
-					class="mt-2 position-absolute top-0"
-					style="width: 96dvw; left: 2dvw; z-index: 9999"
-					@click-download="onClickDownload" 
-				/>
-			</Motion>
+			<AnimatePresence>
+				<Motion 
+					as-child
+					:initial="{ opacity: 0, y: -20 }"
+					:animate="{ opacity: 1, y: 0 }"
+					:exit="{ opacity: 0, y: -20 }"
+					:transition="{ type: `spring` }"
+				>
+					<AppDownloadNotification 
+						v-if="mustRecommendAppDownload"
+						class="mt-2 position-absolute top-0"
+						style="width: 96dvw; left: 2dvw; z-index: 9999"
+						@click-download="onClickDownload" 
+					/>
+				</Motion>
+			</AnimatePresence>
 			<AuthLayout v-if="route.meta?.layout === `auth`">
 				<component :is="Component"></component>
 			</AuthLayout>
@@ -32,13 +35,15 @@ import AppDownloadNotification from './components/AppDownloadNotification.vue';
 import AnalyticsLayout from './layouts/AnalyticsLayout.vue';
 import AppLayout from './layouts/AppLayout.vue';
 import AuthLayout from './layouts/AuthLayout.vue';
+import { Motion, AnimatePresence } from "motion-v"
 import { useAppStore } from './stores/app';
-import { Motion } from "motion-v"
+import { onMounted, ref } from 'vue';
 //
 
 const app = useAppStore()
 const { isWeb, isDownloaded, lastTimeDownloadAsked } = app
-const mustRecommendAppDownload = isWeb && !isDownloaded && Date.now() - lastTimeDownloadAsked > 60000
+const mustRecommendAppDownload = ref(isWeb && !isDownloaded && Date.now() - lastTimeDownloadAsked > 60000)
+app.lastTimeDownloadAsked = mustRecommendAppDownload.value ? Date.now() : lastTimeDownloadAsked
 
 //
 
@@ -46,6 +51,10 @@ const onClickDownload = async () => {
 	app.isDownloaded = true
 	window.location.href = "/app/download/equail.apk"
 }
+
+//
+
+onMounted(() => setTimeout(() => mustRecommendAppDownload.value = false, 5000))
 
 //
 
