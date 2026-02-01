@@ -38,11 +38,17 @@ import AuthLayout from './layouts/AuthLayout.vue';
 import { Motion, AnimatePresence } from "motion-v"
 import { useAppStore } from './stores/app';
 import { onMounted, ref } from 'vue';
+import { useApiStore } from './stores/api';
+
 //
 
+const api = useApiStore()
 const app = useAppStore()
+
 const { isWeb, isDownloaded, lastTimeDownloadAsked } = app
 const mustRecommendAppDownload = ref(isWeb && !isDownloaded && Date.now() - lastTimeDownloadAsked > 60000)
+
+api.proxyUrl = import.meta.env.VITE_PROXY_URL
 app.lastTimeDownloadAsked = mustRecommendAppDownload.value ? Date.now() : lastTimeDownloadAsked
 
 //

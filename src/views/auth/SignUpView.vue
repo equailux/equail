@@ -11,11 +11,13 @@
 <script setup lang="ts">
 import UserSignUpForm from '@/components/auth/UserSignUpForm.vue';
 import type { UserSignUpSchema } from '@/schemas/UserSchema';
+import { useApiStore } from '@/stores/api';
 import type { SubmissionContext } from 'vee-validate';
 import { useRouter } from 'vue-router';
 
 //
 
+const api = useApiStore()
 const router = useRouter()
 
 //
@@ -24,9 +26,9 @@ const onSubmitSignUpForm = async(
     values: UserSignUpSchema,
     ctx: SubmissionContext<{ [K in keyof UserSignUpSchema]?: unknown }>
 ) => {
-    // --- Temporary while no API
-    await new Promise((res) => setTimeout(res, 1000))
-    await router.push("/auth/sign-in")
+    await api.signUp(values)
+        .then(async () => await router.push("/auth/sign-in"))
+        .catch((e) => console.error(e?.message))
 }
 
 //

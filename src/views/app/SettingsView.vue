@@ -73,6 +73,7 @@
                     color="white"
                     class="w-100"
                     prepend-icon="mdi-logout"
+                    @click="onClickSignOut"
                 ></v-btn>
             </v-col>
         </v-row>
@@ -80,9 +81,14 @@
 </template>
 
 <script setup lang="ts">
+import { useApiStore } from '@/stores/api'
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 
 //
+
+const api = useApiStore()
+const router = useRouter()
 
 const allowPushNotifications = ref(true)
 const allowLowFeedAlerts = ref(true)
@@ -90,6 +96,11 @@ const allowLowWaterAlerts = ref(true)
 const allowEnvironmentAlerts = ref(true)
 
 //
+
+const onClickSignOut = async () => {
+    await api.signOut()
+    await router.push("/")
+}
 
 const onTogglePushNotifications = async (value: boolean | null) => {
     // --- Temporary while no API
