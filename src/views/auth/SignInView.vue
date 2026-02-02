@@ -26,9 +26,10 @@ const onSubmitSignIn = async (
     values: UserSignInSchema,
     ctx: SubmissionContext<{ [K in keyof UserSignInSchema]?: unknown }>
 ) => {
-    await api.signIn(values)
-        .then(async () => await router.push("/app/dashboard"))
-        .catch((e) => console.info(e?.message))
+    await router.push("/app/dashboard")
+    // await api.signIn(values)
+    //     .then(async () => await router.push("/app/dashboard"))
+    //     .catch((e) => console.info(e?.message))
 }
 
 //

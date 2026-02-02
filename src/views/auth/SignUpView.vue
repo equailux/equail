@@ -26,9 +26,10 @@ const onSubmitSignUpForm = async(
     values: UserSignUpSchema,
     ctx: SubmissionContext<{ [K in keyof UserSignUpSchema]?: unknown }>
 ) => {
-    await api.signUp(values)
-        .then(async () => await router.push("/auth/sign-in"))
-        .catch((e) => console.error(e?.message))
+    await router.push("/auth/sign-in")
+    // await api.signUp(values)
+    //     .then(async () => await router.push("/auth/sign-in"))
+    //     .catch((e) => console.error(e?.message))
 }
 
 //
