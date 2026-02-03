@@ -1,15 +1,19 @@
 <template>
     <v-container class="pa-0" fluid>
-        <v-row no-gutters>
-            <v-col>
+        <v-row dense>
+            <v-col cols="12" sm="8">
                 <v-card color="white" elevation="0">
                     <v-card-title class="pb-0 text-subtitle-1">Today's Summary</v-card-title>
                     <v-card-subtitle class="text-subtitle-2">Real-time overview of quail farm</v-card-subtitle>
                     <v-card-text>
                         <div class="d-flex align-center justify-space-between">
                             <div class="w-50 d-flex align-center ga-2">
-                                <div class="h-100 w-33">
-                                    <v-img eager src="/icon/boiled-egg.png"></v-img>
+                                <div class="h-100">
+                                    <v-img 
+                                        eager 
+                                        width="40px"
+                                        src="/icon/boiled-egg.png"
+                                    ></v-img>
                                 </div>
                                 <div class="h-100 w-66">
                                     <span>Eggs Today</span>
@@ -18,8 +22,12 @@
                                 </div>
                             </div>
                             <div class="w-50 d-flex align-center ga-2">
-                                <div class="h-100 w-33">
-                                    <v-img eager src="/icon/light-bulb.png"></v-img>
+                                <div class="h-100">
+                                    <v-img 
+                                        eager 
+                                        width="40px"
+                                        src="/icon/light-bulb.png"
+                                    ></v-img>
                                 </div>
                                 <div class="h-100 w-66">
                                     <span>Lighting</span>
@@ -37,9 +45,7 @@
                     </v-card-text>
                 </v-card>
             </v-col>
-        </v-row>
-        <v-row no-gutters class="pt-2">
-            <v-col cols="6" class="pr-1 pb-1">
+            <v-col cols="6" sm="4">
                 <v-card color="white" elevation="0">
                     <template #prepend>
                         <v-avatar size="small" color="white">
@@ -58,7 +64,7 @@
                     </template>
                 </v-card>
             </v-col>
-            <v-col cols="6" class="pl-1 pb-1">
+            <v-col cols="6" sm="4">
                 <v-card color="white" elevation="0">
                     <template #prepend>
                         <v-avatar size="small" color="white">
@@ -77,7 +83,7 @@
                     </template>
                 </v-card>
             </v-col>
-            <v-col cols="6" class="pt-1 pr-1">
+            <v-col cols="6" sm="4">
                 <v-card color="white" elevation="0">
                     <template #prepend>
                         <v-avatar size="small" color="white" class="overflow-visible">
@@ -96,9 +102,7 @@
                     </template>
                 </v-card>
             </v-col>
-        </v-row>
-        <v-row no-gutters class="pt-2">
-            <v-col>
+            <v-col cols="12" md="6">
                 <v-card color="white" elevation="0">
                     <template #prepend>
                         <v-avatar size="small" color="white" class="overflow-visible">
@@ -124,9 +128,7 @@
                     </template>
                 </v-card>
             </v-col>
-        </v-row>
-        <v-row no-gutters class="pt-2">
-            <v-col>
+            <v-col cols="12" md="6">
                 <v-card color="white" elevation="0">
                     <template #prepend>
                         <v-avatar size="small" color="white" class="overflow-visible">

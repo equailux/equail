@@ -5,8 +5,12 @@
                 <v-row no-gutters>
                     <v-col>
                         <div class="w-100 d-flex align-center pa-1 bg-white rounded">
-                            <div class="h-100 w-25">
-                                <v-img eager :src="`/logo.png`"></v-img>
+                            <div class="h-100">
+                                <v-img 
+                                    eager 
+                                    width="60px"
+                                    :src="`/logo.png`"
+                                ></v-img>
                             </div>
                             <h2>Hello, Juan</h2>
                         </div>
@@ -14,7 +18,7 @@
                 </v-row>
                 <v-row no-gutters class="pt-2">
                     <v-col>
-                        <div class="w-100 d-flex align-center justify-space-between pa-2 bg-white rounded">
+                        <div class="w-100 d-flex align-center justify-space-around pa-2 bg-white rounded">
                             <router-link  
                                 to="/app/dashboard"
                                 class="px-2 py-1 rounded text-decoration-none text-black text-subtitle-2"

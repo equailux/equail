@@ -1,8 +1,8 @@
 <template>
 	<v-container class="pa-0" fluid>
-		<v-row no-gutters>
-			<v-col>
-				<v-card color="white" elevation="0">
+		<v-row dense>
+			<v-col cols="12" sm="6">
+				<v-card color="white" class="h-100" elevation="0">
 					<template #prepend>
 						<v-avatar color="white">
 							<v-img eager src="/icon/light-bulb.png"></v-img>
@@ -32,9 +32,7 @@
 					</template>
 				</v-card>
 			</v-col>
-		</v-row>
-		<v-row no-gutters class="pt-2">
-			<v-col>
+			<v-col cols="12" sm="6">
 				<v-card color="white" elevation="0">
 					<v-card-title class="text-subtitle-2">About Lighting Control</v-card-title>
 					<v-card-text>
@@ -52,9 +50,7 @@
 					</v-card-text>
 				</v-card>
 			</v-col>
-		</v-row>
-		<v-row no-gutters class="pt-2">
-			<v-col>
+			<v-col cols="12" sm="6">
 				<v-card color="white" elevation="0">
 					<v-card-title class="text-subtitle-2">Mortality Records</v-card-title>
 					<v-card-text>
