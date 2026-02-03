@@ -1,16 +1,31 @@
 <template>
     <v-layout>
         <v-main>
-            <v-container class="fill-height bg-light-green-darken-2 pa-0">
-                <v-row class="h-100 d-flex align-end" no-gutters>
-                    <v-col class="w-100 h-75 bg-white pa-0 d-flex flex-column align-center rounded-t-pill">
-                        <v-img 
-                            eager
-                            style="margin-top: -30dvw;" 
-                            class="w-75 position-absolute" 
-                            :src="`/logo.png`"
-                        ></v-img>
-                        <slot></slot>
+            <v-container class="h-100 pa-0" fluid>
+                <v-row class="h-100" no-gutters>
+                    <v-col cols="12" class="d-flex justify-center bg-light-green-darken-2">
+                        <div class="w-50 h-100 d-none d-sm-flex align-center justify-center">
+                            <div class="d-flex align-center justify-center">
+                                <v-img 
+                                    eager
+                                    width="250px"
+                                    :src="`/logo.png`"
+                                ></v-img>
+                            </div>
+                        </div>
+                        <div class="w-100 w-sm-50 h-100 bg-light-green-darken-2 d-flex flex-column space-between border">
+                            <div class="w-100 h-25 h-sm-0 d-flex justify-center">
+                                <v-img 
+                                    eager
+                                    width="250px"
+                                    class="mt-8 d-sm-none position-absolute"
+                                    :src="`/logo.png`"
+                                ></v-img>
+                            </div>
+                            <div class="h-75 h-sm-100 bg-white pa-0 d-flex flex-column align-center sheet">
+                                <slot></slot>
+                            </div>
+                        </div>
                     </v-col>
                 </v-row>
             </v-container>
@@ -23,8 +38,15 @@
 </script>
 
 <style scoped>
-.rounded-t-pill {
-    border-top-left-radius: 32dvw !important;
-    border-top-right-radius: 32dvw !important;
+.sheet {
+    border-top-left-radius: 32dvw;
+    border-top-right-radius: 32dvw;
+}
+
+@media (min-width: 768px) {
+    .sheet {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
 }
 </style>

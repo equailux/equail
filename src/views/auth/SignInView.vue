@@ -1,5 +1,5 @@
 <template>
-    <div style="padding: 32dvw 0 0 0;" class="w-100 d-flex flex-column align-center">
+    <div class="w-100 h-100 pt-16 pt-sm-0 d-flex flex-column justify-center align-center">
         <span>Login to continue</span>
         <UserSignInForm
             class="w-100"
