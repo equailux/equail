@@ -8,7 +8,6 @@
 import { registerPlugins } from "@/plugins"
 import router from "@/router"
 import { pinia } from "@/stores"
-import "@/plugins/chartjs"
 
 // Components
 import App from "./App.vue"

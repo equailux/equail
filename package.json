@@ -16,6 +16,7 @@
 		"@capacitor/core": "^8.0.2",
 		"@fontsource/roboto": "5.2.7",
 		"@mdi/font": "7.4.47",
+		"@tensorflow/tfjs": "^4.22.0",
 		"@vee-validate/zod": "^4.15.1",
 		"chart.js": "^4.5.1",
 		"html2canvas": "^1.4.1",
