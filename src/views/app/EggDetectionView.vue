@@ -32,7 +32,7 @@
                     <ImageBoundingBoxRenderer
                         v-show="imagePreviewUrl"
                         :src="imagePreviewUrl"
-                        :detections="[]"
+                        :detections="detections"
                     ></ImageBoundingBoxRenderer>
                 </div>
             </v-col>
@@ -55,7 +55,9 @@
 
 <script setup lang="ts">
 import ImageBoundingBoxRenderer from '@/components/app/ImageBoundingBoxRenderer.vue';
-import { ref } from 'vue'
+import useEggDetection from '@/composables/use-egg-detection';
+import type { DetectionSchema } from '@/schemas/DetectionSchema';
+import { onMounted, ref } from 'vue'
 
 //
 
@@ -63,13 +65,32 @@ import { ref } from 'vue'
 const imageFiles = ref<File[]>([])
 const imagePreviewUrl = ref("")
 
-//
-
 const onUploadImageFiles = async (files: File[]) => {
     if (files.length <= 0) return
     const file = files[0]!
     imagePreviewUrl.value = URL.createObjectURL(file)
+    detectFromImageFile(file)
 }
+
+// --- Egg Detection
+const detections = ref<DetectionSchema[]>([])
+const detectionComp = useEggDetection()
+
+const detectFromImageFile = async (file: File) => {
+    await detectionComp.detect(file)
+        .then((res) => detections.value = res)
+        .catch(console.error)
+}
+
+//
+
+const onMountedCallback = async () => {
+    // --- Wake Up ML Server
+    await fetch("https://equail-api-ai.onrender.com")
+        .catch(console.error)
+}
+
+onMounted(onMountedCallback)
 
 //
 
