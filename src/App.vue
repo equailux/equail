@@ -1,7 +1,7 @@
 <template>
 	<v-app>
 		<router-view #="{ Component, route }">
-			<AnimatePresence>
+			<AnimatePresence v-if="mustRecommendAppDownload">
 				<Motion 
 					as-child
 					:initial="{ opacity: 0, y: -20 }"
@@ -10,7 +10,6 @@
 					:transition="{ type: `spring` }"
 				>
 					<AppDownloadNotification 
-						v-if="mustRecommendAppDownload"
 						class="mt-2 position-absolute top-0"
 						style="width: 96dvw; left: 2dvw; z-index: 9999"
 						@click-download="onClickDownload" 
@@ -23,6 +22,9 @@
 			<AppLayout v-else-if="route.meta?.layout === `app`">
 				<component :is="Component"></component>
 			</AppLayout>
+			<SettingsLayout v-else-if="route.meta?.layout === `settings`">
+				<component :is="Component"></component>
+			</SettingsLayout>
 			<AnalyticsLayout v-else-if="route.meta?.layout === `analytics`">
 				<component :is="Component"></component>
 			</AnalyticsLayout>
@@ -39,6 +41,7 @@ import { Motion, AnimatePresence } from "motion-v"
 import { useAppStore } from './stores/app';
 import { onMounted, ref } from 'vue';
 import { useApiStore } from './stores/api';
+import SettingsLayout from './layouts/SettingsLayout.vue';
 
 //
 
@@ -55,7 +58,7 @@ app.lastTimeDownloadAsked = mustRecommendAppDownload.value ? Date.now() : lastTi
 
 const onClickDownload = async () => {
 	app.isDownloaded = true
-	window.location.href = "/app/download/equail.apk"
+	window.location.href = "https://github.com/i4nizer/equail/releases/download/app/equail.apk"
 }
 
 //

@@ -7,6 +7,7 @@
 // Plugins
 import vuetify from "./vuetify"
 import "./chartjs"
+import "./pixi"
 
 // Types
 import type { App } from "vue"

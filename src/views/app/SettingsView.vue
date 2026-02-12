@@ -68,6 +68,17 @@
         <v-row no-gutters class="pt-2">
             <v-col>
                 <v-btn
+                    to="/app/settings/egg-detection"
+                    text="Test Egg Detection"
+                    color="white"
+                    class="w-100"
+                    prepend-icon="mdi-egg"
+                ></v-btn>
+            </v-col>
+        </v-row>
+        <v-row no-gutters class="pt-2">
+            <v-col>
+                <v-btn
                     to="/"
                     text="Logout"
                     color="white"

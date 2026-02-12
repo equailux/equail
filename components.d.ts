@@ -12,6 +12,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppDownloadNotification: typeof import('./src/components/AppDownloadNotification.vue')['default']
+    ImageBoundingBoxRenderer: typeof import('./src/components/app/ImageBoundingBoxRenderer.vue')['default']
     MonthlyEggProductionChart: typeof import('./src/components/app/analytics/MonthlyEggProductionChart.vue')['default']
     MonthlyEnvironmentConditionChart: typeof import('./src/components/app/analytics/MonthlyEnvironmentConditionChart.vue')['default']
     MonthlyFeedUsageChart: typeof import('./src/components/app/analytics/MonthlyFeedUsageChart.vue')['default']
@@ -22,5 +23,6 @@ declare module 'vue' {
     UserForgotPasswordForm: typeof import('./src/components/auth/UserForgotPasswordForm.vue')['default']
     UserSignInForm: typeof import('./src/components/auth/UserSignInForm.vue')['default']
     UserSignUpForm: typeof import('./src/components/auth/UserSignUpForm.vue')['default']
+    VideoBoundingBoxRenderer: typeof import('./src/components/app/VideoBoundingBoxRenderer.vue')['default']
   }
 }

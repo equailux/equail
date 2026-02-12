@@ -10,6 +10,7 @@ import MonthlyEggsView from "@/views/app/analytics/MonthlyEggsView.vue"
 import EnvironmentView from "@/views/app/analytics/EnvironmentView.vue"
 import FeedUsageView from "@/views/app/analytics/FeedUsageView.vue"
 import MortalityView from "@/views/app/analytics/MortalityView.vue"
+import EggDetectionView from "@/views/app/EggDetectionView.vue"
 
 //
 
@@ -57,8 +58,20 @@ const routes: RouteRecordRaw[] = [
             },
             {
                 path: "settings",
-                name: "Settings",
-                component: SettingsView,
+                children: [
+                    {
+                        path: "",
+                        name: "Settings",
+                        meta: { layout: "app" },
+                        component: SettingsView,
+                    },
+                    {
+                        path: "egg-detection",
+                        name: "Egg Detection",
+                        meta: { layout: "settings" },
+                        component: EggDetectionView,
+                    },
+                ],
             },
             {
                 path: "analytics",
