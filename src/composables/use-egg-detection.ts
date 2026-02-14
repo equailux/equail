@@ -8,15 +8,19 @@ export default () => {
     //
 
     const apiUrl = import.meta.env.VITE_AI_API_URL
+    const apiKey = import.meta.env.VITE_AI_API_KEY
 
     //
 
     const detect = async (image: File) => {
         const form = new FormData()
-        form.append("file", image)
+        form.append("image", image)
+        form.append("iou", "0.9")
+        form.append("score", "0.15")
 
-        const url = `${apiUrl}/api/model/egg/predict`
-        const res = await fetch(url, { method: "POST", body: form })
+        const url = `${apiUrl}/api/egg/predict`
+        const headers = { "x-api-key": apiKey }
+        const res = await fetch(url, { method: "POST", body: form, headers })
             .catch(() => { throw new Error("Something went wrong.") })
         
         if (!res.ok) throw new Error(await res.text())

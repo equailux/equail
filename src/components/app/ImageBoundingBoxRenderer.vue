@@ -76,6 +76,9 @@ const draw = async () => {
 		imageElement.value.onerror = () => reject()
 	})
 
+	if (texture) texture.destroy()
+	if (sprite) sprite.destroy()
+	
 	texture = PIXI.Texture.from(imageElement.value)
 	sprite = new PIXI.Sprite(texture)
 	sprite.width = app.screen.width
