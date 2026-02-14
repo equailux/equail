@@ -99,7 +99,7 @@ const detectFromImageFile = async (file: File) => {
 const getAvgDetectionConfidence = () => {
     if (detections.value.length <= 0) return 0
     const total = detections.value.reduce((p, c) => p + c.confidence, 0) || 0
-    return total / detections.value.length
+    return total / detections.value.length * 100
 }
 
 const onClickClear = () => {
