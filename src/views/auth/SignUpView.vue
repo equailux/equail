@@ -12,12 +12,14 @@
 import UserSignUpForm from '@/components/auth/UserSignUpForm.vue';
 import type { UserSignUpSchema } from '@/schemas/UserSchema';
 import { useApiStore } from '@/stores/api';
+import { useUserStore } from '@/stores/user';
 import type { SubmissionContext } from 'vee-validate';
 import { useRouter } from 'vue-router';
 
 //
 
 const api = useApiStore()
+const user = useUserStore()
 const router = useRouter()
 
 //
@@ -28,6 +30,7 @@ const onSubmitSignUpForm = async(
 ) => {
     await new Promise(res => setTimeout(res, 1000))
     await router.push("/auth/sign-in")
+    user.user = { ...values, id: 0, createdAt: new Date(), updatedAt: new Date() }
     // await api.signUp(values)
     //     .then(async () => await router.push("/auth/sign-in"))
     //     .catch((e) => console.error(e?.message))

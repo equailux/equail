@@ -1,6 +1,7 @@
 import { UserSafeSchema, type UserSignInSchema, type UserSignUpSchema } from "@/schemas/UserSchema";
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { useUserStore } from "./user";
 
 //
 
@@ -23,7 +24,10 @@ export const useApiStore = defineStore("api", () => {
         if (!res.ok) throw new Error(await res.text())
         const data = await res.json() as { user: UserSafeSchema, url: string, token: string }
         [apiUrl.value, apiKey.value] = [data.url, data.token]
-        return UserSafeSchema.parse(data.user)
+        
+        const userStore = useUserStore()
+        userStore.user = UserSafeSchema.parse(data.user)
+        return userStore.user
     }
     
     const signUp = async (user: UserSignUpSchema) => {
@@ -39,6 +43,8 @@ export const useApiStore = defineStore("api", () => {
     const signOut = async () => {
         apiUrl.value = ""
         apiKey.value = ""
+        const userStore = useUserStore()
+        userStore.user = undefined
     }
 
     //
