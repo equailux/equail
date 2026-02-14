@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { DetectionSchema } from "@/schemas/DetectionSchema"
+import { DetectionRawSchema } from "@/schemas/DetectionSchema"
 
 //
 
@@ -26,7 +26,7 @@ export default () => {
         if (!res.ok) throw new Error(await res.text())
         const payload = await res.json()
         
-        const { data, error, success } = z.array(DetectionSchema).safeParse(payload)
+        const { data, error, success } = z.array(DetectionRawSchema).safeParse(payload)
         if (!success) throw new Error(error.issues[0]!.message)
         return data
     }

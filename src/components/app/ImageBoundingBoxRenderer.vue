@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import type { DetectionSchema } from "@/schemas/DetectionSchema"
+import type { DetectionRawSchema } from "@/schemas/DetectionSchema"
 import * as PIXI from "pixi.js"
 import { watch } from "vue"
 import { onMounted, onUnmounted, reactive, ref } from "vue"
@@ -19,7 +19,7 @@ import { onMounted, onUnmounted, reactive, ref } from "vue"
 
 const props = defineProps<{
 	src?: string | File | Blob | HTMLImageElement
-	detections: DetectionSchema[]
+	detections: DetectionRawSchema[]
 	onDraw?: (canvas: HTMLCanvasElement) => any
 	onRender?: (canvas: HTMLCanvasElement) => any
 }>()

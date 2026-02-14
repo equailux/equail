@@ -64,7 +64,7 @@
 <script setup lang="ts">
 import ImageBoundingBoxRenderer from '@/components/app/ImageBoundingBoxRenderer.vue';
 import useEggDetection from '@/composables/use-egg-detection';
-import type { DetectionSchema } from '@/schemas/DetectionSchema';
+import type { DetectionRawSchema } from '@/schemas/DetectionSchema';
 import { computed, onMounted, ref } from 'vue'
 
 //
@@ -82,7 +82,7 @@ const onUploadImageFiles = async (files: File[]) => {
 }
 
 // --- Egg Detection
-const detections = ref<DetectionSchema[]>([])
+const detections = ref<DetectionRawSchema[]>([])
 const detectionComp = useEggDetection()
 const detectionLoading = ref(false)
 const detectionEggCount = computed(() => detections.value.length)
