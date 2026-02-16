@@ -112,7 +112,7 @@ const onClickClear = () => {
 //
 
 const onMountedCallback = async () => {
-    await fetch("https://equail-api-ai.onrender.com")
+    await fetch(import.meta.env.VITE_AI_API_URL)
         .catch(console.error)
 }
 
