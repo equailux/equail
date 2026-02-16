@@ -12,7 +12,7 @@
                                     :src="`/logo.png`"
                                 ></v-img>
                             </div>
-                            <h2>Hello, Juan</h2>
+                            <h2>Hello, {{ user.user?.name }}</h2>
                         </div>
                     </v-col>
                 </v-row>
@@ -78,6 +78,13 @@
 </template>
 
 <script setup lang="ts">
+import { useUserStore } from '@/stores/user';
+
+//
+
+const user = useUserStore()
+
+//
 
 </script>
 
