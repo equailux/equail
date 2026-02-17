@@ -1,4 +1,4 @@
-import { WsEventQuery, WsEventSchema, type WsEventHandler, type WsEventOptions } from "@/schemas/WsEventSchema"
+import { WsEventQuery, WsEventSchema, type WsEvent, type WsEventHandler, type WsEventOptions } from "@/schemas/WsEventSchema"
 import { ref } from "vue"
 
 //
@@ -8,13 +8,23 @@ export default () => {
     //
 
     const ws = ref<WebSocket>()
-    const handlers = ref<WsEventOptions[]>([])
+    const handlers = ref<WsEventOptions<any>[]>([])
     const connected = ref(false)
     const connecting = ref(false)
 
     //
 
-    const listen = (name: string, query: WsEventQuery, handler: WsEventHandler) => {
+    const emit = (name: string, query: WsEventQuery, data: any[]) => {
+        const event: WsEvent = { name, query, data }
+        const payload = JSON.stringify(event)
+        if (ws.value) ws.value.send(payload)
+    }
+
+    const listen = <T extends object = object>(
+        name: string,
+        query: WsEventQuery,
+        handler: WsEventHandler<T>
+    ) => {
         handlers.value.push({ name, query, handler })
     }
 
@@ -55,5 +65,5 @@ export default () => {
 
     //
 
-    return { ws, listen, connect, disconnect }
+    return { ws, emit, listen, connect, disconnect }
 }

@@ -159,18 +159,45 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-
+import useWsEvent from '@/composables/use-ws-event';
+import type { ReadingSchema } from '@/schemas/ReadingSchema';
+import type { WsEventHandler } from '@/schemas/WsEventSchema';
+import { useApiStore } from '@/stores/api';
+import { onMounted, ref } from 'vue';
 
 //
 
+// --- Stats
 const eggsToday = ref(15)
-const isLightOn = ref(false)
+const isLightOn = ref(false) 
+const mortalityRate = ref(10)
+
+// --- Sensor Data
+const api = useApiStore()
+const wsEvent = useWsEvent()
+
 const temperature = ref(25.9)
 const humidity = ref(65)
-const mortalityRate = ref(10)
 const feedLevel = ref(70)
 const waterLevel = ref(80)
+
+const onWsEventReading: WsEventHandler<ReadingSchema> = (data) => {
+    for (const { name, value } of data) {
+        if (name.toLowerCase().startsWith("temperature")) temperature.value = value
+        if (name.toLowerCase().startsWith("humidity")) humidity.value = value
+        if (name.toLowerCase().startsWith("feed")) feedLevel.value = value
+        if (name.toLowerCase().startsWith("water")) waterLevel.value = value
+    }
+}
+
+//
+
+const onMountedCb = async () => {
+    wsEvent.connect(`${api.apiUrl}/ws/app`)
+    wsEvent.listen("Reading", "Create", onWsEventReading)
+}
+
+onMounted(onMountedCb)
 
 //
 
