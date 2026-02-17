@@ -46,6 +46,7 @@ import { useAppStore } from './stores/app';
 import { onMounted, ref } from 'vue';
 import SettingsLayout from './layouts/SettingsLayout.vue';
 import useSnackbarQueue from './composables/use-snackbar-queue';
+import { useApiStore } from './stores/api';
 
 //
 
@@ -53,11 +54,13 @@ import useSnackbarQueue from './composables/use-snackbar-queue';
 const snackbarQueue = useSnackbarQueue()
 
 // --- Download Recommendation
+const api = useApiStore()
 const app = useAppStore()
 
 const { isWeb, isDownloaded, lastTimeDownloadAsked } = app
 const mustRecommendAppDownload = ref(isWeb && !isDownloaded && Date.now() - lastTimeDownloadAsked > 60000)
 app.lastTimeDownloadAsked = mustRecommendAppDownload.value ? Date.now() : lastTimeDownloadAsked
+api.proxyUrl = import.meta.env.VITE_PROXY_URL
 
 //
 
