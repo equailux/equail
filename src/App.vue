@@ -29,10 +29,7 @@
 				<component :is="Component"></component>
 			</AnalyticsLayout>
 		</router-view>
-		<v-snackbar-queue 
-			closable
-			v-model="snackbarQueue.messages.value"
-		></v-snackbar-queue>
+		<v-snackbar-queue closable v-model="toast.messages"></v-snackbar-queue>
 	</v-app>
 </template>
 
@@ -45,13 +42,13 @@ import { Motion, AnimatePresence } from "motion-v"
 import { useAppStore } from './stores/app';
 import { onMounted, ref } from 'vue';
 import SettingsLayout from './layouts/SettingsLayout.vue';
-import useSnackbarQueue from './composables/use-snackbar-queue';
 import { useApiStore } from './stores/api';
+import { useToastStore } from './stores/toast';
 
 //
 
-// --- Snackbar Queue
-const snackbarQueue = useSnackbarQueue()
+// --- Notif
+const toast = useToastStore()
 
 // --- Download Recommendation
 const api = useApiStore()
