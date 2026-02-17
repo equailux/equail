@@ -52,8 +52,14 @@ export default () => {
         connected.value = true
     }
 
-    const onMessage = (ev: MessageEvent<any>) => {
-        const { data, success } = WsEventSchema.safeParse(ev.data)
+    const onMessage = async (ev: MessageEvent<any>) => {
+        const parsed = await Promise
+            .resolve()
+            .then(() => JSON.parse(ev.data))
+            .catch(() => undefined)
+        if (!parsed) return
+
+        const { data, success } = WsEventSchema.safeParse(parsed)
         if (!success) return
 
         for (const { name, query, handler } of handlers.value) {
