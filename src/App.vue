@@ -29,6 +29,10 @@
 				<component :is="Component"></component>
 			</AnalyticsLayout>
 		</router-view>
+		<v-snackbar-queue 
+			closable
+			v-model="snackbarQueue.messages.value"
+		></v-snackbar-queue>
 	</v-app>
 </template>
 
@@ -40,18 +44,19 @@ import AuthLayout from './layouts/AuthLayout.vue';
 import { Motion, AnimatePresence } from "motion-v"
 import { useAppStore } from './stores/app';
 import { onMounted, ref } from 'vue';
-import { useApiStore } from './stores/api';
 import SettingsLayout from './layouts/SettingsLayout.vue';
+import useSnackbarQueue from './composables/use-snackbar-queue';
 
 //
 
-const api = useApiStore()
+// --- Snackbar Queue
+const snackbarQueue = useSnackbarQueue()
+
+// --- Download Recommendation
 const app = useAppStore()
 
 const { isWeb, isDownloaded, lastTimeDownloadAsked } = app
 const mustRecommendAppDownload = ref(isWeb && !isDownloaded && Date.now() - lastTimeDownloadAsked > 60000)
-
-api.proxyUrl = import.meta.env.VITE_PROXY_URL
 app.lastTimeDownloadAsked = mustRecommendAppDownload.value ? Date.now() : lastTimeDownloadAsked
 
 //
