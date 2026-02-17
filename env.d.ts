@@ -4,6 +4,7 @@ interface ImportMetaEnv {
     readonly VITE_PROXY_URL: string
     readonly VITE_AI_API_URL: string
     readonly VITE_AI_API_KEY: string
+    readonly VITE_APP_ANDROID_URL: string
 }
 
 interface ImportMeta {

@@ -63,7 +63,7 @@ api.proxyUrl = import.meta.env.VITE_PROXY_URL
 
 const onClickDownload = async () => {
 	app.isDownloaded = true
-	window.location.href = "https://github.com/i4nizer/equail/releases/download/app/equail.apk"
+	window.location.href = import.meta.env.VITE_APP_ANDROID_URL
 }
 
 //
