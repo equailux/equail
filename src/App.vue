@@ -1,21 +1,6 @@
 <template>
 	<v-app class="bg-primary">
 		<router-view #="{ Component, route }">
-			<AnimatePresence v-if="mustRecommendAppDownload">
-				<Motion 
-					as-child
-					:initial="{ opacity: 0, y: -20 }"
-					:animate="{ opacity: 1, y: 0 }"
-					:exit="{ opacity: 0, y: -20 }"
-					:transition="{ type: `spring` }"
-				>
-					<AppDownloadNotification 
-						class="mt-2 position-absolute top-0"
-						style="width: 96dvw; left: 2dvw; z-index: 9999"
-						@click-download="onClickDownload" 
-					/>
-				</Motion>
-			</AnimatePresence>
 			<AuthLayout v-if="route.meta?.layout === `auth`">
 				<component :is="Component"></component>
 			</AuthLayout>
@@ -29,50 +14,36 @@
 				<component :is="Component"></component>
 			</AnalyticsLayout>
 		</router-view>
-		<v-snackbar-queue closable v-model="toast.messages"></v-snackbar-queue>
+		<v-snackbar-queue 
+			closable 
+			color="secondary"
+			v-model="toast.messages"
+		></v-snackbar-queue>
 	</v-app>
 </template>
 
 <script setup lang="ts">
-import AppDownloadNotification from './components/AppDownloadNotification.vue';
-import AnalyticsLayout from './layouts/AnalyticsLayout.vue';
 import AppLayout from './layouts/AppLayout.vue';
 import AuthLayout from './layouts/AuthLayout.vue';
-import { Motion, AnimatePresence } from "motion-v"
-import { useAppStore } from './stores/app';
-import { onMounted, ref } from 'vue';
 import SettingsLayout from './layouts/SettingsLayout.vue';
+import AnalyticsLayout from './layouts/AnalyticsLayout.vue';
+import { useTheme } from 'vuetify';
+import { onMounted } from 'vue';
 import { useApiStore } from './stores/api';
 import { useToastStore } from './stores/toast';
-import { useTheme } from 'vuetify';
 
 //
 
-// --- Notif
+// --- Comp/Store
+const api = useApiStore()
 const theme = useTheme()
 const toast = useToastStore()
-
-// --- Download Recommendation
-const api = useApiStore()
-const app = useAppStore()
-
-const { isWeb, isDownloaded, lastTimeDownloadAsked } = app
-const mustRecommendAppDownload = ref(isWeb && !isDownloaded && Date.now() - lastTimeDownloadAsked > 60000)
-app.lastTimeDownloadAsked = mustRecommendAppDownload.value ? Date.now() : lastTimeDownloadAsked
-api.proxyUrl = import.meta.env.VITE_PROXY_URL
-
-//
-
-const onClickDownload = async () => {
-	app.isDownloaded = true
-	window.location.href = import.meta.env.VITE_APP_ANDROID_URL
-}
 
 //
 
 const onMountedCb = () => {
+	api.proxyUrl = import.meta.env.VITE_PROXY_URL
 	theme.change(localStorage.getItem("theme") ?? "light")
-	setTimeout(() => mustRecommendAppDownload.value = false, 5000)
 }
 
 onMounted(onMountedCb)
