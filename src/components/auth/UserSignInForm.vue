@@ -18,13 +18,19 @@
 			:append-inner-icon="showPasswordIcon"
 			@click:append-inner="showPassword = !showPassword"
 		></v-text-field>
-		<router-link to="/auth/forgot-password" class="w-75 text-end text-decoration-none text-black">
-			<span>Forgot Password</span>
+		<router-link 
+			to="/auth/forgot-password" 
+			class="w-75 text-end text-decoration-none text-black"
+		>
+			<small class="text-accent">Forgot password?</small>
 		</router-link>
-		<v-btn type="submit" text="Log In" class="w-75 my-2" color="primary" :loading="isSubmitting"></v-btn>
-		<router-link to="/auth/sign-up" class="mt-5 text-decoration-none text-black">
-			<span>Don't have an account? Sign up</span>
-		</router-link>
+		<v-btn 
+			type="submit" 
+			text="Sign In" 
+			class="w-75 my-2" 
+			color="accent" 
+			:loading="isSubmitting"
+		></v-btn>
 	</v-form>
 </template>
 

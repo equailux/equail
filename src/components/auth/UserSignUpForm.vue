@@ -25,10 +25,14 @@
 			:append-inner-icon="showPasswordIcon"
 			@click:append-inner="showPassword = !showPassword"
 		></v-text-field>
-		<v-btn type="submit" text="Sign up" class="w-75 my-2" color="primary" :loading="isSubmitting"></v-btn>
-		<router-link to="/auth/sign-in" class="mt-5 text-decoration-none text-black">
-			<span>Already have an account? Log In</span>
-		</router-link>
+		<v-btn 
+			type="submit" 
+			color="accent" 
+			class="w-75 my-2 text-white" 
+			:loading="isSubmitting"
+		>
+			<span class="text-white">Sign Up</span>
+		</v-btn>
 	</v-form>
 </template>
 

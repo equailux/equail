@@ -8,10 +8,13 @@
 			:disabled="isSubmitting"
 			:error-messages="emailError"
 		></v-text-field>
-		<small class="w-75 text-grey">
-			Enter your username, then input the 6-digit code to received via email to login.
-		</small>
-		<v-btn type="submit" text="Send Code" class="w-75 my-2 mt-4" color="primary" :loading="isSubmitting"></v-btn>
+		<v-btn 
+			type="submit" 
+			text="Send Code" 
+			class="w-75 my-2 mt-4" 
+			color="accent" 
+			:loading="isSubmitting"
+		></v-btn>
 	</v-form>
 </template>
 

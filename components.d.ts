@@ -18,6 +18,7 @@ declare module 'vue' {
     MonthlyFeedUsageChart: typeof import('./src/components/app/analytics/MonthlyFeedUsageChart.vue')['default']
     MonthlyMortalityRateChart: typeof import('./src/components/app/analytics/MonthlyMortalityRateChart.vue')['default']
     MortalityCreateForm: typeof import('./src/components/app/MortalityCreateForm.vue')['default']
+    QuailSvg: typeof import('./src/components/QuailSvg.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     UserForgotPasswordForm: typeof import('./src/components/auth/UserForgotPasswordForm.vue')['default']
