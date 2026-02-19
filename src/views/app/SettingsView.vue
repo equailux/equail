@@ -1,150 +1,94 @@
 <template>
-	<v-container class="pa-0" fluid>
-		<v-row no-gutters>
-			<v-col>
-				<v-card color="primary" elevation="0">
-					<template #prepend>
-						<v-avatar color="primary" class="overflow-visible">
-							<v-img eager src="/icon/notification.png"></v-img>
-						</v-avatar>
-					</template>
-					<template #title>
-						<span class="pb-0 text-subtitle-2">Notification Settings</span>
-					</template>
-					<template #subtitle>
-						<span class="pb-0 text-subtitle-2 font-weight-regular">
-							Configure alerts and notifications
-						</span>
-					</template>
-					<template #text>
-						<div class="d-flex align-center justify-space-between">
-							<span>Push Notifications</span>
+	<v-container class="bg-secondary" fluid>
+		<v-row dense>
+			<v-col cols="12" sm="8">
+				<div class="pb-4">
+					<small class="text-accent">Preferences</small>
+					<h3>Settings</h3>
+				</div>
+			</v-col>
+		</v-row>
+		<v-row dense>
+			<v-col cols="12" sm="6">
+				<div class="border rounded-lg elevation-1 overflow-hidden">
+					<div class="pa-2 px-4 border-b">
+						<h5 class="text-grey-darken-1">NOTIFICATIONS</h5>
+					</div>
+					<div class="pa-4 d-flex flex-column ">
+						<div class="d-flex align-center ga-3">
+							<div 
+								class="pa-4 rounded-lg d-flex align-center justify-center"
+								style="width: 38px; height: 38px; background-color: rgba(var(--v-theme-accent), 0.1)"
+							>
+								<v-icon color="accent">mdi-alert-outline</v-icon>
+							</div>
+							<div class="w-50">
+								<h5>Threshold Alerts</h5>
+								<small class="text-grey-darken-1 text-caption">
+									Get warned on exceeding readings
+								</small>
+							</div>
+							<v-spacer></v-spacer>
 							<v-switch
 								inset
 								hide-details
-								density="compact"
-								v-model="allowPushNotifications"
-								@update:model-value="onTogglePushNotifications"
+								color="accent"
+								base-color="accent"
 							></v-switch>
 						</div>
-						<div class="d-flex align-center justify-space-between">
-							<span>Low Feed Alerts</span>
+					</div>
+				</div>
+			</v-col>
+			<v-col cols="12" sm="6">
+				<div class="border rounded-lg elevation-1 overflow-hidden">
+					<div class="pa-2 px-4 border-b">
+						<h5 class="text-grey-darken-1">APPEARANCE</h5>
+					</div>
+					<div class="pa-4 d-flex flex-column ">
+						<div class="d-flex align-center ga-3">
+							<div 
+								class="pa-4 rounded-lg d-flex align-center justify-center"
+								style="width: 38px; height: 38px; background-color: rgba(var(--v-theme-accent), 0.1)"
+							>
+								<v-icon color="accent">mdi-weather-night</v-icon>
+							</div>
+							<div class="w-50">
+								<h5>Dark Mode</h5>
+								<small class="text-grey-darken-1 text-caption">
+									Switch between light and dark themes
+								</small>
+							</div>
+							<v-spacer></v-spacer>
 							<v-switch
 								inset
 								hide-details
-								density="compact"
-								v-model="allowLowFeedAlerts"
-								@update:model-value="onToggleLowFeedAlerts"
-							></v-switch>
-						</div>
-						<div class="d-flex align-center justify-space-between">
-							<span>Low Water Alerts</span>
-							<v-switch
-								inset
-								hide-details
-								density="compact"
-								v-model="allowLowWaterAlerts"
-								@update:model-value="onToggleLowWaterAlerts"
-							></v-switch>
-						</div>
-						<div class="d-flex align-center justify-space-between">
-							<span>Environment Alerts</span>
-							<v-switch
-								inset
-								hide-details
-								density="compact"
-								v-model="allowEnvironmentAlerts"
-								@update:model-value="onToggleEnvironmentAlerts"
-							></v-switch>
-						</div>
-						<div class="d-flex align-center justify-space-between">
-							<span>Light / Dark Mode</span>
-							<v-switch
-								inset
-								hide-details
+								color="accent"
+								base-color="accent"
 								@update:model-value="onToggleTheme"
 							></v-switch>
 						</div>
-					</template>
-				</v-card>
-			</v-col>
-		</v-row>
-		<v-row no-gutters class="pt-2">
-			<v-col>
-				<v-btn
-					to="/app/settings/egg-detection"
-					text="Test Egg Detection"
-					color="primary"
-					class="w-100"
-					prepend-icon="mdi-egg"
-				></v-btn>
-			</v-col>
-		</v-row>
-		<v-row no-gutters class="pt-2">
-			<v-col>
-				<v-btn
-					to="/"
-					text="Logout"
-					color="primary"
-					class="w-100"
-					prepend-icon="mdi-logout"
-					@click="onClickSignOut"
-				></v-btn>
+					</div>
+				</div>
 			</v-col>
 		</v-row>
 	</v-container>
 </template>
 
 <script setup lang="ts">
-import { useApiStore } from "@/stores/api"
-import { ref } from "vue"
-import { useRouter } from "vue-router"
-import { useTheme } from "vuetify"
+import { useTheme } from 'vuetify';
 
 //
 
-const api = useApiStore()
+// --- Theme
 const theme = useTheme()
-const router = useRouter()
 
-const allowPushNotifications = ref(true)
-const allowLowFeedAlerts = ref(true)
-const allowLowWaterAlerts = ref(true)
-const allowEnvironmentAlerts = ref(true)
-
-//
-
-const onClickSignOut = async () => {
-	await api.signOut()
-	await router.push("/")
-}
-
-const onTogglePushNotifications = async (value: boolean | null) => {
-	// --- Temporary while no API
-	await new Promise(res => setTimeout(res, 1000))
-}
-
-const onToggleLowFeedAlerts = async (value: boolean | null) => {
-	// --- Temporary while no API
-	await new Promise(res => setTimeout(res, 1000))
-}
-
-const onToggleLowWaterAlerts = async (value: boolean | null) => {
-	// --- Temporary while no API
-	await new Promise(res => setTimeout(res, 1000))
-}
-
-const onToggleEnvironmentAlerts = async (value: boolean | null) => {
-	// --- Temporary while no API
-	await new Promise(res => setTimeout(res, 1000))
-}
-
-const onToggleTheme = (value: unknown) => {
-	localStorage.setItem("theme", !!value ? "dark" : "light")
-	theme.change(!!value ? "dark" : "light")
+const onToggleTheme = (v: unknown) => {
+	theme.change(!!v ? "dark" : "light")
+	localStorage.setItem("theme", !!v ? "dark" : "light")
 }
 
 //
+
 </script>
 
 <style scoped></style>
