@@ -16,7 +16,7 @@
 			:disabled="isSubmitting"
 			:error-messages="dateError"
 		></v-date-input>
-		<v-btn text="Add" type="Submit" color="light-green-darken-2" class="w-100" :loading="isSubmitting"></v-btn>
+		<v-btn text="Add" type="Submit" color="primary" class="w-100" :loading="isSubmitting"></v-btn>
 	</v-form>
 </template>
 

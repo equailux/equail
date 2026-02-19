@@ -2,9 +2,9 @@
 	<v-container class="pa-0" fluid>
 		<v-row dense>
 			<v-col cols="12" sm="6">
-				<v-card color="white" class="h-100" elevation="0">
+				<v-card color="primary" class="h-100" elevation="0">
 					<template #prepend>
-						<v-avatar color="white">
+						<v-avatar color="primary">
 							<v-img eager src="/icon/light-bulb.png"></v-img>
 						</v-avatar>
 					</template>
@@ -24,7 +24,7 @@
 							<v-switch
 								inset
 								hide-details
-								color="light-green-darken-2"
+								color="primary"
 								density="compact"
 								v-model="isLightOn"
 							></v-switch>
@@ -33,7 +33,7 @@
 				</v-card>
 			</v-col>
 			<v-col cols="12" sm="6">
-				<v-card color="white" elevation="0">
+				<v-card color="primary" elevation="0">
 					<v-card-title class="text-subtitle-2">About Lighting Control</v-card-title>
 					<v-card-text>
 						<span>Purpose of light:</span>
@@ -51,7 +51,7 @@
 				</v-card>
 			</v-col>
 			<v-col cols="12" sm="6">
-				<v-card color="white" elevation="0">
+				<v-card color="primary" elevation="0">
 					<v-card-title class="text-subtitle-2">Mortality Records</v-card-title>
 					<v-card-text>
 						<MortalityCreateForm @submit="onSubmitMortalityCreateForm" />

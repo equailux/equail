@@ -1,5 +1,5 @@
 <template>
-	<v-app>
+	<v-app class="bg-primary">
 		<router-view #="{ Component, route }">
 			<AnimatePresence v-if="mustRecommendAppDownload">
 				<Motion 
@@ -44,10 +44,12 @@ import { onMounted, ref } from 'vue';
 import SettingsLayout from './layouts/SettingsLayout.vue';
 import { useApiStore } from './stores/api';
 import { useToastStore } from './stores/toast';
+import { useTheme } from 'vuetify';
 
 //
 
 // --- Notif
+const theme = useTheme()
 const toast = useToastStore()
 
 // --- Download Recommendation
@@ -68,7 +70,12 @@ const onClickDownload = async () => {
 
 //
 
-onMounted(() => setTimeout(() => mustRecommendAppDownload.value = false, 5000))
+const onMountedCb = () => {
+	theme.change(localStorage.getItem("theme") ?? "light")
+	setTimeout(() => mustRecommendAppDownload.value = false, 5000)
+}
+
+onMounted(onMountedCb)
 
 //
 
