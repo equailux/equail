@@ -11,7 +11,7 @@ import { ref, watch } from "vue"
 
 //
 
-const props = defineProps<{ environmentConditionPerMonth: Record<string, number> }>()
+const props = defineProps<{ readings: Record<string, number> }>()
 
 const key = ref(0)
 const data: ChartData<"bar"> = { labels: [], datasets: [] }
@@ -25,12 +25,12 @@ const options: ChartOptions<"bar"> = {
 //
 
 watch(
-	() => props.environmentConditionPerMonth,
+	() => props.readings,
 	epm => {
 		const labels = Object.keys(epm)
 		const dataset = {
 			data: Object.values(epm),
-			backgroundColor: "#36cd83",
+			backgroundColor: "#774826",
 			borderRadius: 6,
 		}
 

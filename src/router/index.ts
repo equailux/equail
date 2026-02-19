@@ -6,11 +6,7 @@ import ForgotPasswordView from "@/views/auth/ForgotPasswordView.vue"
 import DashboardView from "@/views/app/DashboardView.vue"
 import ControlsView from "@/views/app/ControlsView.vue"
 import SettingsView from "@/views/app/SettingsView.vue"
-import MonthlyEggsView from "@/views/app/analytics/MonthlyEggsView.vue"
-import EnvironmentView from "@/views/app/analytics/EnvironmentView.vue"
-import FeedUsageView from "@/views/app/analytics/FeedUsageView.vue"
-import MortalityView from "@/views/app/analytics/MortalityView.vue"
-import EggDetectionView from "@/views/app/EggDetectionView.vue"
+import AnalyticsView from "@/views/app/AnalyticsView.vue"
 
 //
 
@@ -58,44 +54,13 @@ const routes: RouteRecordRaw[] = [
             },
             {
                 path: "settings",
-                children: [
-                    {
-                        path: "",
-                        name: "Settings",
-                        component: SettingsView,
-                    },
-                    {
-                        path: "egg-detection",
-                        name: "Egg Detection",
-                        meta: { layout: "settings" },
-                        component: EggDetectionView,
-                    },
-                ],
+                name: "Settings",
+                component: SettingsView,
             },
             {
                 path: "analytics",
-                children: [
-                    {
-                        path: "monthly-eggs",
-                        name: "Monthly Eggs",
-                        component: MonthlyEggsView,
-                    },
-                    {
-                        path: "environment",
-                        name: "Environment",
-                        component: EnvironmentView,
-                    },
-                    {
-                        path: "feed-usage",
-                        name: "Feed Usage",
-                        component: FeedUsageView,
-                    },
-                    {
-                        path: "mortality",
-                        name: "Mortality",
-                        component: MortalityView,
-                    },
-                ],
+                name: "Analytics",
+                component: AnalyticsView,
             },
         ],
     },
