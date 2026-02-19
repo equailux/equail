@@ -1,140 +1,157 @@
 <template>
-	<v-container class="pa-0" fluid>
+	<v-container class="bg-secondary" fluid>
 		<v-row dense>
 			<v-col cols="12" sm="8">
-				<v-card color="primary" elevation="0">
-					<v-card-title class="pb-0 text-subtitle-1">Today's Summary</v-card-title>
-					<v-card-subtitle class="text-subtitle-2">Real-time overview of quail farm</v-card-subtitle>
-					<v-card-text>
-						<div class="d-flex align-center justify-space-between">
-							<div class="w-50 d-flex align-center ga-2">
-								<div class="h-100">
-									<v-img eager width="40px" src="/icon/boiled-egg.png"></v-img>
-								</div>
-								<div class="h-100 w-66">
-									<span>Eggs Today</span>
-									<br />
-									<span class="text-h5">{{ eggsToday }}</span>
-								</div>
-							</div>
-							<div class="w-50 d-flex align-center ga-2">
-								<div class="h-100">
-									<v-img eager width="40px" src="/icon/light-bulb.png"></v-img>
-								</div>
-								<div class="h-100 w-66">
-									<span>Lighting</span>
-									<br />
-									<v-switch
-										inset
-										hide-details
-										color="primary"
-										density="compact"
-										v-model="isLightOn"
-									></v-switch>
-								</div>
-							</div>
-						</div>
-					</v-card-text>
-				</v-card>
+				<div class="pb-4">
+					<small class="text-accent">Welcome back</small>
+					<h3>Today's Overview</h3>
+				</div>
 			</v-col>
-			<v-col cols="6" sm="4">
-				<v-card color="primary" elevation="0">
-					<template #prepend>
-						<v-avatar size="small" color="primary">
-							<v-img eager src="/icon/thermometer.png"></v-img>
-						</v-avatar>
-					</template>
-					<template #title>
-						<span class="pb-0 text-subtitle-2">Temperature</span>
-						<br />
-						<span class="text-h5">{{ temperature }}°C</span>
-					</template>
-					<template #text>
-						<div class="text-end">
-							<span class="pa-1 bg-accent text-white rounded">Optimal</span>
+		</v-row>
+		<v-row dense>
+			<v-col cols="12" sm="6">
+				<div class="pa-4 rounded-lg bg-accent border elevation-1">
+					<div class="d-flex align-center justify-space-between">
+						<h5 class="text-grey-lighten-1">EGGS DETECTED</h5>
+						<div 
+							class="pa-2 rounded-lg d-flex align-center justify-center"
+							style="width: 32px; height: 32px; background-color: rgba(var(--v-theme-primary), 0.1)"
+						>
+							<v-icon size="x-small" color="primary">mdi-egg-outline</v-icon>
 						</div>
-					</template>
-				</v-card>
+					</div>
+					<div class="mt-2 d-flex align-center ga-2">
+						<h1>47</h1>
+						<span class="text-grey-lighten-2 text-subtitle-2">today</span>
+					</div>
+					<span class="text-grey-lighten-1 text-caption">+12% from yesterday</span>
+				</div>
 			</v-col>
-			<v-col cols="6" sm="4">
-				<v-card color="primary" elevation="0">
-					<template #prepend>
-						<v-avatar size="small" color="primary">
-							<v-img eager src="/icon/humidity.png"></v-img>
-						</v-avatar>
-					</template>
-					<template #title>
-						<span class="pb-0 text-subtitle-2">Humidity</span>
-						<br />
-						<span class="text-h5">{{ humidity }}%</span>
-					</template>
-					<template #text>
-						<div class="text-end">
-							<span class="pa-1 bg-accent text-white rounded">Optimal</span>
+			<v-col cols="12" sm="6">
+				<div class="pa-4 rounded-lg border elevation-1" style="background-color: #f9ebeb;">
+					<div class="d-flex align-center justify-space-between">
+						<h5 class="text-grey-darken-1">MORTALITY RATE</h5>
+						<div 
+							class="pa-2 rounded-lg d-flex align-center justify-center"
+							style="width: 32px; height: 32px; background-color: #f5d4d7"
+						>
+							<v-icon size="x-small" color="#d40924">mdi-skull-outline</v-icon>
 						</div>
-					</template>
-				</v-card>
+					</div>
+					<div class="mt-2 d-flex align-center ga-2">
+						<h1 class="text-accent">1.2</h1>
+						<span class="text-grey-darken-2 text-subtitle-2">%</span>
+					</div>
+					<span class="text-grey-darken-1 text-caption">2 quails this week</span>
+				</div>
 			</v-col>
-			<v-col cols="6" sm="4">
-				<v-card color="primary" elevation="0">
-					<template #prepend>
-						<v-avatar size="small" color="primary" class="overflow-visible">
-							<v-img eager src="/icon/death.png"></v-img>
-						</v-avatar>
-					</template>
-					<template #title>
-						<span class="pb-0 text-subtitle-2">Mortality Rate</span>
-						<br />
-						<span class="text-h5">{{ mortalityRate }}</span>
-					</template>
-					<template #text>
-						<div class="text-end">
-							<span class="pa-1 text-white rounded"></span>
-						</div>
-					</template>
-				</v-card>
+		</v-row>
+		<v-row dense>
+			<v-col cols="12" sm="8">
+				<div class="pt-4">
+					<h5 class="text-accent">SENSOR READINGS</h5>
+				</div>
 			</v-col>
-			<v-col cols="12" md="6">
-				<v-card color="primary" elevation="0">
-					<template #prepend>
-						<v-avatar size="small" color="primary" class="overflow-visible">
-							<v-img eager src="/icon/feed.png"></v-img>
-						</v-avatar>
-					</template>
-					<template #title>
-						<span class="pb-0 text-subtitle-2">Feed Level</span>
-					</template>
-					<template #text>
-						<v-slider readonly hide-details color="primary" v-model="feedLevel"></v-slider>
-						<div class="px-2 d-flex align-center justify-space-between">
-							<span>{{ feedLevel }}%</span>
-							<div class="text-end">
-								<span class="pa-1 bg-accent text-white rounded">Good</span>
-							</div>
+		</v-row>
+		<v-row dense>
+			<v-col cols="6" md="4">
+				<div class="px-3 pt-3 rounded-lg bg-primary border elevation-1">
+					<div class="d-flex align-center justify-space-between">
+						<h6 class="text-accent">TEMPERATURE</h6>
+						<div 
+							class="pa-1 rounded-lg d-flex align-center justify-center"
+							style="width: 24px; height: 24px; background-color: rgba(var(--v-theme-accent), 0.1)"
+						>
+							<v-icon size="x-small" color="accent">mdi-thermometer</v-icon>
 						</div>
-					</template>
-				</v-card>
+					</div>
+					<div class="mt-1 d-flex align-center ga-2">
+						<h1 class="text-accent">28.5</h1>
+						<span class="text-grey-darken-2 text-subtitle-2">C</span>
+					</div>
+				</div>
 			</v-col>
-			<v-col cols="12" md="6">
-				<v-card color="primary" elevation="0">
-					<template #prepend>
-						<v-avatar size="small" color="primary" class="overflow-visible">
-							<v-img eager src="/icon/sea-level.png"></v-img>
-						</v-avatar>
-					</template>
-					<template #title>
-						<span class="pb-0 text-subtitle-2">Water Level</span>
-					</template>
-					<template #text>
-						<v-slider readonly hide-details color="primary" v-model="waterLevel"></v-slider>
-						<div class="px-2 d-flex align-center justify-space-between">
-							<span>{{ waterLevel }}%</span>
-							<div class="text-end">
-								<span class="pa-1 bg-accent text-white rounded">Good</span>
-							</div>
+			<v-col cols="6" md="4">
+				<div class="px-3 pt-3 rounded-lg bg-primary border elevation-1">
+					<div class="d-flex align-center justify-space-between">
+						<h6 class="text-accent">HUMIDITY</h6>
+						<div 
+							class="pa-1 rounded-lg d-flex align-center justify-center"
+							style="width: 24px; height: 24px; background-color: rgba(var(--v-theme-accent), 0.1)"
+						>
+							<v-icon size="x-small" color="accent">mdi-water-percent</v-icon>
 						</div>
-					</template>
-				</v-card>
+					</div>
+					<div class="mt-1 d-flex align-center ga-2">
+						<h1 class="text-accent">65</h1>
+						<span class="text-grey-darken-2 text-subtitle-2">%</span>
+					</div>
+				</div>
+			</v-col>
+			<v-col cols="6" md="4">
+				<div class="px-3 pt-3 rounded-lg bg-primary border elevation-1">
+					<div class="d-flex align-center justify-space-between">
+						<h6 class="text-accent">WATER LEVEL</h6>
+						<div 
+							class="pa-1 rounded-lg d-flex align-center justify-center"
+							style="width: 24px; height: 24px; background-color: rgba(var(--v-theme-accent), 0.1)"
+						>
+							<v-icon size="x-small" color="accent">mdi-water-outline</v-icon>
+						</div>
+					</div>
+					<div class="mt-1 d-flex align-center ga-2">
+						<h1 class="text-accent">78</h1>
+						<span class="text-grey-darken-2 text-subtitle-2">%</span>
+					</div>
+				</div>
+			</v-col>
+			<v-col cols="6" md="4">
+				<div class="px-3 pt-3 rounded-lg bg-primary border elevation-1">
+					<div class="d-flex align-center justify-space-between">
+						<h6 class="text-accent">FEED LEVEL</h6>
+						<div 
+							class="pa-1 rounded-lg d-flex align-center justify-center"
+							style="width: 24px; height: 24px; background-color: rgba(var(--v-theme-accent), 0.1)"
+						>
+							<v-icon size="x-small" color="accent">mdi-barley</v-icon>
+						</div>
+					</div>
+					<div class="mt-1 d-flex align-center ga-2">
+						<h1 class="text-accent">54</h1>
+						<span class="text-grey-darken-2 text-subtitle-2">%</span>
+					</div>
+				</div>
+			</v-col>
+		</v-row>
+		<v-row dense>
+			<v-col cols="12" sm="8">
+				<div class="pt-4">
+					<h5 class="text-accent">QUICK CONTROL</h5>
+				</div>
+			</v-col>
+		</v-row>
+		<v-row dense>
+			<v-col cols="12">
+				<div class="pa-4 border rounded-lg d-flex align-center justify-space-between elevation-1">
+					<div class="d-flex ga-2">
+						<div 
+							class="d-flex align-center justify-center bg-accent rounded-lg"
+							style="width: 36px; height: 36px;"
+						>
+							<v-icon size="small">mdi-lightbulb-outline</v-icon>
+						</div>
+						<div class="d-flex flex-column">
+							<span class="text-subtitle-2">Coop Light</span>
+							<small class="text-caption text-grey mt-n1">Currently on</small>
+						</div>
+					</div>
+					<v-switch
+						inset
+						hide-details
+						color="accent"
+						base-color="accent"
+					></v-switch>
+				</div>
 			</v-col>
 		</v-row>
 	</v-container>

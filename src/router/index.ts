@@ -62,7 +62,6 @@ const routes: RouteRecordRaw[] = [
                     {
                         path: "",
                         name: "Settings",
-                        meta: { layout: "app" },
                         component: SettingsView,
                     },
                     {
@@ -75,7 +74,6 @@ const routes: RouteRecordRaw[] = [
             },
             {
                 path: "analytics",
-                meta: { layout: "analytics" },
                 children: [
                     {
                         path: "monthly-eggs",

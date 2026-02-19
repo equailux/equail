@@ -1,58 +1,52 @@
 <template>
 	<v-layout>
+		<v-navigation-drawer
+		></v-navigation-drawer>
+		<v-app-bar class="border-b bg-primary" elevation="0">
+			<template #prepend>
+				<div 
+					class="ml-5 text-accent d-flex align-center justify-center" 
+					style="width: 30px; height: 30px"
+				>
+					<QuailSvg></QuailSvg>
+				</div>
+			</template>
+			<template #title>
+				<span class="font-weight-bold">Dashboard</span>
+			</template>
+		</v-app-bar>
 		<v-main>
-			<v-container class="h-100 bg-accent" fluid>
-				<v-row no-gutters>
-					<v-col>
-						<div class="w-100 d-flex align-center pa-1 bg-primary rounded">
-							<div class="h-100">
-								<v-img eager width="60px" :src="`/logo.png`"></v-img>
-							</div>
-							<h2>Hello, {{ user.user?.name }}</h2>
-						</div>
-					</v-col>
-				</v-row>
-				<v-row no-gutters class="pt-2">
-					<v-col>
-						<div class="w-100 d-flex align-center justify-space-around pa-2 bg-primary rounded">
-							<router-link
-								to="/app/dashboard"
-								class="px-2 py-1 rounded text-decoration-none text-black text-subtitle-2"
-								active-class="text-white bg-accent"
-								>Dashboard</router-link
-							>
-							<router-link
-								to="/app/controls"
-								class="px-2 py-1 rounded text-decoration-none text-black text-subtitle-2"
-								active-class="text-white bg-accent"
-								>Controls</router-link
-							>
-							<router-link
-								to="/app/analytics/monthly-eggs"
-								class="px-2 py-1 rounded text-decoration-none text-black text-subtitle-2"
-								active-class="text-white bg-accent"
-								>Analytics</router-link
-							>
-							<router-link
-								to="/app/settings"
-								class="px-2 py-1 rounded text-decoration-none text-black text-subtitle-2"
-								active-class="text-white bg-accent"
-								>Settings</router-link
-							>
-						</div>
-					</v-col>
-				</v-row>
-				<v-row no-gutters class="pt-2">
-					<v-col>
-						<slot></slot>
-					</v-col>
-				</v-row>
-			</v-container>
+			<slot></slot>
 		</v-main>
+		<v-bottom-navigation
+			grow 
+            fixed 
+            mode="shift"
+			color="accent"
+            class="position-fixed bottom-0 left-0" 
+		>
+			<v-btn to="/app/dashboard" value="dashboard">
+                <v-icon>mdi-view-dashboard-outline</v-icon>
+                <span>Dashboard</span>
+            </v-btn>
+            <v-btn to="/app/controls" value="controls">
+                <v-icon>mdi-toggle-switch-outline</v-icon>
+                <span>Controls</span>
+            </v-btn>
+            <v-btn to="/app/analytics" value="analytics">
+                <v-icon>mdi-chart-line</v-icon>
+                <span>Analytics</span>
+            </v-btn>
+            <v-btn to="/app/settings" value="settings">
+                <v-icon>mdi-cog-outline</v-icon>
+                <span>Settings</span>
+            </v-btn>
+		</v-bottom-navigation>
 	</v-layout>
 </template>
 
 <script setup lang="ts">
+import QuailSvg from "@/components/QuailSvg.vue";
 import { useUserStore } from "@/stores/user"
 
 //

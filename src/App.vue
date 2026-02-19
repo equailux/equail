@@ -7,12 +7,6 @@
 			<AppLayout v-else-if="route.meta?.layout === `app`">
 				<component :is="Component"></component>
 			</AppLayout>
-			<SettingsLayout v-else-if="route.meta?.layout === `settings`">
-				<component :is="Component"></component>
-			</SettingsLayout>
-			<AnalyticsLayout v-else-if="route.meta?.layout === `analytics`">
-				<component :is="Component"></component>
-			</AnalyticsLayout>
 		</router-view>
 		<v-snackbar-queue 
 			closable 
@@ -25,8 +19,6 @@
 <script setup lang="ts">
 import AppLayout from './layouts/AppLayout.vue';
 import AuthLayout from './layouts/AuthLayout.vue';
-import SettingsLayout from './layouts/SettingsLayout.vue';
-import AnalyticsLayout from './layouts/AnalyticsLayout.vue';
 import { useTheme } from 'vuetify';
 import { onMounted } from 'vue';
 import { useApiStore } from './stores/api';
