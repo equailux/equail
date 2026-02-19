@@ -192,7 +192,10 @@ const onWsEventReading: WsEventHandler<ReadingSchema> = data => {
 //
 
 const onMountedCb = async () => {
-	wsEvent.connect(`${api.apiUrl}/ws/app`)
+	await Promise
+		.resolve()
+		.then(() => wsEvent.connect(`${api.apiUrl}/ws/app`))
+		.catch(console.error)
 	wsEvent.listen("Reading", "Create", onWsEventReading)
 }
 

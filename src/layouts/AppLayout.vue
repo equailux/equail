@@ -1,7 +1,5 @@
 <template>
 	<v-layout>
-		<v-navigation-drawer
-		></v-navigation-drawer>
 		<v-app-bar class="border-b bg-primary" elevation="0">
 			<template #prepend>
 				<div 
@@ -12,7 +10,7 @@
 				</div>
 			</template>
 			<template #title>
-				<span class="font-weight-bold">Dashboard</span>
+				<span class="font-weight-bold">{{ page ?? "Dashboard" }}</span>
 			</template>
 		</v-app-bar>
 		<v-main>
@@ -23,21 +21,23 @@
             fixed 
             mode="shift"
 			color="accent"
+			bg-color="primary"
             class="position-fixed bottom-0 left-0" 
+			v-model="page"
 		>
-			<v-btn to="/app/dashboard" value="dashboard">
+			<v-btn to="/app/dashboard" value="Dashboard">
                 <v-icon>mdi-view-dashboard-outline</v-icon>
                 <span>Dashboard</span>
             </v-btn>
-            <v-btn to="/app/controls" value="controls">
+            <v-btn to="/app/controls" value="Controls">
                 <v-icon>mdi-toggle-switch-outline</v-icon>
                 <span>Controls</span>
             </v-btn>
-            <v-btn to="/app/analytics" value="analytics">
+            <v-btn to="/app/analytics" value="Analytics">
                 <v-icon>mdi-chart-line</v-icon>
                 <span>Analytics</span>
             </v-btn>
-            <v-btn to="/app/settings" value="settings">
+            <v-btn to="/app/settings" value="Settings">
                 <v-icon>mdi-cog-outline</v-icon>
                 <span>Settings</span>
             </v-btn>
@@ -48,12 +48,15 @@
 <script setup lang="ts">
 import QuailSvg from "@/components/QuailSvg.vue";
 import { useUserStore } from "@/stores/user"
+import { ref } from "vue";
 
 //
 
 const user = useUserStore()
+const page = ref("Dashboard")
 
 //
+
 </script>
 
 <style scoped></style>

@@ -64,6 +64,7 @@
 								hide-details
 								color="accent"
 								base-color="accent"
+								:model-value="theme == `dark`"
 								@update:model-value="onToggleTheme"
 							></v-switch>
 						</div>
@@ -75,17 +76,29 @@
 </template>
 
 <script setup lang="ts">
+import { onMounted, ref } from 'vue';
 import { useTheme } from 'vuetify';
 
 //
 
 // --- Theme
-const theme = useTheme()
+const theme = ref("light")
+const themeComp = useTheme()
 
 const onToggleTheme = (v: unknown) => {
-	theme.change(!!v ? "dark" : "light")
-	localStorage.setItem("theme", !!v ? "dark" : "light")
+	const newTheme = !!v ? "dark" : "light"
+	themeComp.change(newTheme)
+	localStorage.setItem("theme", newTheme)
+	theme.value = newTheme
 }
+
+//
+
+const onMountedCb = () => {
+	theme.value = localStorage.getItem("theme") ?? "light"
+}
+
+onMounted(onMountedCb)
 
 //
 
