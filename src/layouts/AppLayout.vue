@@ -2,12 +2,12 @@
 	<v-layout class="bg-secondary">
 		<v-app-bar class="border-b bg-primary" elevation="0">
 			<template #prepend>
-				<div 
-					class="ml-5 text-accent d-flex align-center justify-center" 
-					style="width: 30px; height: 30px"
-				>
-					<QuailSvg></QuailSvg>
-				</div>
+				<v-img
+					src="/logo.png"
+					class="ml-4"
+					width="48px"
+					height="48px"
+				></v-img>
 			</template>
 			<template #title>
 				<span class="font-weight-bold">{{ page ?? "Dashboard" }}</span>
@@ -46,7 +46,6 @@
 </template>
 
 <script setup lang="ts">
-import QuailSvg from "@/components/QuailSvg.vue";
 import { useUserStore } from "@/stores/user"
 import { ref } from "vue";
 
