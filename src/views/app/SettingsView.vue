@@ -71,6 +71,45 @@
 					</div>
 				</div>
 			</v-col>
+			<v-col cols="12" sm="6">
+				<div class="border rounded-lg elevation-1 overflow-hidden">
+					<div class="pa-2 px-4 border-b">
+						<h5 class="text-grey-darken-1">ACTIONS</h5>
+					</div>
+					<div class="pa-4 d-flex flex-column ">
+						<div class="d-flex align-center ga-3">
+							<div 
+								class="pa-4 rounded-lg d-flex align-center justify-center"
+								style="width: 38px; height: 38px; background-color: rgba(var(--v-theme-accent), 0.1)"
+							>
+								<v-icon color="accent">mdi-android</v-icon>
+							</div>
+							<div class="w-50">
+								<h5>Android App</h5>
+								<small class="text-grey-darken-1 text-caption">
+									Get mobile app.
+								</small>
+							</div>
+							<v-spacer></v-spacer>
+							<v-btn
+								size="small"
+								icon="mdi-download-outline"
+								color="accent"
+								@click="onClickDownloadAndroidApp"
+							></v-btn>
+						</div>
+						<div class="pt-5">
+							<v-btn
+								to="/auth/sign-in"
+								text="Logout"
+								color="primary"
+								class="w-100"
+								append-icon="mdi-logout"
+							></v-btn>
+						</div>
+					</div>
+				</div>
+			</v-col>
 		</v-row>
 	</v-container>
 </template>
@@ -90,6 +129,13 @@ const onToggleTheme = (v: unknown) => {
 	themeComp.change(newTheme)
 	localStorage.setItem("theme", newTheme)
 	theme.value = newTheme
+}
+
+// --- Mobile App
+const appAndroidUrl = import.meta.env.VITE_APP_ANDROID_URL
+
+const onClickDownloadAndroidApp = () => {
+	window.location.href = appAndroidUrl
 }
 
 //
