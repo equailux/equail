@@ -11,7 +11,7 @@ import { ref, watch } from "vue"
 
 //
 
-const props = defineProps<{ readings: Record<string, number> }>()
+const props = defineProps<{ color?: string, readings: Record<string, number> }>()
 
 const key = ref(0)
 const data: ChartData<"bar"> = { labels: [], datasets: [] }
@@ -24,22 +24,20 @@ const options: ChartOptions<"bar"> = {
 
 //
 
-watch(
-	() => props.readings,
-	epm => {
-		const labels = Object.keys(epm)
-		const dataset = {
-			data: Object.values(epm),
-			backgroundColor: "#679e36",
-			borderRadius: 6,
-		}
+const onChangeReadings = (readings: Record<string, number>) => {
+	const labels = Object.keys(readings)
+	const dataset = {
+		data: Object.values(readings),
+		backgroundColor: props.color,
+		borderRadius: 6,
+	}
 
-		data.labels = labels
-		data.datasets = [dataset]
-		key.value++
-	},
-	{ immediate: true, deep: true }
-)
+	data.labels = labels
+	data.datasets = [dataset]
+	key.value++
+}
+
+watch(() => props.readings, onChangeReadings, { immediate: true, deep: true })
 
 //
 </script>

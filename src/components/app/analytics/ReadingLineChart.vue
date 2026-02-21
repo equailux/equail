@@ -11,19 +11,10 @@ import { ref, watch } from "vue"
 
 //
 
-const props = defineProps<{ readings: Record<string, number> }>()
+const props = defineProps<{ color?: string, readings: Record<string, number> }>()
 
 const key = ref(0)
 const data: ChartData<"line"> = { labels: [], datasets: [] }
-
-function createGradient() {
-	const canvas = document.createElement("canvas")
-	const ctx = canvas.getContext("2d")!
-	const gradient = ctx.createLinearGradient(0, 0, 0, 300)
-	gradient.addColorStop(0, "rgba(180, 100, 50, 0.25)")
-	gradient.addColorStop(1, "rgba(255, 245, 235, 0.0)")
-	return gradient
-}
 
 const options: ChartOptions<"line"> = {
 	responsive: true,
@@ -67,24 +58,33 @@ const options: ChartOptions<"line"> = {
 
 //
 
-watch(
-	() => props.readings,
-	epm => {
-		const labels = Object.keys(epm)
-		const dataset = {
-			data: Object.values(epm),
-			borderColor: "#679e36",
-			backgroundColor: createGradient(),
-			fill: true,
-			borderWidth: 2,
-		}
+const getGradient = () => {
+	const canvas = document.createElement("canvas")
+	const ctx = canvas.getContext("2d")!
+	const gradient = ctx.createLinearGradient(0, 0, 0, 300)
+	gradient.addColorStop(0, (props.color || "") + "55")
+	gradient.addColorStop(1, (props.color || "") + "00")
+	return gradient
+}
 
-		data.labels = labels
-		data.datasets = [dataset]
-		key.value++
-	},
-	{ immediate: true, deep: true }
-)
+//
+
+const onChangeReadings = async (readings: Record<string, number>) => {
+	const labels = Object.keys(readings)
+	const dataset = {
+		data: Object.values(readings),
+		borderColor: props.color,
+		backgroundColor: getGradient(),
+		fill: true,
+		borderWidth: 2,
+	}
+
+	data.labels = labels
+	data.datasets = [dataset]
+	key.value++
+}
+
+watch(() => props.readings, onChangeReadings, { immediate: true, deep: true })
 
 //
 </script>

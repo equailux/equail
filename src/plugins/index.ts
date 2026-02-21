@@ -1,17 +1,15 @@
-/**
- * plugins/index.ts
- *
- * Automatically included in `./src/main.ts`
- */
-
-// Plugins
 import vuetify from "./vuetify"
-import "./chartjs"
-import "./pixi"
-
-// Types
+import pinia from "./pinia"
 import type { App } from "vue"
+import "chart.js/auto"
 
-export function registerPlugins(app: App) {
+//
+
+const registerPlugins = (app: App) => {
 	app.use(vuetify)
+	app.use(pinia)
 }
+
+//
+
+export default { registerPlugins }

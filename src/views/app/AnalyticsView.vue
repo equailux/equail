@@ -14,6 +14,7 @@
 					<h5>Temperature</h5>
 					<small class="text-grey text-caption">Average monthly temperature in celcius</small>
 					<ReadingLineChart
+						:color="theme.current.value.colors.accent"
 						:readings
 					></ReadingLineChart>
 				</div>
@@ -23,6 +24,7 @@
 					<h5>Humidity</h5>
 					<small class="text-grey text-caption">Average monthly humidity percentage</small>
 					<ReadingLineChart
+						:color="theme.current.value.colors.accent"
 						:readings
 					></ReadingLineChart>
 				</div>
@@ -32,6 +34,7 @@
 					<h5>Eggs Detected</h5>
 					<small class="text-grey text-caption">Total eggs collected per month</small>
 					<ReadingBarChart
+						:color="theme.current.value.colors.accent"
 						:readings
 					></ReadingBarChart>
 				</div>
@@ -41,6 +44,7 @@
 					<h5>Mortality Rate</h5>
 					<small class="text-grey text-caption">Monthly mortality percentage</small>
 					<ReadingLineChart
+						:color="theme.current.value.colors.accent"
 						:readings
 					></ReadingLineChart>
 				</div>
@@ -53,9 +57,14 @@
 import ReadingBarChart from '@/components/app/analytics/ReadingBarChart.vue';
 import ReadingLineChart from '@/components/app/analytics/ReadingLineChart.vue';
 import { reactive } from 'vue';
+import { useTheme } from 'vuetify';
 
 //
 
+// --- Comp
+const theme = useTheme()
+
+// --- Data
 const readings = reactive<Record<string, number>>({
 	January: 8,
 	February: 13,
