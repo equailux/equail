@@ -1,10 +1,21 @@
 <template>
 	<v-container id="printable" class="bg-secondary" fluid>
 		<v-row dense>
-			<v-col cols="12" sm="8">
+			<v-col cols="6">
 				<div class="pb-4">
 					<small class="text-accent">Monthly Reports</small>
 					<h3>Analytics</h3>
+				</div>
+			</v-col>
+			<v-col cols="6">
+				<div class="pb-4 d-flex justify-end">
+					<v-btn 
+						v-if="!isNative"
+						icon="mdi-file-pdf-box"
+						class="bg-transparent"
+						:loading="exportPDFLoading"
+						@click="onClickExportPDF"
+					></v-btn>
 				</div>
 			</v-col>
 		</v-row>
@@ -51,6 +62,7 @@
 			</v-col>
 		</v-row>
 		<v-fab
+			v-if="isNative"
 			v-show="!exportPDFLoading"
 			icon
 			style="z-index: 9999"
@@ -62,7 +74,7 @@
 			:disabled="exportPDFLoading"
 		>
 			<v-icon>mdi-file-export</v-icon>
-			<v-speed-dial v-show="!exportPDFLoading" activator="parent">
+			<v-speed-dial activator="parent">
 				<v-btn 
 					key="1"
 					color="accent" 
@@ -78,7 +90,7 @@
 import ReadingBarChart from '@/components/app/analytics/ReadingBarChart.vue';
 import ReadingLineChart from '@/components/app/analytics/ReadingLineChart.vue';
 import useReportExport from '@/composables/use-report-export';
-
+import { Capacitor } from '@capacitor/core';
 import { nextTick, reactive, ref } from 'vue';
 import { useTheme } from 'vuetify';
 
@@ -94,6 +106,9 @@ const readings = reactive<Record<string, number>>({
 	March: 17,
 	April: 20,
 })
+
+// --- Platform
+const isNative = Capacitor.isNativePlatform()
 
 // --- PDF Exporting
 const reportExportCmp = useReportExport()

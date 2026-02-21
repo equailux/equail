@@ -149,7 +149,7 @@
 			</v-col>
 		</v-row>
 		<v-row dense>
-			<v-col cols="12">
+			<v-col cols="12" sm="6">
 				<div class="pa-4 border rounded-lg d-flex align-center justify-space-between elevation-1">
 					<div class="d-flex ga-2">
 						<div 

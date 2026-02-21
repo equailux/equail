@@ -1,14 +1,24 @@
 <template>
 	<v-container class="bg-secondary" fluid>
-		<v-row dense>
-			<v-col cols="12" sm="8">
+		<v-row dense justify="center">
+			<v-col cols="6">
 				<div class="pb-4">
 					<small class="text-accent">Encode quail death</small>
 					<h3>Quail Mortality</h3>
 				</div>
 			</v-col>
+			<v-col cols="6">
+				<div class="pb-4 d-flex justify-end">
+					<v-btn
+						v-if="!isNative"
+						icon="mdi-plus"
+						class="bg-transparent"
+						@click="showMortalityCreateModal = !showMortalityCreateModal"
+					></v-btn>
+				</div>
+			</v-col>
 		</v-row>
-		<v-row dense>
+		<v-row dense justify="center">
 			<v-col cols="12" sm="6">
 				<div class="w-100 pb-2 ga-2 border-b d-flex align-end">
 					<h1>{{ total }}</h1>
@@ -59,6 +69,7 @@
 			</div>
 		</v-dialog>
 		<v-fab
+			v-if="isNative"
 			icon="mdi-plus"
 			color="accent"
 			class="position-fixed bottom-0 right-0 mb-5 mr-5"
@@ -78,8 +89,12 @@ import { useDate } from 'vuetify';
 import { ref } from 'vue';
 import type { InfiniteScrollStatus } from 'vuetify/lib/components/VInfiniteScroll/VInfiniteScroll.mjs';
 import { storeToRefs } from 'pinia';
+import { Capacitor } from '@capacitor/core';
 
 //
+
+// --- Platform
+const isNative = Capacitor.isNativePlatform()
 
 // --- Mortality
 const dateCmp = useDate()

@@ -1,7 +1,61 @@
 <template>
 	<v-layout class="bg-secondary">
+		<v-navigation-drawer
+			v-if="!isNative"
+			class="bg-primary position-fixed"
+			:rail="isTablet"
+			:permanent="!isMobile"
+			:expand-on-hover="isTablet"
+			v-model="isDrawer"
+		>
+			<template #prepend>
+				<v-list>
+					<v-list-item
+						prepend-icon="mdi-account"
+						:title="user.user?.name"
+						:subtitle="user.user?.email"
+					></v-list-item>
+				</v-list>
+			</template>
+			<v-list density="compact" nav>
+				<v-list-item
+					link
+					to="/app/dashboard"
+					title="Dashboard"
+					prepend-icon="mdi-view-dashboard"
+					@click="page = `Dashboard`"
+				></v-list-item>
+				<v-list-item
+					link
+					to="/app/controls"
+					title="Controls"
+					prepend-icon="mdi-toggle-switch-outline"
+					@click="page = `Controls`"
+				></v-list-item>
+				<v-list-item
+					link
+					to="/app/analytics"
+					title="Analytics"
+					prepend-icon="mdi-chart-line"
+					@click="page = `Analytics`"
+				></v-list-item>
+				<v-list-item
+					link
+					to="/app/settings"
+					title="Settings"
+					prepend-icon="mdi-cog-outline"
+					@click="page = `Settings`"
+				></v-list-item>
+			</v-list>
+		</v-navigation-drawer>
 		<v-app-bar class="border-b bg-primary" elevation="0">
 			<template #prepend>
+				<v-btn
+					v-if="!isNative"
+					icon="mdi-menu"
+					class="text-accent bg-transparent"
+					@click="isDrawer = !isDrawer"
+				></v-btn>
 				<v-img
 					src="/logo.png"
 					class="ml-4"
@@ -17,6 +71,7 @@
 			<slot></slot>
 		</v-main>
 		<v-bottom-navigation
+			v-if="isNative"
 			grow 
             fixed 
             mode="shift"
@@ -46,13 +101,23 @@
 </template>
 
 <script setup lang="ts">
+import { Capacitor } from "@capacitor/core";
 import { useUserStore } from "@/stores/user"
-import { ref } from "vue";
+import { computed, ref } from "vue";
+import { useDisplay } from "vuetify";
 
 //
 
+// --- User
 const user = useUserStore()
 const page = ref("Dashboard")
+
+// --- Responsive
+const { mdAndDown, smAndDown } = useDisplay()
+const isDrawer = ref(!smAndDown.value)
+const isMobile = computed(() => smAndDown.value)
+const isTablet = computed(() => !isMobile.value && mdAndDown.value)
+const isNative = Capacitor.isNativePlatform()
 
 //
 
