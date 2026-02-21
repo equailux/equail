@@ -1,5 +1,5 @@
 <template>
-	<v-container class="bg-secondary" fluid>
+	<v-container id="printable" class="bg-secondary" fluid>
 		<v-row dense>
 			<v-col cols="12" sm="8">
 				<div class="pb-4">
@@ -50,13 +50,36 @@
 				</div>
 			</v-col>
 		</v-row>
+		<v-fab
+			v-show="!exportPDFLoading"
+			icon
+			style="z-index: 9999"
+			color="accent"
+			class="position-fixed bottom-0 right-0 mb-16 mr-5"
+			location="right bottom"
+			transition="fade"
+			:loading="exportPDFLoading"
+			:disabled="exportPDFLoading"
+		>
+			<v-icon>mdi-file-export</v-icon>
+			<v-speed-dial v-show="!exportPDFLoading" activator="parent">
+				<v-btn 
+					key="1"
+					color="accent" 
+					icon="mdi-file-pdf-box"
+					@click="onClickExportPDF"
+				></v-btn>
+			</v-speed-dial>
+		</v-fab>
 	</v-container>
 </template>
 
 <script setup lang="ts">
 import ReadingBarChart from '@/components/app/analytics/ReadingBarChart.vue';
 import ReadingLineChart from '@/components/app/analytics/ReadingLineChart.vue';
-import { reactive } from 'vue';
+import useReportExport from '@/composables/use-report-export';
+
+import { nextTick, reactive, ref } from 'vue';
 import { useTheme } from 'vuetify';
 
 //
@@ -71,6 +94,21 @@ const readings = reactive<Record<string, number>>({
 	March: 17,
 	April: 20,
 })
+
+// --- PDF Exporting
+const reportExportCmp = useReportExport()
+const exportPDFLoading = ref(false)
+
+const onClickExportPDF = async () => {
+	const el = document.getElementById("printable")
+	if (!el) return
+
+	exportPDFLoading.value = true
+	await nextTick()
+
+	await reportExportCmp.exportPDF(el, `report-${Date.now()}.pdf`)
+	exportPDFLoading.value = false
+}
 
 //
 
