@@ -52,7 +52,7 @@
 					</div>
 					<div class="d-flex align-center justify-space-between">
 						<span class="text-grey-darken-1 text-caption">
-							{{ mortalitiesThisMonthTotal }} quails this month
+							{{ mortalitiesThisMonthTotal }} mortalities this month
 						</span>
 						<v-btn
 							to="/app/dashboard/mortality"
