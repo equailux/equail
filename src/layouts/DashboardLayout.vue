@@ -10,7 +10,7 @@
 				></v-btn>
 			</template>
 			<template #title>
-				<span class="font-weight-bold">{{ "taen" }}</span>
+				<span class="font-weight-bold">Back to Dashboard</span>
 			</template>
 		</v-app-bar>
 		<v-main>
