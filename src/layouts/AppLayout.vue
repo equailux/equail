@@ -1,5 +1,5 @@
 <template>
-	<v-layout>
+	<v-layout class="bg-secondary">
 		<v-app-bar class="border-b bg-primary" elevation="0">
 			<template #prepend>
 				<div 

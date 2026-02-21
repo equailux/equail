@@ -1,5 +1,5 @@
 <template>
-	<v-app class="bg-secondary">
+	<v-app class="bg-primary">
 		<router-view #="{ Component, route }">
 			<AuthLayout v-if="route.meta?.layout === `auth`">
 				<component :is="Component"></component>

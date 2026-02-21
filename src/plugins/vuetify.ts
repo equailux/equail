@@ -13,17 +13,17 @@ export default createVuetify({
 			light: {
 				dark: false,
 				colors: {
-					accent: "#774826",
-					primary: "#fffdfc",
-					secondary: "#fbf8f5",
+					accent: "#679e36",
+					primary: "#fafaf9",
+					secondary: "#ece9e4",
 				},
 			},
 			dark: {
 				dark: true,
 				colors: {
-					accent: "#c77a41",
-					primary: "#201814",
-					secondary: "#17100c",
+					accent: "#7bb640",
+					primary: "#1a1918",
+					secondary: "#2a2725",
 				},
 			},
 		},

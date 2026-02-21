@@ -73,7 +73,7 @@ watch(
 		const labels = Object.keys(epm)
 		const dataset = {
 			data: Object.values(epm),
-			borderColor: "#a0623a",
+			borderColor: "#679e36",
 			backgroundColor: createGradient(),
 			fill: true,
 			borderWidth: 2,

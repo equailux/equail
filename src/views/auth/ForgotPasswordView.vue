@@ -1,6 +1,6 @@
 <template>
     <v-container class="bg-primary fill-height" fluid>
-        <v-row dense>
+        <v-row dense justify="center">
             <v-col cols="12" sm="6" md="4" lg="3" xl="2">
                 <div class="d-flex flex-column align-center">
                     <div 
@@ -17,7 +17,7 @@
                     ></UserForgotPasswordForm>
                     <router-link to="/auth/sign-in" class="mt-5 text-decoration-none text-black">
                         <span>
-                            <small>Remember your password?&nbsp;</small>
+                            <small class="text-grey">Remember your password?&nbsp;</small>
                             <small class="text-accent">Sign In</small>
                         </span>
                     </router-link>

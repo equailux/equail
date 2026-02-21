@@ -11,13 +11,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    AppDownloadNotification: typeof import('./src/components/AppDownloadNotification.vue')['default']
-    copy: typeof import('./src/components/app/analytics/ReadingLineChart copy.vue')['default']
     ImageBoundingBoxRenderer: typeof import('./src/components/app/ImageBoundingBoxRenderer.vue')['default']
-    MonthlyEggProductionChart: typeof import('./src/components/app/analytics/MonthlyEggProductionChart.vue')['default']
-    MonthlyEnvironmentConditionChart: typeof import('./src/components/app/analytics/MonthlyEnvironmentConditionChart.vue')['default']
-    MonthlyFeedUsageChart: typeof import('./src/components/app/analytics/MonthlyFeedUsageChart.vue')['default']
-    MonthlyMortalityRateChart: typeof import('./src/components/app/analytics/MonthlyMortalityRateChart.vue')['default']
     MortalityCreateForm: typeof import('./src/components/app/MortalityCreateForm.vue')['default']
     QuailSvg: typeof import('./src/components/QuailSvg.vue')['default']
     ReadingBarChart: typeof import('./src/components/app/analytics/ReadingBarChart.vue')['default']
