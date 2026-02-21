@@ -47,11 +47,13 @@
 						</div>
 					</div>
 					<div class="mt-2 d-flex align-center ga-2">
-						<h1 class="text-accent">1.2</h1>
-						<span class="text-grey-darken-2 text-subtitle-2">%</span>
+						<h1 class="text-accent">{{ mortalitiesTodayTotal }}</h1>
+						<span class="text-grey-darken-2 text-subtitle-2">deaths today</span>
 					</div>
 					<div class="d-flex align-center justify-space-between">
-						<span class="text-grey-darken-1 text-caption">2 quails this week</span>
+						<span class="text-grey-darken-1 text-caption">
+							{{ mortalitiesThisMonthTotal }} quails this month
+						</span>
 						<v-btn
 							to="/app/dashboard/mortality"
 							size="x-small"
@@ -178,7 +180,9 @@ import useWsEvent from "@/composables/use-ws-event"
 import type { ReadingSchema } from "@/schemas/ReadingSchema"
 import type { WsEventHandler } from "@/schemas/WsEventSchema"
 import { useApiStore } from "@/stores/api"
-import { onMounted, ref } from "vue"
+import { useMortalityStore } from "@/stores/mortality"
+import { storeToRefs } from "pinia"
+import { computed, onMounted, ref } from "vue"
 
 //
 
@@ -204,6 +208,12 @@ const onWsEventReading: WsEventHandler<ReadingSchema> = data => {
 		if (name.toLowerCase().startsWith("water")) waterLevel.value = value
 	}
 }
+
+// --- Mortality
+const mortalityStore = useMortalityStore()
+const { today: mortalitiesToday, monthly: mortalitiesThisMonth } = storeToRefs(mortalityStore)
+const mortalitiesTodayTotal = computed(() => mortalitiesToday.value.reduce((p, c) => p + c.count, 0))
+const mortalitiesThisMonthTotal = computed(() => mortalitiesThisMonth.value.reduce((p, c) => p + c.count, 0))
 
 //
 

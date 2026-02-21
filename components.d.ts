@@ -12,7 +12,7 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     ImageBoundingBoxRenderer: typeof import('./src/components/app/ImageBoundingBoxRenderer.vue')['default']
-    MortalityCreateForm: typeof import('./src/components/app/MortalityCreateForm.vue')['default']
+    MortalityCreateForm: typeof import('./src/components/app/dashboard/MortalityCreateForm.vue')['default']
     ReadingBarChart: typeof import('./src/components/app/analytics/ReadingBarChart.vue')['default']
     ReadingLineChart: typeof import('./src/components/app/analytics/ReadingLineChart.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

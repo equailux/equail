@@ -16,7 +16,13 @@
 			:disabled="isSubmitting"
 			:error-messages="dateError"
 		></v-date-input>
-		<v-btn text="Add" type="Submit" color="primary" class="w-100" :loading="isSubmitting"></v-btn>
+		<v-btn 
+			text="Add" 
+			type="Submit" 
+			color="accent" 
+			class="w-100" 
+			:loading="isSubmitting"
+		></v-btn>
 	</v-form>
 </template>
 
@@ -35,7 +41,10 @@ const props = defineProps<{
 	) => any
 }>()
 
-const { handleSubmit, isSubmitting } = useForm({ validationSchema: toTypedSchema(MortalityCreateSchema) })
+const { handleSubmit, isSubmitting } = useForm({
+	validationSchema: toTypedSchema(MortalityCreateSchema),
+	initialValues: { count: 1, date: new Date() },
+})
 
 const { value: count, errorMessage: countError } = useField<number>("count")
 const { value: date, errorMessage: dateError } = useField<number>("date")

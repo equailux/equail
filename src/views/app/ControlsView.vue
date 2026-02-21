@@ -46,7 +46,7 @@
 </template>
 
 <script setup lang="ts">
-import MortalityCreateForm from "@/components/app/MortalityCreateForm.vue"
+import MortalityCreateForm from "@/components/app/dashboard/MortalityCreateForm.vue"
 import type { MortalityCreateSchema } from "@/schemas/MortalitySchema"
 import type { SubmissionContext } from "vee-validate"
 import { ref } from "vue"
