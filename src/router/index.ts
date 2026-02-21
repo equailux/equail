@@ -19,63 +19,56 @@ const routes: RouteRecordRaw[] = [
         component: WelcomeView,
     },
     {
-        path: "/auth",
+        path: "/auth/sign-up",
+        name: "Sign Up",
         meta: { layout: "auth" },
-        children: [
-            {
-                path: "sign-up",
-                name: "Sign Up",
-                component: SignUpView,
-            },
-            {
-                path: "sign-in",
-                name: "Sign In",
-                component: SignInView,
-            },
-            {
-                path: "forgot-password",
-                name: "Forgot Password",
-                component: ForgotPasswordView,
-            },
-        ],
+        component: SignUpView,
     },
     {
-        path: "/app",
+        path: "/auth/sign-in",
+        name: "Sign In",
+        meta: { layout: "auth" },
+        component: SignInView,
+    },
+    {
+        path: "/auth/forgot-password",
+        name: "Forgot Password",
+        meta: { layout: "auth" },
+        component: ForgotPasswordView,
+    },
+    {
+        path: "/app/dashboard",
+        name: "Dashboard",
         meta: { layout: "app" },
-        children: [
-            {
-                path: "dashboard",
-                meta: { layout: "dashboard" },
-                children: [
-                    {
-                        path: "",
-                        name: "Dashboard",
-                        meta: { layout: "app" },
-                        component: DashboardView,
-                    },
-                    {
-                        path: "detection",
-                        name: "Detection",
-                        component: DetectionView,
-                    },
-                ],
-            },
-            {
-                path: "controls",
-                name: "Controls",
-                component: ControlsView,
-            },
-            {
-                path: "settings",
-                name: "Settings",
-                component: SettingsView,
-            },
-            {
-                path: "analytics",
-                name: "Analytics",
-                component: AnalyticsView,
-            },
-        ],
+        component: DashboardView,
+    },
+    {
+        path: "/app/dashboard/detection",
+        name: "Detection",
+        meta: { layout: "detection" },
+        component: DetectionView,
+    },
+    {
+        path: "/app/controls",
+        name: "Controls",
+        meta: { layout: "app" },
+        component: ControlsView,
+    },
+    {
+        path: "/app/settings",
+        name: "Settings",
+        meta: { layout: "app" },
+        component: SettingsView,
+    },
+    {
+        path: "/app/analytics",
+        name: "Analytics",
+        meta: { layout: "app" },
+        component: AnalyticsView,
+    },
+    {
+        path: '/:pathMatch(.*)*',
+        redirect: "/",
     },
 ]
 

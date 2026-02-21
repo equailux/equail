@@ -10,7 +10,7 @@
 				></v-btn>
 			</template>
 			<template #title>
-				<span class="font-weight-bold">Detection</span>
+				<span class="font-weight-bold">{{ "taen" }}</span>
 			</template>
 		</v-app-bar>
 		<v-main>
@@ -19,17 +19,6 @@
 	</v-layout>
 </template>
 
-<script setup lang="ts">
-import { useUserStore } from "@/stores/user"
-import { ref } from "vue";
-
-//
-
-const user = useUserStore()
-const page = ref("Dashboard")
-
-//
-
-</script>
+<script setup lang="ts"></script>
 
 <style scoped></style>
