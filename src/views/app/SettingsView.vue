@@ -77,7 +77,7 @@
 						<h5 class="text-grey-darken-1">ACTIONS</h5>
 					</div>
 					<div class="pa-4 d-flex flex-column ">
-						<div class="d-flex align-center ga-3">
+						<div v-if="!isNative" class="d-flex align-center ga-3">
 							<div 
 								class="pa-4 rounded-lg d-flex align-center justify-center"
 								style="width: 38px; height: 38px; background-color: rgba(var(--v-theme-accent), 0.1)"
@@ -115,10 +115,14 @@
 </template>
 
 <script setup lang="ts">
+import { Capacitor } from '@capacitor/core';
 import { onMounted, ref } from 'vue';
 import { useTheme } from 'vuetify';
 
 //
+
+// --- Platform
+const isNative = Capacitor.isNativePlatform()
 
 // --- Theme
 const theme = ref("light")
