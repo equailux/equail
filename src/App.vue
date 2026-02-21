@@ -7,6 +7,9 @@
 			<AppLayout v-else-if="route.meta?.layout === `app`">
 				<component :is="Component"></component>
 			</AppLayout>
+			<DetectionLayout v-else-if="route.meta?.layout === `detection`">
+				<component :is="Component"></component>
+			</DetectionLayout>
 		</router-view>
 		<v-snackbar-queue 
 			closable 
@@ -19,6 +22,7 @@
 <script setup lang="ts">
 import AppLayout from './layouts/AppLayout.vue';
 import AuthLayout from './layouts/AuthLayout.vue';
+import DetectionLayout from './layouts/DetectionLayout.vue';
 import { useTheme } from 'vuetify';
 import { onMounted } from 'vue';
 import { useApiStore } from './stores/api';

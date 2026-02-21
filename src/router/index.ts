@@ -7,6 +7,7 @@ import DashboardView from "@/views/app/DashboardView.vue"
 import ControlsView from "@/views/app/ControlsView.vue"
 import SettingsView from "@/views/app/SettingsView.vue"
 import AnalyticsView from "@/views/app/AnalyticsView.vue"
+import DetectionView from "@/views/app/dashboard/DetectionView.vue"
 
 //
 
@@ -44,8 +45,20 @@ const routes: RouteRecordRaw[] = [
         children: [
             {
                 path: "dashboard",
-                name: "Dashboard",
-                component: DashboardView,
+                meta: { layout: "detection" },
+                children: [
+                    {
+                        path: "",
+                        name: "Dashboard",
+                        meta: { layout: "app" },
+                        component: DashboardView,
+                    },
+                    {
+                        path: "detection",
+                        name: "Detection",
+                        component: DetectionView,
+                    },
+                ],
             },
             {
                 path: "controls",

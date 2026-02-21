@@ -24,7 +24,15 @@
 						<h1>47</h1>
 						<span class="text-grey-lighten-2 text-subtitle-2">today</span>
 					</div>
-					<span class="text-grey-lighten-1 text-caption">+12% from yesterday</span>
+					<div class="d-flex align-center justify-space-between">
+						<span class="text-grey-lighten-1 text-caption">+12% from yesterday</span>	
+						<v-btn
+							to="/app/dashboard/detection"
+							size="x-small"
+							icon="mdi-arrow-right"
+							color="transparent"
+						></v-btn>
+					</div>
 				</div>
 			</v-col>
 			<v-col cols="12" sm="6">
