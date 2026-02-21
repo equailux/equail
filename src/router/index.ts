@@ -45,7 +45,7 @@ const routes: RouteRecordRaw[] = [
         children: [
             {
                 path: "dashboard",
-                meta: { layout: "detection" },
+                meta: { layout: "dashboard" },
                 children: [
                     {
                         path: "",
