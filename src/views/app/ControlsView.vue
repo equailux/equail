@@ -16,38 +16,6 @@
 							class="pa-4 rounded-lg d-flex align-center justify-center"
 							style="width: 38px; height: 38px; background-color: rgba(var(--v-theme-accent), 0.1)"
 						>
-							<v-icon color="accent">mdi-waves</v-icon>
-						</div>
-						<div class="w-100">
-							<div class="d-flex align-center justify-space-between">
-								<h5>Water Pump</h5>
-								<div 
-									class="text-caption text-accent px-3 rounded-pill"
-									style="background-color: rgba(var(--v-theme-accent), 0.1)"
-								>Off</div>
-							</div>
-							<small 
-								class="text-grey-darken-1 text-caption"
-								style="line-height: 0;"
-							>Automated water distribution</small>
-						</div>
-					</div>
-					<v-btn
-						text="Turn On"
-						color="accent"
-						class="mt-4"
-						prepend-icon="mdi-power"
-					></v-btn>
-					<span class="mt-3 text-grey-darken-1 text-caption">Idle - Standby mode</span>
-				</div>
-			</v-col>
-			<v-col cols="12" sm="6">
-				<div class="pa-4 rounded-lg bg-primary border elevation-1 d-flex flex-column">
-					<div class="d-flex align-center ga-3">
-						<div 
-							class="pa-4 rounded-lg d-flex align-center justify-center"
-							style="width: 38px; height: 38px; background-color: rgba(var(--v-theme-accent), 0.1)"
-						>
 							<v-icon color="accent">mdi-lightbulb-outline</v-icon>
 						</div>
 						<div class="w-100">
