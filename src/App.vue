@@ -7,7 +7,7 @@
 			<AppLayout v-else-if="route.meta?.layout === `app`">
 				<component :is="Component"></component>
 			</AppLayout>
-			<DashboardLayout v-else-if="route.meta?.layout === `detection`">
+			<DashboardLayout v-else-if="route.meta?.layout === `dashboard`">
 				<component :is="Component"></component>
 			</DashboardLayout>
 		</router-view>
