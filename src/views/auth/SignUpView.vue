@@ -30,14 +30,14 @@
 import UserSignUpForm from '@/components/auth/UserSignUpForm.vue';
 import type { UserSignUpSchema } from '@/schemas/UserSchema';
 import { useApiStore } from '@/stores/api';
-import { useUserStore } from '@/stores/user';
+import { useToastStore } from '@/stores/toast';
 import type { SubmissionContext } from 'vee-validate';
 import { useRouter } from 'vue-router';
 
 //
 
 const api = useApiStore()
-const user = useUserStore()
+const toast = useToastStore()
 const router = useRouter()
 
 //
@@ -46,12 +46,10 @@ const onSubmitSignUpForm = async(
     values: UserSignUpSchema,
     ctx: SubmissionContext<{ [K in keyof UserSignUpSchema]?: unknown }>
 ) => {
-    await new Promise(res => setTimeout(res, 1000))
-    await router.push("/auth/sign-in")
-    user.user = { ...values, id: 0, createdAt: new Date(), updatedAt: new Date() }
-    // await api.signUp(values)
-    //     .then(async () => await router.push("/auth/sign-in"))
-    //     .catch((e) => console.error(e?.message))
+    await api.signUp(values)
+        .then(() => toast.success("User signed-up successfully."))
+        .then(async () => await router.push("/auth/sign-in"))
+        .catch((e) => console.error(e?.message))
 }
 
 //

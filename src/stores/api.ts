@@ -1,7 +1,19 @@
+import useSerializer from "@/composables/use-serializer";
 import { UserSafeSchema, type UserSignInSchema, type UserSignUpSchema } from "@/schemas/UserSchema";
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { useUserStore } from "./user";
+import { z } from "zod";
+
+//
+
+const Schema = z.object({
+    user: UserSafeSchema.optional(),
+    apiUrl: z.string(),
+    apiKey: z.string(),
+    proxyUrl: z.string(),
+})
+
+const { serialize, deserialize } = useSerializer(Schema)
 
 //
 
@@ -9,29 +21,29 @@ export const useApiStore = defineStore("api", () => {
     
     //
     
+    const user = ref<UserSafeSchema>()
     const apiUrl = ref("")
     const apiKey = ref("")
     const proxyUrl = ref(import.meta.env.VITE_PROXY_URL)
 
     //
     
-    const signIn = async (user: UserSignInSchema) => {
-        const body = JSON.stringify(user)
+    const signIn = async (data: UserSignInSchema) => {
+        const body = JSON.stringify(data)
         const headers = { "Content-Type": "application/json" }
         const res = await fetch(`${proxyUrl.value}/auth/sign-in`, { method: "POST", body, headers })
             .catch(() => { throw new Error("Something went wrong.") })
         
         if (!res.ok) throw new Error(await res.text())
-        const data = await res.json() as { user: UserSafeSchema, url: string, token: string }
-        [apiUrl.value, apiKey.value] = [data.url, data.token]
+        const json = await res.json() as { user: UserSafeSchema, url: string, token: string }
+        [apiUrl.value, apiKey.value] = [json.url, json.token]
         
-        const userStore = useUserStore()
-        userStore.user = UserSafeSchema.parse(data.user)
-        return userStore.user
+        user.value = UserSafeSchema.parse(json.user)
+        return user.value
     }
     
-    const signUp = async (user: UserSignUpSchema) => {
-        const body = JSON.stringify(user)
+    const signUp = async (data: UserSignUpSchema) => {
+        const body = JSON.stringify(data)
         const headers = { "Content-Type": "application/json" }
         const res = await fetch(`${proxyUrl.value}/auth/sign-up`, { method: "POST", body, headers })
             .catch(() => { throw new Error("Something went wrong.") })
@@ -43,13 +55,13 @@ export const useApiStore = defineStore("api", () => {
     const signOut = async () => {
         apiUrl.value = ""
         apiKey.value = ""
-        const userStore = useUserStore()
-        userStore.user = undefined
+        user.value = undefined
     }
 
     //
 
     return {
+        user,
         apiUrl,
         apiKey,
         proxyUrl,
@@ -57,4 +69,5 @@ export const useApiStore = defineStore("api", () => {
         signUp,
         signOut,
     }
-}, { persist: true })
+    
+}, { persist: { serialize, deserialize } })

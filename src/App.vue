@@ -11,11 +11,11 @@
 				<component :is="Component"></component>
 			</DashboardLayout>
 		</router-view>
-		<v-snackbar-queue 
-			closable 
-			color="secondary"
-			v-model="toast.messages"
-		></v-snackbar-queue>
+		<ToastQueue
+			closable
+			class="position-fixed top-0 right-0 mt-1 mr-1"
+			v-model="messages"
+		></ToastQueue>
 	</v-app>
 </template>
 
@@ -23,10 +23,12 @@
 import AppLayout from './layouts/AppLayout.vue';
 import AuthLayout from './layouts/AuthLayout.vue';
 import DashboardLayout from './layouts/DashboardLayout.vue';
+import ToastQueue from '@/components/ToastQueue.vue'
 import { useTheme } from 'vuetify';
 import { onMounted } from 'vue';
 import { useApiStore } from './stores/api';
 import { useToastStore } from './stores/toast';
+import { storeToRefs } from 'pinia';
 
 //
 
@@ -34,6 +36,7 @@ import { useToastStore } from './stores/toast';
 const api = useApiStore()
 const theme = useTheme()
 const toast = useToastStore()
+const { messages } = storeToRefs(toast)
 
 //
 

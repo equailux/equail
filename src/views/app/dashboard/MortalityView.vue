@@ -24,8 +24,8 @@
 					<h1>{{ total }}</h1>
 					<small class="text-grey mb-2">total deaths</small>
 				</div>
-				<v-infinite-scroll @load="getMortalities">
-					<template 
+				<v-list density="compact">
+					<v-list-item
 						v-for="mortality in sorted" 
 						:key="(mortality as any)?.id"
 					>
@@ -56,8 +56,8 @@
 								@click="onIncrementMortality(mortality)"
 							></v-btn>
 						</div>
-					</template>
-				</v-infinite-scroll>
+					</v-list-item>
+				</v-list>
 			</v-col>
 		</v-row>
 		<v-dialog class="w-100 w-sm-50 w-md-33" v-model="showMortalityCreateModal">
@@ -87,7 +87,6 @@ import { useMortalityStore } from '@/stores/mortality';
 import type { SubmissionContext } from 'vee-validate';
 import { useDate } from 'vuetify';
 import { ref } from 'vue';
-import type { InfiniteScrollStatus } from 'vuetify/lib/components/VInfiniteScroll/VInfiniteScroll.mjs';
 import { storeToRefs } from 'pinia';
 import { Capacitor } from '@capacitor/core';
 
@@ -100,11 +99,6 @@ const isNative = Capacitor.isNativePlatform()
 const dateCmp = useDate()
 const mortalityStore = useMortalityStore()
 const { total, sorted } = storeToRefs(mortalityStore)
-
-const getMortalities = async ({ done }: { done: (v: InfiniteScrollStatus) => void }) => {
-	await new Promise(res => setTimeout(res, 250))
-	done("empty")
-}
 
 // --- Mortality Form
 const showMortalityCreateModal = ref(false)

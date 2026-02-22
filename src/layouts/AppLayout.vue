@@ -12,8 +12,8 @@
 				<v-list>
 					<v-list-item
 						prepend-icon="mdi-account"
-						:title="user.user?.name"
-						:subtitle="user.user?.email"
+						:title="api.user?.name"
+						:subtitle="api.user?.email"
 					></v-list-item>
 				</v-list>
 			</template>
@@ -101,15 +101,15 @@
 </template>
 
 <script setup lang="ts">
+import { useApiStore } from "@/stores/api";
 import { Capacitor } from "@capacitor/core";
-import { useUserStore } from "@/stores/user"
 import { computed, ref } from "vue";
 import { useDisplay } from "vuetify";
 
 //
 
 // --- User
-const user = useUserStore()
+const api = useApiStore()
 const page = ref("Dashboard")
 
 // --- Responsive

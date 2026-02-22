@@ -17,6 +17,7 @@ declare module 'vue' {
     ReadingLineChart: typeof import('./src/components/app/analytics/ReadingLineChart.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    ToastQueue: typeof import('./src/components/ToastQueue.vue')['default']
     UserForgotPasswordForm: typeof import('./src/components/auth/UserForgotPasswordForm.vue')['default']
     UserSignInForm: typeof import('./src/components/auth/UserSignInForm.vue')['default']
     UserSignUpForm: typeof import('./src/components/auth/UserSignUpForm.vue')['default']

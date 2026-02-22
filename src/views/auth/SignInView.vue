@@ -30,12 +30,14 @@
 import UserSignInForm from '@/components/auth/UserSignInForm.vue';
 import type { UserSignInSchema } from '@/schemas/UserSchema';
 import { useApiStore } from '@/stores/api';
+import { useToastStore } from '@/stores/toast';
 import type { SubmissionContext } from 'vee-validate';
 import { useRouter } from 'vue-router';
 
 //
 
 const api = useApiStore()
+const toast = useToastStore()
 const router = useRouter()
 
 //
@@ -44,11 +46,10 @@ const onSubmitSignIn = async (
     values: UserSignInSchema,
     ctx: SubmissionContext<{ [K in keyof UserSignInSchema]?: unknown }>
 ) => {
-    await new Promise(res => setTimeout(res, 1000))
-    await router.push("/app/dashboard")
-    // await api.signIn(values)
-    //     .then(async () => await router.push("/app/dashboard"))
-    //     .catch((e) => console.info(e?.message))
+    await api.signIn(values)
+        .then(() => toast.success("User signed-in successfully."))
+        .then(async () => await router.push("/app/dashboard"))
+        .catch((e) => toast.error(e?.message))
 }
 
 //
