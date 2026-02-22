@@ -13,6 +13,7 @@
 						v-if="!isNative"
 						icon="mdi-plus"
 						class="bg-transparent"
+						:disabled="!network.connected"
 						@click="showMortalityCreateModal = !showMortalityCreateModal"
 					></v-btn>
 				</div>
@@ -24,7 +25,7 @@
 					<h1>{{ total }}</h1>
 					<small class="text-grey mb-2">total deaths</small>
 				</div>
-				<v-list density="compact">
+				<v-list bg-color="secondary" density="compact">
 					<v-list-item
 						v-for="mortality in sorted" 
 						:key="(mortality as any)?.id"
@@ -46,13 +47,14 @@
 								size="x-small"
 								icon="mdi-minus"
 								class="bg-transparent"
-								:disabled="mortality.count <= 0"
+								:disabled="mortality.count <= 0 || !network.connected"
 								@click="onDecrementMortality(mortality)"
 							></v-btn>
 							<v-btn
 								size="x-small"
 								icon="mdi-plus"
 								class="bg-transparent"
+								:disabled="!network.connected"
 								@click="onIncrementMortality(mortality)"
 							></v-btn>
 						</div>
@@ -75,6 +77,7 @@
 			class="position-fixed bottom-0 right-0 mb-5 mr-5"
 			location="right bottom"
 			transition="fade"
+			:disabled="!network.connected"
 			@click="showMortalityCreateModal = !showMortalityCreateModal"
 		></v-fab>
 	</v-container>
@@ -89,11 +92,15 @@ import { useDate } from 'vuetify';
 import { ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { Capacitor } from '@capacitor/core';
+import { useNetworkStore } from '@/stores/network';
 
 //
 
 // --- Platform
 const isNative = Capacitor.isNativePlatform()
+
+// --- Network
+const network = useNetworkStore()
 
 // --- Mortality
 const dateCmp = useDate()

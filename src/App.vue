@@ -25,10 +25,11 @@ import AuthLayout from './layouts/AuthLayout.vue';
 import DashboardLayout from './layouts/DashboardLayout.vue';
 import ToastQueue from '@/components/ToastQueue.vue'
 import { useTheme } from 'vuetify';
-import { onMounted } from 'vue';
+import { onMounted, onUnmounted, watch } from 'vue';
 import { useApiStore } from './stores/api';
 import { useToastStore } from './stores/toast';
 import { storeToRefs } from 'pinia';
+import { useNetworkStore } from './stores/network';
 
 //
 
@@ -36,16 +37,24 @@ import { storeToRefs } from 'pinia';
 const api = useApiStore()
 const theme = useTheme()
 const toast = useToastStore()
+const network = useNetworkStore()
 const { messages } = storeToRefs(toast)
+const { connected } = storeToRefs(network)
 
 //
 
-const onMountedCb = () => {
+watch(connected, (nv) => toast.show(`Network ${nv ? 'C' : 'Disc'}onnected`, nv ? 'success' : 'warning'))
+
+//
+
+const onMountedCb = async () => {
 	api.proxyUrl = import.meta.env.VITE_PROXY_URL
 	theme.change(localStorage.getItem("theme") ?? "light")
+	await network.listen()
 }
 
 onMounted(onMountedCb)
+onUnmounted(network.unlisten)
 
 //
 

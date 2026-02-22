@@ -12,6 +12,7 @@
                     <small class="text-grey">Sign up for an account</small>
                     <UserSignUpForm
                         class="w-100 mt-8 pt-8 pb-4 border rounded bg-primary elevation-1"
+                        :disabled="!network.connected"
                         @submit="onSubmitSignUpForm"
                     ></UserSignUpForm>
                     <router-link to="/auth/sign-in" class="mt-5 text-decoration-none text-black">
@@ -30,12 +31,17 @@
 import UserSignUpForm from '@/components/auth/UserSignUpForm.vue';
 import type { UserSignUpSchema } from '@/schemas/UserSchema';
 import { useApiStore } from '@/stores/api';
+import { useNetworkStore } from '@/stores/network';
 import { useToastStore } from '@/stores/toast';
 import type { SubmissionContext } from 'vee-validate';
 import { useRouter } from 'vue-router';
 
 //
 
+// --- Network
+const network = useNetworkStore()
+
+// --- Api
 const api = useApiStore()
 const toast = useToastStore()
 const router = useRouter()
@@ -46,6 +52,7 @@ const onSubmitSignUpForm = async(
     values: UserSignUpSchema,
     ctx: SubmissionContext<{ [K in keyof UserSignUpSchema]?: unknown }>
 ) => {
+    if (!network.connected) return toast.warn("You are offline.")
     await api.signUp(values)
         .then(() => toast.success("User signed-up successfully."))
         .then(async () => await router.push("/auth/sign-in"))

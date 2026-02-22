@@ -21,10 +21,9 @@
 						<div class="w-100">
 							<div class="d-flex align-center justify-space-between">
 								<h5>Coop Light</h5>
-								<div 
-									class="text-caption text-accent px-3 rounded-pill"
-									style="background-color: rgba(var(--v-theme-accent), 0.1)"
-								>Off</div>
+								<v-chip
+									:color="isLightOn ? `accent` : `secondary`"
+								>{{ isLightOn ? `On` : `Off` }}</v-chip>
 							</div>
 							<small 
 								class="text-grey-darken-1 text-caption"
@@ -33,10 +32,12 @@
 						</div>
 					</div>
 					<v-btn
-						text="Turn On"
-						color="accent"
 						class="mt-4"
 						prepend-icon="mdi-power"
+						:text="isLightOn ? `Turn Off` : `Turn On`"
+						:color="isLightOn ? `accent` : `secondary`"
+						:disabled="!network.connected"
+						@click="isLightOn = !isLightOn"
 					></v-btn>
 					<span class="mt-3 text-grey-darken-1 text-caption">Idle - Standby mode</span>
 				</div>
@@ -46,26 +47,19 @@
 </template>
 
 <script setup lang="ts">
-import MortalityCreateForm from "@/components/app/dashboard/MortalityCreateForm.vue"
-import type { MortalityCreateSchema } from "@/schemas/MortalitySchema"
-import type { SubmissionContext } from "vee-validate"
+import { useNetworkStore } from "@/stores/network";
 import { ref } from "vue"
 
 //
 
+// --- Network
+const network = useNetworkStore()
+
+// --- States
 const isLightOn = ref(false)
 
 //
 
-const onSubmitMortalityCreateForm = async (
-	values: MortalityCreateSchema,
-	ctx: SubmissionContext<{ [K in keyof MortalityCreateSchema]?: unknown }>
-) => {
-	// --- Temporary while no API
-	await new Promise(res => setTimeout(res, 1000)).then(() => ctx.resetForm())
-}
-
-//
 </script>
 
 <style scoped></style>

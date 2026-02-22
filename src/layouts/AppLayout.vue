@@ -66,6 +66,13 @@
 			<template #title>
 				<span class="font-weight-bold">{{ page ?? "Dashboard" }}</span>
 			</template>
+			<template #append>
+				<v-icon 
+					class="mr-4"
+					:color="network.connected ? 'accent' : 'orange'"
+					v-tooltip="network.connected ? 'Online' : 'Offline'"
+				>mdi-cloud-{{ !network.connected ? "off-" : "" }}outline</v-icon>
+			</template>
 		</v-app-bar>
 		<v-main>
 			<slot></slot>
@@ -102,11 +109,15 @@
 
 <script setup lang="ts">
 import { useApiStore } from "@/stores/api";
+import { useNetworkStore } from "@/stores/network";
 import { Capacitor } from "@capacitor/core";
 import { computed, ref } from "vue";
 import { useDisplay } from "vuetify";
 
 //
+
+// --- Network
+const network = useNetworkStore()
 
 // --- User
 const api = useApiStore()

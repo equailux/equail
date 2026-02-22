@@ -5,7 +5,7 @@
 			class="w-75"
 			label="Email"
 			v-model="email"
-			:disabled="isSubmitting"
+			:disabled="isSubmitting || disabled"
 			:error-messages="emailError"
 		></v-text-field>
 		<v-btn 
@@ -13,6 +13,7 @@
 			text="Send Code" 
 			class="w-75 my-2 mt-4" 
 			color="accent" 
+			:disabled
 			:loading="isSubmitting"
 		></v-btn>
 	</v-form>
@@ -26,6 +27,7 @@ import { useField, useForm, type SubmissionContext } from "vee-validate"
 //
 
 const props = defineProps<{
+	disabled?: boolean
 	onError?: (error: any) => any
 	onSubmit?: (
 		values: UserForgotPasswordSchema,

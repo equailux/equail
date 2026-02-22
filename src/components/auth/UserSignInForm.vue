@@ -5,7 +5,7 @@
 			class="w-75"
 			label="Email"
 			v-model="email"
-			:disabled="isSubmitting"
+			:disabled="isSubmitting || disabled"
 			:error-messages="emailError"
 		></v-text-field>
 		<v-text-field
@@ -13,7 +13,7 @@
 			label="Password"
 			v-model="password"
 			:type="showPasswordType"
-			:disabled="isSubmitting"
+			:disabled="isSubmitting || disabled"
 			:error-messages="passwordError"
 			:append-inner-icon="showPasswordIcon"
 			@click:append-inner="showPassword = !showPassword"
@@ -29,6 +29,7 @@
 			text="Sign In" 
 			class="w-75 my-2" 
 			color="accent" 
+			:disabled
 			:loading="isSubmitting"
 		></v-btn>
 	</v-form>
@@ -43,6 +44,7 @@ import { computed, ref } from "vue"
 //
 
 const props = defineProps<{
+	disabled?: boolean
 	onError?: (error: any) => any
 	onSubmit?: (values: UserSignInSchema, ctx: SubmissionContext<{ [K in keyof UserSignInSchema]?: unknown }>) => any
 }>()

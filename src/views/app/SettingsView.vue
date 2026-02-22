@@ -34,6 +34,7 @@
 								hide-details
 								color="accent"
 								base-color="accent"
+								:disabled="!network.connected"
 							></v-switch>
 						</div>
 					</div>
@@ -95,6 +96,7 @@
 								size="small"
 								icon="mdi-download-outline"
 								color="accent"
+								:disabled="!network.connected"
 								@click="onClickDownloadAndroidApp"
 							></v-btn>
 						</div>
@@ -105,6 +107,7 @@
 								color="primary"
 								class="w-100"
 								append-icon="mdi-logout"
+								@click="api.signOut()"
 							></v-btn>
 						</div>
 					</div>
@@ -115,6 +118,8 @@
 </template>
 
 <script setup lang="ts">
+import { useApiStore } from '@/stores/api';
+import { useNetworkStore } from '@/stores/network';
 import { Capacitor } from '@capacitor/core';
 import { onMounted, ref } from 'vue';
 import { useTheme } from 'vuetify';
@@ -123,6 +128,12 @@ import { useTheme } from 'vuetify';
 
 // --- Platform
 const isNative = Capacitor.isNativePlatform()
+
+// --- Network
+const network = useNetworkStore()
+
+// --- Api
+const api = useApiStore()
 
 // --- Theme
 const theme = ref("light")

@@ -12,6 +12,7 @@
                     <small class="text-grey">Enter 6-digit code from email</small>
                     <UserForgotPasswordForm
                         class="w-100 mt-8 pt-8 pb-4 border rounded bg-primary elevation-1"
+                        :disabled="!network.connected"
                         @submit="onSubmitForgotPasswordForm"
                     ></UserForgotPasswordForm>
                     <router-link to="/auth/sign-in" class="mt-5 text-decoration-none text-black">
@@ -29,11 +30,16 @@
 <script setup lang="ts">
 import UserForgotPasswordForm from '@/components/auth/UserForgotPasswordForm.vue';
 import type { UserForgotPasswordSchema } from '@/schemas/UserSchema';
+import { useNetworkStore } from '@/stores/network';
 import type { SubmissionContext } from 'vee-validate';
 import { useRouter } from 'vue-router';
 
 //
 
+// --- Network
+const network = useNetworkStore()
+
+// --- 
 const router = useRouter()
 
 //

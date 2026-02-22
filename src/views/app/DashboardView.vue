@@ -31,6 +31,7 @@
 							size="x-small"
 							icon="mdi-arrow-right"
 							color="transparent"
+							:disabled="!network.connected"
 						></v-btn>
 					</div>
 				</div>
@@ -59,6 +60,7 @@
 							size="x-small"
 							icon="mdi-arrow-right"
 							class="text-black bg-transparent"
+							:disabled="!network.connected"
 						></v-btn>
 					</div>
 				</div>
@@ -168,6 +170,7 @@
 						hide-details
 						color="accent"
 						base-color="accent"
+						:disabled="!network.connected"
 					></v-switch>
 				</div>
 			</v-col>
@@ -181,10 +184,18 @@ import type { ReadingSchema } from "@/schemas/ReadingSchema"
 import type { WsEventHandler } from "@/schemas/WsEventSchema"
 import { useApiStore } from "@/stores/api"
 import { useMortalityStore } from "@/stores/mortality"
+import { useNetworkStore } from "@/stores/network"
+import { useToastStore } from "@/stores/toast"
 import { storeToRefs } from "pinia"
 import { computed, onMounted, ref } from "vue"
 
 //
+
+// --- Toast
+const toast = useToastStore()
+
+// --- Network
+const network = useNetworkStore()
 
 // --- Stats
 const eggsToday = ref(15)
@@ -221,7 +232,7 @@ const onMountedCb = async () => {
 	await Promise
 		.resolve()
 		.then(() => wsEvent.connect(`${api.apiUrl}/ws/app`))
-		.catch(console.error)
+		.catch(() => toast.error("Failed to connect realtime."))
 	wsEvent.listen("Reading", "Create", onWsEventReading)
 }
 
