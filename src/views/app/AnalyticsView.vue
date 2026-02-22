@@ -10,7 +10,7 @@
 			<v-col cols="6">
 				<div class="pb-4 d-flex justify-end">
 					<v-btn 
-						v-if="!isNative"
+						v-if="!isNative && !exportPDFLoading"
 						icon="mdi-file-pdf-box"
 						class="bg-transparent"
 						:loading="exportPDFLoading"

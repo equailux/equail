@@ -1,28 +1,14 @@
+import useSerializer from "@/composables/use-serializer";
 import { MortalitySchema, type MortalityCreateSchema } from "@/schemas/MortalitySchema";
+import { isSameDay, isSameMonth } from "date-fns";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { z } from "zod";
 
 //
 
-const isSameDay = (a: Date, b: Date) => (
-    a.getDate() == b.getDate()
-    && a.getMonth() == b.getMonth()
-    && a.getFullYear() == b.getFullYear()
-)
-
-const isSameMonth = (a: Date, b: Date) => (
-    a.getMonth() == b.getMonth()
-    && a.getFullYear() == b.getFullYear()
-)
-
-const serialize = (data: any) => JSON.stringify(data)
-
-const deserialize = (data: string) => {
-    const parsed = JSON.parse(data) as { mortalities: MortalitySchema[] }
-    const mortalities = z.array(MortalitySchema).parse(parsed.mortalities)
-    return { mortalities }
-}
+const Schema = z.object({ mortalities: z.array(MortalitySchema) })
+const { serialize, deserialize } = useSerializer(Schema)
 
 //
 
@@ -75,4 +61,4 @@ export const useMortalityStore = defineStore("mortality", () => {
         update,
     }
 
-}, { persist: { serializer: { serialize, deserialize } } })
+}, { persist: { serialize, deserialize } })
