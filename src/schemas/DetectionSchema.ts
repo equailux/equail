@@ -11,6 +11,7 @@ const DetectionSchema = z.object({
     }),
     class: z.string(),
     confidence: z.coerce.number(),
+    captureId: z.coerce.number(),
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
 })

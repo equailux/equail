@@ -16,8 +16,9 @@
 				</div>
 				<v-list bg-color="secondary" density="compact">
 					<v-list-item
-						v-for="capture in captures"
-						:title="capture.image"
+						v-for="c in captures"
+						:title="c.image"
+						:subtitle="`${captureDetectionsMap.get(c.id)?.length} eggs detected`"
 					></v-list-item>
 				</v-list>
 			</v-col>
@@ -26,10 +27,13 @@
 </template>
 
 <script setup lang="ts">
+import type { CaptureSchema } from '@/schemas/CaptureSchema';
+import type { DetectionSchema } from '@/schemas/DetectionSchema';
 import { useCaptureStore } from '@/stores/capture';
+import { useDetectionStore } from '@/stores/detection';
 import { useToastStore } from '@/stores/toast';
 import { storeToRefs } from 'pinia';
-import { onMounted } from 'vue';
+import { computed, onMounted } from 'vue';
 
 //
 
@@ -40,10 +44,29 @@ const toastStr = useToastStore()
 const captureStr = useCaptureStore()
 const { captures } = storeToRefs(captureStr)
 
+// --- Detections
+const detectionStr = useDetectionStore()
+const { detections } = storeToRefs(detectionStr)
+
+// --- Capture Detection Mapping
+const captureDetectionsMap = computed(() => mapCaptures(captures.value, detections.value))
+
+const mapCaptures = (captures: CaptureSchema[], detections: DetectionSchema[]) => {
+	const captureMap = new Map<number, DetectionSchema[]>()
+
+	for (const d of detections) {
+		if (!captureMap.has(d.captureId)) captureMap.set(d.captureId, [])
+		captureMap.get(d.captureId)!.push(d)
+	}
+
+	return captureMap
+}
+
 //
 
 const onMountedCb = async () => {
 	await captureStr.retrieve()
+	await detectionStr.retrieve()
 }
 
 onMounted(() => onMountedCb().catch(() => toastStr.error("Something went wrong.")))
