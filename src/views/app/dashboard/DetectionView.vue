@@ -17,8 +17,8 @@
 				<v-list bg-color="secondary" density="compact">
 					<v-list-item
 						v-for="c in captures"
-						:title="c.image"
-						:subtitle="`${captureDetectionsMap.get(c.id)?.length} eggs detected`"
+						:title="`${detectionsByCid.get(c.id)?.length} eggs detected`"
+						:subtitle="dateComp.format(c.createdAt, `fullDateTime12h`)"
 					></v-list-item>
 				</v-list>
 			</v-col>
@@ -27,49 +27,39 @@
 </template>
 
 <script setup lang="ts">
-import type { CaptureSchema } from '@/schemas/CaptureSchema';
-import type { DetectionSchema } from '@/schemas/DetectionSchema';
 import { useCaptureStore } from '@/stores/capture';
 import { useDetectionStore } from '@/stores/detection';
 import { useToastStore } from '@/stores/toast';
+import { groupByKey } from '@/utils/group';
 import { storeToRefs } from 'pinia';
 import { computed, onMounted } from 'vue';
+import { useDate } from 'vuetify';
 
 //
 
 // --- Utilities
-const toastStr = useToastStore()
+const dateComp = useDate()
+const toastStore = useToastStore()
 
 // --- Capture
-const captureStr = useCaptureStore()
-const { captures } = storeToRefs(captureStr)
+const captureStore = useCaptureStore()
+const { captures } = storeToRefs(captureStore)
 
 // --- Detections
-const detectionStr = useDetectionStore()
-const { detections } = storeToRefs(detectionStr)
+const detectionStore = useDetectionStore()
+const { detections } = storeToRefs(detectionStore)
 
 // --- Capture Detection Mapping
-const captureDetectionsMap = computed(() => mapCaptures(captures.value, detections.value))
-
-const mapCaptures = (captures: CaptureSchema[], detections: DetectionSchema[]) => {
-	const captureMap = new Map<number, DetectionSchema[]>()
-
-	for (const d of detections) {
-		if (!captureMap.has(d.captureId)) captureMap.set(d.captureId, [])
-		captureMap.get(d.captureId)!.push(d)
-	}
-
-	return captureMap
-}
+const detectionsByCid = computed(() => groupByKey(detections.value, (d) => d.captureId))
 
 //
 
 const onMountedCb = async () => {
-	await captureStr.retrieve()
-	await detectionStr.retrieve()
+	await captureStore.retrieve()
+	await detectionStore.retrieve()
 }
 
-onMounted(() => onMountedCb().catch(() => toastStr.error("Something went wrong.")))
+onMounted(() => onMountedCb().catch(() => toastStore.error("Something went wrong.")))
 
 //
 
