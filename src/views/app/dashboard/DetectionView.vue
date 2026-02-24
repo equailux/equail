@@ -11,7 +11,7 @@
 		<v-row dense justify="center">
 			<v-col cols="12" sm="6">
 				<div class="w-100 pb-2 ga-2 border-b d-flex align-end">
-					<h1>{{ 0 }}</h1>
+					<h1>{{ eggCountTotal }}</h1>
 					<small class="text-grey mb-2">total eggs</small>
 				</div>
 				<v-list bg-color="secondary" density="compact">
@@ -27,6 +27,7 @@
 </template>
 
 <script setup lang="ts">
+import type { CaptureSchema } from '@/schemas/CaptureSchema';
 import { useCaptureStore } from '@/stores/capture';
 import { useDetectionStore } from '@/stores/detection';
 import { useToastStore } from '@/stores/toast';
@@ -44,13 +45,28 @@ const toastStore = useToastStore()
 // --- Capture
 const captureStore = useCaptureStore()
 const { captures } = storeToRefs(captureStore)
+const capturesByCam = computed(() => groupByKey(captures.value, (c) => c.camera))
 
 // --- Detections
 const detectionStore = useDetectionStore()
 const { detections } = storeToRefs(detectionStore)
-
-// --- Capture Detection Mapping
 const detectionsByCid = computed(() => groupByKey(detections.value, (d) => d.captureId))
+
+// --- Egg Summary
+const eggCountTotal = computed(() =>
+	[...capturesByCam.value.values()]
+		.reduce((p, c) => p + countNewDetections(c), 0)
+)
+
+const countNewDetections = (captures: CaptureSchema[]) => {
+	let prev = 0, total = 0
+	for (const c of captures) {
+		const count = detectionsByCid.value.get(c.id)?.length || 0
+		total += count - prev
+		prev = count
+	}
+	return total
+}
 
 //
 
