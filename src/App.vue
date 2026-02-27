@@ -1,15 +1,9 @@
 <template>
 	<v-app class="bg-primary">
 		<router-view #="{ Component, route }">
-			<AuthLayout v-if="route.meta?.layout === `auth`">
-				<component :is="Component"></component>
-			</AuthLayout>
-			<AppLayout v-else-if="route.meta?.layout === `app`">
-				<component :is="Component"></component>
-			</AppLayout>
-			<DashboardLayout v-else-if="route.meta?.layout === `dashboard`">
-				<component :is="Component"></component>
-			</DashboardLayout>
+			<component :is="layouts[route.meta?.layout as string] || layouts.default">
+				<component :is="Component" />
+			</component>
 		</router-view>
 		<ToastQueue
 			closable
@@ -25,7 +19,7 @@ import AuthLayout from './layouts/AuthLayout.vue';
 import DashboardLayout from './layouts/DashboardLayout.vue';
 import ToastQueue from '@/components/ToastQueue.vue'
 import { useTheme } from 'vuetify';
-import { onMounted, onUnmounted, watch } from 'vue';
+import { onMounted, onUnmounted, watch, type Component } from 'vue';
 import { useApiStore } from './stores/api';
 import { useToastStore } from './stores/toast';
 import { storeToRefs } from 'pinia';
@@ -41,8 +35,15 @@ const network = useNetworkStore()
 const { messages } = storeToRefs(toast)
 const { connected } = storeToRefs(network)
 
-//
+// --- Layouts
+const layouts: Record<string, Component> = {
+	"auth": AuthLayout,
+	"app": AppLayout,
+	"dashboard": DashboardLayout,
+	"default": AppLayout,
+}
 
+// --- Network
 watch(connected, (nv) => toast.show(`Network ${nv ? 'C' : 'Disc'}onnected`, nv ? 'success' : 'warning'))
 
 //
@@ -58,4 +59,4 @@ onUnmounted(network.unlisten)
 
 //
 
-</script>
+</script>	
