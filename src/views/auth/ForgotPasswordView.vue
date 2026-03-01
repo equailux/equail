@@ -11,7 +11,7 @@
                     <h2>E-Quail</h2>
                     <small class="text-grey">Enter 6-digit code from email</small>
                     <UserForgotPasswordForm
-                        class="w-100 mt-8 pt-8 pb-4 border rounded bg-primary elevation-1"
+                        class="w-100 mt-8 pt-8 pb-4 bg-primary elevation-1"
                         :disabled="!network.connected"
                         @submit="onSubmitForgotPasswordForm"
                     ></UserForgotPasswordForm>

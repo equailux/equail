@@ -12,7 +12,7 @@
 					<h1 class="font-weight-black text-accent">E-QUAIL</h1>
 					<small>Your smart partner for quail farming!</small>
 					<v-btn 
-						to="/auth/sign-up"
+						to="/auth/sign-in"
 						class="w-75 mt-10" 
 						color="accent" 
 					>Get Started</v-btn>

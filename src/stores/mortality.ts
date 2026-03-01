@@ -47,7 +47,7 @@ export const useMortalityStore = defineStore("mortality", () => {
         const { token, proxyUrl } = useApiStore()
         const headers = { "Authorization": `Bearer ${token}` }
 
-        const res = await fetch(`${proxyUrl}/api/mortality`, { method: "POST", headers })
+        const res = await fetch(`${proxyUrl}/api/mortality`, { headers })
             .catch(() => { throw new Error("Something went wrong.") })
         if (!res.ok) throw new Error(await res.text())
         

@@ -8,8 +8,8 @@ import { z } from "zod";
 
 const Schema = z.object({
     user: UserSafeSchema.optional(),
-    token: z.string(),
-    proxyUrl: z.string(),
+    token: z.string().default(""),
+    proxyUrl: z.string().default(""),
 })
 
 const { serialize, deserialize } = useSerializer(Schema)
