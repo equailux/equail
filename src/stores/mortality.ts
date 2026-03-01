@@ -29,11 +29,11 @@ export const useMortalityStore = defineStore("mortality", () => {
     //
 
     const create = async (data: MortalityCreateSchema) => {
-        const { apiKey, proxyUrl } = useApiStore()
+        const { apiKey, apiUrl } = useApiStore()
         const body = JSON.stringify(data)
         const headers = { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` }
         
-        const res = await fetch(`${proxyUrl}/api/mortality`, { method: "POST", body, headers })
+        const res = await fetch(`${apiUrl}/api/mortality`, { method: "POST", body, headers })
             .catch(() => { throw new Error("Something went wrong.") })
         if (!res.ok) throw new Error(await res.text())
         
@@ -44,10 +44,10 @@ export const useMortalityStore = defineStore("mortality", () => {
     }
 
     const retrieve = async () => {
-        const { apiKey, proxyUrl } = useApiStore()
+        const { apiKey, apiUrl } = useApiStore()
         const headers = { "Authorization": `Bearer ${apiKey}` }
 
-        const res = await fetch(`${proxyUrl}/api/mortality`, { method: "POST", headers })
+        const res = await fetch(`${apiUrl}/api/mortality`, { method: "POST", headers })
             .catch(() => { throw new Error("Something went wrong.") })
         if (!res.ok) throw new Error(await res.text())
         
@@ -58,11 +58,11 @@ export const useMortalityStore = defineStore("mortality", () => {
     }
     
     const update = async (data: MortalitySchema) => {
-        const { apiKey, proxyUrl } = useApiStore()
+        const { apiKey, apiUrl } = useApiStore()
         const body = JSON.stringify(data)
         const headers = { "Content-Type": "application/json", "Authorization": `Bearer ${apiKey}` }
 
-        const res = await fetch(`${proxyUrl}/api/mortality/${data.id}`, { method: "PATCH", body, headers })
+        const res = await fetch(`${apiUrl}/api/mortality/${data.id}`, { method: "PATCH", body, headers })
             .catch(() => { throw new Error("Something went wrong.") })
         if (!res.ok) throw new Error(await res.text())
 
@@ -75,10 +75,10 @@ export const useMortalityStore = defineStore("mortality", () => {
     }
 
     const destroy = async (data: MortalitySchema) => {
-        const { apiKey, proxyUrl } = useApiStore()
+        const { apiKey, apiUrl } = useApiStore()
         const headers = { "Authorization": `Bearer ${apiKey}` }
 
-        const res = await fetch(`${proxyUrl}/api/mortality/${data.id}`, { method: "DELETE", headers })
+        const res = await fetch(`${apiUrl}/api/mortality/${data.id}`, { method: "DELETE", headers })
             .catch(() => { throw new Error("Something went wrong.") })
         if (!res.ok) throw new Error(await res.text())
 

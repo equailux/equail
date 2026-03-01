@@ -21,10 +21,10 @@ export const useCaptureStore = defineStore("capture", () => {
     //
 
     const retrieve = async () => {
-        const { apiKey, proxyUrl } = useApiStore()
+        const { apiKey, apiUrl } = useApiStore()
         const headers = { "Authorization": `Bearer ${apiKey}` }
 
-        const res = await fetch(`${proxyUrl}/api/capture`, { method: "POST", headers })
+        const res = await fetch(`${apiUrl}/api/capture`, { method: "POST", headers })
             .catch(() => { throw new Error("Something went wrong.") })
         if (!res.ok) throw new Error(await res.text())
         
