@@ -17,7 +17,7 @@
 				<v-list bg-color="secondary" density="compact">
 					<v-list-item
 						v-for="c in captures"
-						:title="`${detectionsByCid.get(c.id)?.length} eggs detected`"
+						:title="`${detectionsByCid.get(c.id)?.length || 0} eggs detected`"
 						:subtitle="dateComp.format(c.createdAt, `fullDateTime12h`)"
 					></v-list-item>
 				</v-list>
@@ -28,6 +28,7 @@
 
 <script setup lang="ts">
 import type { CaptureSchema } from '@/schemas/CaptureSchema';
+import { useApiStore } from '@/stores/api';
 import { useCaptureStore } from '@/stores/capture';
 import { useDetectionStore } from '@/stores/detection';
 import { useToastStore } from '@/stores/toast';
@@ -40,6 +41,7 @@ import { useDate } from 'vuetify';
 
 // --- Utilities
 const dateComp = useDate()
+const apiStore = useApiStore()
 const toastStore = useToastStore()
 
 // --- Capture
@@ -71,8 +73,8 @@ const countNewDetections = (captures: CaptureSchema[]) => {
 //
 
 const onMountedCb = async () => {
-	await captureStore.retrieve()
-	await detectionStore.retrieve()
+	while (!apiStore.token) await new Promise(res => setTimeout(res, 50))
+	await Promise.all([captureStore.retrieve(), detectionStore.retrieve()])
 }
 
 onMounted(() => onMountedCb().catch(() => toastStore.error("Something went wrong.")))

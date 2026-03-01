@@ -9,7 +9,7 @@ import { z } from "zod";
 const Schema = z.object({
     user: UserSafeSchema.optional(),
     token: z.string().default(""),
-    proxyUrl: z.string().default(""),
+    proxyUrl: z.string().transform(a => import.meta.env.VITE_PROXY_URL),
 })
 
 const { serialize, deserialize } = useSerializer(Schema)
