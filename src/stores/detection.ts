@@ -21,10 +21,10 @@ export const useDetectionStore = defineStore("detection", () => {
     //
 
     const retrieve = async () => {
-        const { apiKey, apiUrl } = useApiStore()
-        const headers = { "Authorization": `Bearer ${apiKey}` }
+        const { token, proxyUrl } = useApiStore()
+        const headers = { "Authorization": `Bearer ${token}` }
 
-        const res = await fetch(`${apiUrl}/api/detection`, { method: "POST", headers })
+        const res = await fetch(`${proxyUrl}/api/detection`, { method: "POST", headers })
             .catch(() => { throw new Error("Something went wrong.") })
         if (!res.ok) throw new Error(await res.text())
         

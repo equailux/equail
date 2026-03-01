@@ -231,7 +231,7 @@ const mortalitiesThisMonthTotal = computed(() => mortalitiesThisMonth.value.redu
 const onMountedCb = async () => {
 	await Promise
 		.resolve()
-		.then(() => wsEvent.connect(`${api.apiUrl}/ws/app`))
+		.then(() => wsEvent.connect(`${api.proxyUrl}/ws/app`))
 		.catch(() => toast.error("Failed to connect realtime."))
 	wsEvent.listen("Reading", "Create", onWsEventReading)
 }
