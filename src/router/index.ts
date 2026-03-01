@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from "vue-router"
 import WelcomeView from "@/views/WelcomeView.vue"
-import SignUpView from "@/views/auth/SignUpView.vue"
 import SignInView from "@/views/auth/SignInView.vue"
 import ForgotPasswordView from "@/views/auth/ForgotPasswordView.vue"
 import DashboardView from "@/views/app/DashboardView.vue"
@@ -18,12 +17,6 @@ const routes: RouteRecordRaw[] = [
         name: "welcome",
         meta: { layout: "auth" },
         component: WelcomeView,
-    },
-    {
-        path: "/auth/sign-up",
-        name: "Sign Up",
-        meta: { layout: "auth" },
-        component: SignUpView,
     },
     {
         path: "/auth/sign-in",
