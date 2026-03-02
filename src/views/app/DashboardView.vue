@@ -21,8 +21,8 @@
 						</div>
 					</div>
 					<div class="mt-2 d-flex align-center ga-2">
-						<h1>47</h1>
-						<span class="text-grey-lighten-2 text-subtitle-2">today</span>
+						<h1>{{ eggCountTotal }}</h1>
+						<span class="text-grey-lighten-2 text-subtitle-2">total</span>
 					</div>
 					<div class="d-flex align-center justify-space-between">
 						<span class="text-grey-lighten-1 text-caption">+12% from yesterday</span>	
@@ -31,7 +31,7 @@
 							size="x-small"
 							icon="mdi-arrow-right"
 							color="transparent"
-							:disabled="!network.connected"
+							:disabled="!networkStore.connected"
 						></v-btn>
 					</div>
 				</div>
@@ -60,7 +60,7 @@
 							size="x-small"
 							icon="mdi-arrow-right"
 							class="text-black bg-transparent"
-							:disabled="!network.connected"
+							:disabled="!networkStore.connected"
 						></v-btn>
 					</div>
 				</div>
@@ -170,7 +170,7 @@
 						hide-details
 						color="accent"
 						base-color="accent"
-						:disabled="!network.connected"
+						:disabled="!networkStore.connected"
 					></v-switch>
 				</div>
 			</v-col>
@@ -180,25 +180,27 @@
 
 <script setup lang="ts">
 import useWsEvent from "@/composables/use-ws-event"
+import type { CaptureSchema } from "@/schemas/CaptureSchema"
 import type { ReadingSchema } from "@/schemas/ReadingSchema"
 import type { WsEventHandler } from "@/schemas/WsEventSchema"
 import { useApiStore } from "@/stores/api"
+import { useCaptureStore } from "@/stores/capture"
+import { useDetectionStore } from "@/stores/detection"
 import { useMortalityStore } from "@/stores/mortality"
 import { useNetworkStore } from "@/stores/network"
 import { useToastStore } from "@/stores/toast"
+import { groupByKey } from "@/utils/group"
 import { storeToRefs } from "pinia"
 import { computed, onMounted, ref } from "vue"
 
 //
 
-// --- Toast
-const toast = useToastStore()
-
-// --- Network
-const network = useNetworkStore()
+// --- Utilities
+const apiStore = useApiStore()
+const toastStore = useToastStore()
+const networkStore = useNetworkStore()
 
 // --- Stats
-const eggsToday = ref(15)
 const isLightOn = ref(false)
 const mortalityRate = ref(10)
 
@@ -220,6 +222,36 @@ const onWsEventReading: WsEventHandler<ReadingSchema> = data => {
 	}
 }
 
+// --- Capture
+const captureStore = useCaptureStore()
+const { captures } = storeToRefs(captureStore)
+const capturesByCam = computed(() => groupByKey(captures.value, (c) => c.camera))
+
+// --- Detections
+const detectionStore = useDetectionStore()
+const { detections } = storeToRefs(detectionStore)
+const detectionsByCid = computed(() => groupByKey(detections.value, (d) => d.captureId))
+
+// --- Egg Summary
+const eggCountTotal = computed(() =>
+	[...capturesByCam.value.values()]
+		.reduce((p, c) => p + countNewDetections(c), 0)
+)
+
+const countNewDetections = (captures: CaptureSchema[]) => {
+	let prev = 0, total = 0
+
+	for (const c of captures) {
+		const count = detectionsByCid.value.get(c.id)?.length || 0
+		total += count - prev
+		prev = count
+	}
+
+	return total
+}
+
+//
+
 // --- Mortality
 const mortalityStore = useMortalityStore()
 const { today: mortalitiesToday, monthly: mortalitiesThisMonth } = storeToRefs(mortalityStore)
@@ -232,7 +264,7 @@ const onMountedCb = async () => {
 	await Promise
 		.resolve()
 		.then(() => wsEvent.connect(`${api.proxyUrl}/ws/app`))
-		.catch(() => toast.error("Failed to connect realtime."))
+		.catch(() => toastStore.error("Failed to connect realtime."))
 	wsEvent.listen("Reading", "Create", onWsEventReading)
 }
 
