@@ -8,6 +8,7 @@ import SettingsView from "@/views/app/SettingsView.vue"
 import AnalyticsView from "@/views/app/AnalyticsView.vue"
 import DetectionView from "@/views/app/dashboard/DetectionView.vue"
 import MortalityView from "@/views/app/dashboard/MortalityView.vue"
+import DetectionPreviewView from "@/views/app/dashboard/detection/DetectionPreviewView.vue"
 
 //
 
@@ -41,6 +42,12 @@ const routes: RouteRecordRaw[] = [
         name: "Detection",
         meta: { layout: "dashboard" },
         component: DetectionView,
+    },
+    {
+        path: "/app/dashboard/detection/:cid(\\d+)",
+        name: "Detection Preview",
+        meta: { layout: "detection" },
+        component: DetectionPreviewView,
     },
     {
         path: "/app/dashboard/mortality",

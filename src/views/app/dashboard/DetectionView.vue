@@ -17,6 +17,9 @@
 				<v-list bg-color="secondary" density="compact">
 					<v-list-item
 						v-for="c in captures"
+						nav
+						append-icon="mdi-chevron-right"
+						:to="`/app/dashboard/detection/${c.id}`"
 						:title="`${detectionsByCid.get(c.id)?.length || 0} eggs detected`"
 						:subtitle="dateComp.format(c.createdAt, `fullDateTime12h`)"
 					></v-list-item>

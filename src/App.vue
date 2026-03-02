@@ -24,6 +24,7 @@ import { useApiStore } from './stores/api';
 import { useToastStore } from './stores/toast';
 import { storeToRefs } from 'pinia';
 import { useNetworkStore } from './stores/network';
+import DetectionLayout from './layouts/DetectionLayout.vue';
 
 //
 
@@ -40,6 +41,7 @@ const layouts: Record<string, Component> = {
 	"auth": AuthLayout,
 	"app": AppLayout,
 	"dashboard": DashboardLayout,
+	"detection": DetectionLayout,
 	"default": AppLayout,
 }
 

@@ -53,6 +53,7 @@ const init = async () => {
 
 	observer = new ResizeObserver(onResize)
 	observer.observe(divElement.value)
+	await draw()
 }
 
 const clean = async () => {
@@ -65,6 +66,7 @@ const draw = async () => {
 	if (!app || !imageElement.value || !props.src) return
 	app.stage.removeChildren()
 
+	imageElement.value.crossOrigin = "anonymous"
 	if (typeof props.src === 'string') imageElement.value.src = props.src
 	else if (props.src instanceof HTMLImageElement) imageElement.value.src = props.src.src
 	else if (props.src instanceof File) imageElement.value.src = URL.createObjectURL(props.src)
@@ -93,7 +95,7 @@ const render = async () => {
 	await dispose(graphics)
 	graphics = []
 	
-	if (!props.detections) return await props.onRender?.(app.canvas)
+	if (props.detections.length <= 0) return await props.onRender?.(app.canvas)
 	for (const { box } of props.detections) {
 		const x = box.x * size.width
 		const y = box.y * size.height
@@ -137,7 +139,7 @@ const onResize = async () => {
 
 //
 
-watch(() => props.src, draw, { immediate: true })
+watch(() => props.src, draw)
 watch(() => props.detections, render, { deep: true })
 
 //

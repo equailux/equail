@@ -11,7 +11,7 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
-    ImageBoundingBoxRenderer: typeof import('./src/components/app/dashboard/ImageBoundingBoxRenderer.vue')['default']
+    ImageBoundingBoxRenderer: typeof import('./src/components/app/dashboard/detection/ImageBoundingBoxRenderer.vue')['default']
     MortalityCreateForm: typeof import('./src/components/app/dashboard/MortalityCreateForm.vue')['default']
     ReadingBarChart: typeof import('./src/components/app/analytics/ReadingBarChart.vue')['default']
     ReadingLineChart: typeof import('./src/components/app/analytics/ReadingLineChart.vue')['default']
