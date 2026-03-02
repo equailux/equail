@@ -2,10 +2,10 @@
 	<v-container class="bg-secondary" fluid>
 		<v-row dense justify="center">
 			<v-col cols="12" sm="6">
-				<div class="pa-2 border rounded" style="aspect-ratio: 1">
+				<div class="w-100 pa-2 border rounded" style="aspect-ratio: 1">
 					<ImageBoundingBoxRenderer
 						v-if="capture"
-						class="d-flex align-center justify-center"
+						class="w-100 h-100 d-flex align-center justify-center"
 						:src="`${apiStore.proxyUrl}/img/${capture.image}`"
 						:detections="detectionsByCid"
 					></ImageBoundingBoxRenderer>
