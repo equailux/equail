@@ -47,11 +47,10 @@ const onSubmitSignIn = async (
     ctx: SubmissionContext<{ [K in keyof UserSignInSchema]?: unknown }>
 ) => {
     if (!network.connected) return toast.warn("You are offline.")
-    await router.push("/app/dashboard")
-    // await api.signIn(values)
-    //     .then(() => toast.success("User signed-in successfully."))
-    //     .then(async () => await router.push("/app/dashboard"))
-    //     .catch((e) => toast.error(e?.message))
+    await api.signIn(values)
+        .then(() => toast.success("User signed-in successfully."))
+        .then(async () => await router.push("/app/dashboard"))
+        .catch((e) => toast.error(e?.message))
 }
 
 //

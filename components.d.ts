@@ -21,6 +21,5 @@ declare module 'vue' {
     UserForgotPasswordForm: typeof import('./src/components/auth/UserForgotPasswordForm.vue')['default']
     UserSignInForm: typeof import('./src/components/auth/UserSignInForm.vue')['default']
     UserSignUpForm: typeof import('./src/components/auth/UserSignUpForm.vue')['default']
-    VideoBoundingBoxRenderer: typeof import('./src/components/app/VideoBoundingBoxRenderer.vue')['default']
   }
 }
