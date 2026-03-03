@@ -11,7 +11,7 @@
                     <h2>E-Quail</h2>
                     <small class="text-grey">Sign in to your dashboard</small>
                     <UserSignInForm
-                        class="w-100 mt-8 pt-8 pb-4 bg-primary elevation-1"
+                        class="w-100 mt-8 pt-8 pb-4 bg-primary"
                         :disabled="!network.connected"
                         @submit="onSubmitSignIn"
                     ></UserSignInForm>
