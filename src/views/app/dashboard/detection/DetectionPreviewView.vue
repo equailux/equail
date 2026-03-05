@@ -4,13 +4,22 @@
 			<v-col cols="12" sm="6">
 				<div class="w-100 pa-2 border rounded" style="aspect-ratio: 1">
 					<ImageBoundingBoxRenderer
-						v-if="capture"
+						v-if="capture && isCaptureValid && !isCaptureValidating"
 						class="w-100 h-100 d-flex align-center justify-center"
 						:src="`${apiStore.proxyUrl}/img/${capture.image}`"
 						:detections="detectionsByCid"
 					></ImageBoundingBoxRenderer>
-					<div v-else class="w-100 h-100 d-flex align-center justify-center">
+					<div 
+						v-if="isCaptureValidating || !isCaptureValid" 
+						class="w-100 h-100 d-flex align-center justify-center"
+					>
+						<v-empty-state
+							v-if="!isCaptureValid"
+							icon="mdi-image-off"
+							text="Missing or corrupted image."
+						></v-empty-state>
 						<v-progress-circular
+							v-if="isCaptureValidating"
 							indeterminate
 							color="accent"
 						></v-progress-circular>
@@ -21,8 +30,16 @@
 				<div class="d-flex align-center">
 					<span>Approval: &nbsp;</span>
 					<v-chip
+						:text="approved === undefined ? `Pending` : approved ? `Correct` : `Incorrect`"
 						:color="approved === undefined ? `yellow` : approved ? `accent` : `red`"
-					>{{ approved === undefined ? "Pending" : approved ? "Correct" : "Incorrect" }}</v-chip>
+					></v-chip>
+					<v-spacer></v-spacer>
+					<v-btn
+						size="small"
+						icon="mdi-delete-outline"
+						class="bg-transparent text-red"
+						v-tooltip="`Delete missing or invalid image.`"
+					></v-btn>
 				</div>
 				<v-textarea
 					hide-details
@@ -64,7 +81,7 @@ import { useDetectionStore } from '@/stores/detection';
 import { useRemarkStore } from '@/stores/remark';
 import { useToastStore } from '@/stores/toast';
 import { storeToRefs } from 'pinia';
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 //
@@ -81,6 +98,21 @@ const captureId = Number(routeComp.params.cid)
 const captureStore = useCaptureStore()
 const { captures } = storeToRefs(captureStore)
 const capture = computed(() => captures.value.find((c) => c.id == captureId))
+
+const isCaptureValid = ref(true)
+const isCaptureValidating = ref(true)
+
+const validateImage = async () => {
+	if (!capture.value) return
+	isCaptureValidating.value = true
+
+	const url = `${apiStore.proxyUrl}/img/${capture.value.image}`
+	isCaptureValid.value = await fetch(url, { method: "HEAD" })
+		.then((res) => res.ok)
+		.catch(() => false)
+
+	isCaptureValidating.value = false
+}
 
 //
 
@@ -111,15 +143,18 @@ const onChangeRemark = async (comment: string, correct?: boolean) => {
 
 const onMountedCb = async () => {
 	remarkLoading.value = true
+
 	while (!apiStore.token) await new Promise(res => setTimeout(res, 50))
 	await Promise.all([captureStore.retrieve(), detectionStore.retrieve(), remarkStore.retrieve()])
 	await nextTick()
+	await validateImage()
+
 	comment.value = remarkByCid.value?.comment || ""
 	approved.value = remarkByCid.value?.approved
 	remarkLoading.value = false
 }
 
-onMounted(() => onMountedCb())//.catch(() => toastStore.error("Something went wrong.")))
+onMounted(() => onMountedCb().catch(() => toastStore.error("Something went wrong.")))
 
 //
 
