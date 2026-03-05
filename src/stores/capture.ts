@@ -34,11 +34,25 @@ export const useCaptureStore = defineStore("capture", () => {
         return parsed
     }
     
+    const destroy = async (data: CaptureSchema) => {
+        const { token, proxyUrl } = useApiStore()
+        const headers = { "Authorization": `Bearer ${token}` }
+
+        const res = await fetch(`${proxyUrl}/api/capture/${data.id}`, { method: "DELETE", headers })
+            .catch(() => { throw new Error("Something went wrong.") })
+        if (!res.ok) throw new Error(await res.text())
+        
+        const index = captures.value.findIndex((c) => c.id == data.id)
+        if (index != -1) captures.value.splice(index, 1)
+        return data
+    }
+    
     //
 
     return {
         captures,
         retrieve,
+        destroy,
     }
 
 }, { persist: { serialize, deserialize } })

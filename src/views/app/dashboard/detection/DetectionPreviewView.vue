@@ -39,6 +39,7 @@
 						icon="mdi-delete-outline"
 						class="bg-transparent text-red"
 						v-tooltip="`Delete missing or invalid image.`"
+						@click="onClickDeleteImage"
 					></v-btn>
 				</div>
 				<v-textarea
@@ -82,14 +83,15 @@ import { useRemarkStore } from '@/stores/remark';
 import { useToastStore } from '@/stores/toast';
 import { storeToRefs } from 'pinia';
 import { computed, nextTick, onMounted, ref } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 //
 
 // --- Utilities
-const routeComp = useRoute()
 const apiStore = useApiStore()
+const routeComp = useRoute()
 const toastStore = useToastStore()
+const routerComp = useRouter()
 
 // --- Params
 const captureId = Number(routeComp.params.cid)
@@ -100,6 +102,7 @@ const { captures } = storeToRefs(captureStore)
 const capture = computed(() => captures.value.find((c) => c.id == captureId))
 
 const isCaptureValid = ref(true)
+const isCaptureDeleting = ref(false)
 const isCaptureValidating = ref(true)
 
 const validateImage = async () => {
@@ -112,6 +115,15 @@ const validateImage = async () => {
 		.catch(() => false)
 
 	isCaptureValidating.value = false
+}
+
+const onClickDeleteImage = async () => {
+	if (!capture.value) return
+	isCaptureDeleting.value = true
+	await captureStore.destroy(capture.value)
+	await routerComp.push("/app/dashboard/detection")
+	toastStore.info("Invalid image deleted successfully.")
+	isCaptureDeleting.value = false
 }
 
 //
