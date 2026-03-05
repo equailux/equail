@@ -4,9 +4,9 @@
 			<v-col cols="12" sm="6">
 				<div class="w-100 pa-2 border rounded" style="aspect-ratio: 1">
 					<ImageBoundingBoxRenderer
-						v-if="capture && isCaptureValid && !isCaptureValidating"
+						v-if="captureBlob && isCaptureValid && !isCaptureValidating"
 						class="w-100 h-100 d-flex align-center justify-center"
-						:src="`${apiStore.proxyUrl}/img/${capture.image}`"
+						:src="captureBlob"
 						:detections="detectionsByCid"
 					></ImageBoundingBoxRenderer>
 					<div 
@@ -39,6 +39,8 @@
 						icon="mdi-delete-outline"
 						class="bg-transparent text-red"
 						v-tooltip="`Delete missing or invalid image.`"
+						:loading="isCaptureDeleting"
+						:disabled="isCaptureDeleting"
 						@click="onClickDeleteImage"
 					></v-btn>
 				</div>
@@ -101,19 +103,24 @@ const captureStore = useCaptureStore()
 const { captures } = storeToRefs(captureStore)
 const capture = computed(() => captures.value.find((c) => c.id == captureId))
 
+const captureBlob = ref<Blob>()
 const isCaptureValid = ref(true)
 const isCaptureDeleting = ref(false)
 const isCaptureValidating = ref(true)
 
-const validateImage = async () => {
+const fetchCaptureImage = async () => {
 	if (!capture.value) return
 	isCaptureValidating.value = true
 
-	const url = `${apiStore.proxyUrl}/img/${capture.value.image}`
-	isCaptureValid.value = await fetch(url, { method: "HEAD" })
-		.then((res) => res.ok)
-		.catch(() => false)
+	const url = `${apiStore.proxyUrl}/api/capture/image/${capture.value.image}`
+	const headers = { "Authorization": `Bearer ${apiStore.token}` }
+	const res = await fetch(url, { headers })
 
+	if (!res.ok) isCaptureValid.value = false
+	if (!res.ok) return isCaptureValidating.value = false
+	
+	captureBlob.value = await res.blob()
+	isCaptureValid.value = true
 	isCaptureValidating.value = false
 }
 
@@ -159,7 +166,7 @@ const onMountedCb = async () => {
 	while (!apiStore.token) await new Promise(res => setTimeout(res, 50))
 	await Promise.all([captureStore.retrieve(), detectionStore.retrieve(), remarkStore.retrieve()])
 	await nextTick()
-	await validateImage()
+	await fetchCaptureImage()
 
 	comment.value = remarkByCid.value?.comment || ""
 	approved.value = remarkByCid.value?.approved
