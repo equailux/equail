@@ -54,6 +54,7 @@ const init = async () => {
 	observer = new ResizeObserver(onResize)
 	observer.observe(divElement.value)
 	await draw()
+	await render()
 }
 
 const clean = async () => {
@@ -94,7 +95,7 @@ const render = async () => {
 	if (!app || !texture || !texture.source || !props.src) return
 	await dispose(graphics)
 	graphics = []
-	
+
 	if (props.detections.length <= 0) return await props.onRender?.(app.canvas)
 	for (const { box } of props.detections) {
 		const x = box.x * size.width
