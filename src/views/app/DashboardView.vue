@@ -219,6 +219,15 @@ const onWsEventReading: WsEventHandler<ReadingSchema> = data => {
 	}
 }
 
+const onMountedWs = async () => {
+	const url = new URL(import.meta.env.VITE_API_URL)
+	await Promise
+		.resolve()
+		.then(() => wsEvent.connect(`${url.host}/ws/app`))
+		.catch(() => toastStore.error("Failed to connect realtime."))
+	wsEvent.listen("Reading", "Create", onWsEventReading)
+}
+
 // --- Capture
 const captureStore = useCaptureStore()
 const { captures } = storeToRefs(captureStore)
@@ -258,12 +267,13 @@ const mortalitiesThisMonthTotal = computed(() => mortalitiesThisMonth.value.redu
 //
 
 const onMountedCb = async () => {
-	const url = new URL(import.meta.env.VITE_API_URL)
-	await Promise
-		.resolve()
-		.then(() => wsEvent.connect(`${url.host}/ws/app`))
-		.catch(() => toastStore.error("Failed to connect realtime."))
-	wsEvent.listen("Reading", "Create", onWsEventReading)
+	if (!networkStore.connected) return toastStore.error("You are offline.")
+	await Promise.all([
+		onMountedWs(),
+		captureStore.retrieve(),
+		detectionStore.retrieve(),
+		mortalityStore.retrieve(),
+	])
 }
 
 onMounted(onMountedCb)
