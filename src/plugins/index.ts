@@ -1,6 +1,6 @@
+import type { App } from "vue"
 import vuetify from "./vuetify"
 import pinia from "./pinia"
-import type { App } from "vue"
 import "chart.js/auto"
 
 //

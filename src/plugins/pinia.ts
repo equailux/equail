@@ -1,10 +1,10 @@
 import { createPinia } from 'pinia'
-import dexie from "./dexie"
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate"
 
 //
 
 const pinia = createPinia()
-pinia.use(dexie.onDexiePersist)
+pinia.use(piniaPluginPersistedstate)
 
 //
 
