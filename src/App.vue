@@ -20,7 +20,6 @@ import DashboardLayout from './layouts/DashboardLayout.vue';
 import ToastQueue from '@/components/ToastQueue.vue'
 import { useTheme } from 'vuetify';
 import { onMounted, onUnmounted, watch, type Component } from 'vue';
-import { useApiStore } from './stores/api';
 import { useToastStore } from './stores/toast';
 import { storeToRefs } from 'pinia';
 import { useNetworkStore } from './stores/network';
@@ -29,7 +28,6 @@ import DetectionLayout from './layouts/DetectionLayout.vue';
 //
 
 // --- Comp/Store
-const api = useApiStore()
 const theme = useTheme()
 const toast = useToastStore()
 const network = useNetworkStore()
@@ -51,7 +49,6 @@ watch(connected, (nv) => toast.show(`Network ${nv ? 'C' : 'Disc'}onnected`, nv ?
 //
 
 const onMountedCb = async () => {
-	api.proxyUrl = import.meta.env.VITE_PROXY_URL
 	theme.change(localStorage.getItem("theme") ?? "light")
 	await network.listen()
 }

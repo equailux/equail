@@ -78,7 +78,7 @@
 
 <script setup lang="ts">
 import ImageBoundingBoxRenderer from '@/components/app/dashboard/detection/ImageBoundingBoxRenderer.vue';
-import { useApiStore } from '@/stores/api';
+import { api } from '@/plugins/api';
 import { useCaptureStore } from '@/stores/capture';
 import { useDetectionStore } from '@/stores/detection';
 import { useRemarkStore } from '@/stores/remark';
@@ -90,7 +90,6 @@ import { useRoute, useRouter } from 'vue-router';
 //
 
 // --- Utilities
-const apiStore = useApiStore()
 const routeComp = useRoute()
 const toastStore = useToastStore()
 const routerComp = useRouter()
@@ -112,14 +111,15 @@ const fetchCaptureImage = async () => {
 	if (!capture.value) return
 	isCaptureValidating.value = true
 
-	const url = `${apiStore.proxyUrl}/api/capture/image/${capture.value.image}`
-	const headers = { "Authorization": `Bearer ${apiStore.token}` }
-	const res = await fetch(url, { headers })
+	const { res, err } = await api
+		.get(`/api/capture/image/${capture.value.image}`)
+		.then((res) => ({ res, err: undefined }))
+		.catch((err) => ({ res: undefined, err }))
 
-	if (!res.ok) isCaptureValid.value = false
-	if (!res.ok) return isCaptureValidating.value = false
+	if (err) isCaptureValid.value = false
+	if (err) return isCaptureValidating.value = false
 	
-	captureBlob.value = await res.blob()
+	captureBlob.value = res!.data as Blob
 	isCaptureValid.value = true
 	isCaptureValidating.value = false
 }
@@ -163,7 +163,6 @@ const onChangeRemark = async (comment: string, correct?: boolean) => {
 const onMountedCb = async () => {
 	remarkLoading.value = true
 
-	while (!apiStore.token) await new Promise(res => setTimeout(res, 50))
 	await Promise.all([captureStore.retrieve(), detectionStore.retrieve(), remarkStore.retrieve()])
 	await nextTick()
 	await fetchCaptureImage()

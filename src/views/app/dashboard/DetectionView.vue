@@ -43,7 +43,6 @@
 
 <script setup lang="ts">
 import type { CaptureSchema } from '@/schemas/CaptureSchema';
-import { useApiStore } from '@/stores/api';
 import { useCaptureStore } from '@/stores/capture';
 import { useDetectionStore } from '@/stores/detection';
 import { useRemarkStore } from '@/stores/remark';
@@ -57,7 +56,6 @@ import { useDate } from 'vuetify';
 
 // --- Utilities
 const dateComp = useDate()
-const apiStore = useApiStore()
 const toastStore = useToastStore()
 
 // --- Capture
@@ -110,7 +108,6 @@ const countNewDetections = (captures: CaptureSchema[]) => {
 //
 
 const onMountedCb = async () => {
-	while (!apiStore.token) await new Promise(res => setTimeout(res, 50))
 	await Promise.all([captureStore.retrieve(), detectionStore.retrieve(), remarkStore.retrieve()])
 }
 

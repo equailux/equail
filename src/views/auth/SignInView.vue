@@ -23,22 +23,21 @@
 
 <script setup lang="ts">
 import UserSignInForm from '@/components/auth/UserSignInForm.vue';
+import router from '@/router';
 import type { UserSignInSchema } from '@/schemas/UserSchema';
-import { useApiStore } from '@/stores/api';
+import { useAuthStore } from '@/stores/auth';
 import { useNetworkStore } from '@/stores/network';
 import { useToastStore } from '@/stores/toast';
 import type { SubmissionContext } from 'vee-validate';
-import { useRouter } from 'vue-router';
 
 //
 
 // --- Network
 const network = useNetworkStore()
 
-// --- Api
-const api = useApiStore()
-const toast = useToastStore()
-const router = useRouter()
+// --- Utils
+const toastCmp = useToastStore()
+const authStore = useAuthStore()
 
 //
 
@@ -46,11 +45,12 @@ const onSubmitSignIn = async (
     values: UserSignInSchema,
     ctx: SubmissionContext<{ [K in keyof UserSignInSchema]?: unknown }>
 ) => {
-    if (!network.connected) return toast.warn("You are offline.")
-    await api.signIn(values)
-        .then(() => toast.success("User signed-in successfully."))
-        .then(async () => await router.push("/app/dashboard"))
-        .catch((e) => toast.error(e?.message))
+    if (!network.connected) return toastCmp.warn("You are offline.")
+    await authStore
+        .signIn(values)
+        .then(() => toastCmp.success("User signed-in successfully."))
+        .then(() => router.push("/app/dashboard"))
+        .catch((e) => toastCmp.error(e?.message))
 }
 
 //

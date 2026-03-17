@@ -183,7 +183,6 @@ import useWsEvent from "@/composables/use-ws-event"
 import type { CaptureSchema } from "@/schemas/CaptureSchema"
 import type { ReadingSchema } from "@/schemas/ReadingSchema"
 import type { WsEventHandler } from "@/schemas/WsEventSchema"
-import { useApiStore } from "@/stores/api"
 import { useCaptureStore } from "@/stores/capture"
 import { useDetectionStore } from "@/stores/detection"
 import { useMortalityStore } from "@/stores/mortality"
@@ -196,7 +195,6 @@ import { computed, onMounted, ref } from "vue"
 //
 
 // --- Utilities
-const apiStore = useApiStore()
 const toastStore = useToastStore()
 const networkStore = useNetworkStore()
 
@@ -205,7 +203,6 @@ const isLightOn = ref(false)
 const mortalityRate = ref(10)
 
 // --- Sensor Data
-const api = useApiStore()
 const wsEvent = useWsEvent()
 
 const temperature = ref(25.9)
@@ -261,9 +258,10 @@ const mortalitiesThisMonthTotal = computed(() => mortalitiesThisMonth.value.redu
 //
 
 const onMountedCb = async () => {
+	const url = new URL(import.meta.env.VITE_API_URL)
 	await Promise
 		.resolve()
-		.then(() => wsEvent.connect(`${api.proxyUrl}/ws/app`))
+		.then(() => wsEvent.connect(`${url.host}/ws/app`))
 		.catch(() => toastStore.error("Failed to connect realtime."))
 	wsEvent.listen("Reading", "Create", onWsEventReading)
 }

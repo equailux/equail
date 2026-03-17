@@ -1,15 +1,9 @@
-import useSerializer from "@/composables/use-serializer";
+import { api } from "@/plugins/api";
 import { MortalitySchema, type MortalityCreateSchema } from "@/schemas/MortalitySchema";
 import { isSameDay, isSameMonth } from "date-fns";
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { z } from "zod";
-import { useApiStore } from "./api";
-
-//
-
-const Schema = z.object({ mortalities: z.array(MortalitySchema) })
-const { serialize, deserialize } = useSerializer(Schema)
 
 //
 
@@ -29,59 +23,30 @@ export const useMortalityStore = defineStore("mortality", () => {
     //
 
     const create = async (data: MortalityCreateSchema) => {
-        const { token, proxyUrl } = useApiStore()
-        const body = JSON.stringify(data)
-        const headers = { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }
-        
-        const res = await fetch(`${proxyUrl}/api/mortality`, { method: "POST", body, headers })
-            .catch(() => { throw new Error("Something went wrong.") })
-        if (!res.ok) throw new Error(await res.text())
-        
-        const json = await res.json()
-        const parsed = MortalitySchema.parse(json)
+        const res = await api.post<MortalitySchema[]>(`/api/mortality`, data)
+        const parsed = MortalitySchema.parse(res.data)
         mortalities.value.push(parsed)
         return parsed
     }
 
     const retrieve = async () => {
-        const { token, proxyUrl } = useApiStore()
-        const headers = { "Authorization": `Bearer ${token}` }
-
-        const res = await fetch(`${proxyUrl}/api/mortality`, { headers })
-            .catch(() => { throw new Error("Something went wrong.") })
-        if (!res.ok) throw new Error(await res.text())
-        
-        const json = await res.json()
-        const parsed = z.array(MortalitySchema).parse(json)
+        const res = await api.get<MortalitySchema[]>(`/api/mortality`)
+        const parsed = z.array(MortalitySchema).parse(res.data)
         mortalities.value = parsed
         return parsed
     }
     
     const update = async (data: MortalitySchema) => {
-        const { token, proxyUrl } = useApiStore()
-        const body = JSON.stringify(data)
-        const headers = { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }
+        const res = await api.patch(`/api/mortality/${data.id}`, data)
+        const parsed = MortalitySchema.parse(res.data)
 
-        const res = await fetch(`${proxyUrl}/api/mortality/${data.id}`, { method: "PATCH", body, headers })
-            .catch(() => { throw new Error("Something went wrong.") })
-        if (!res.ok) throw new Error(await res.text())
-
-        const json = await res.json()
-        const parsed = MortalitySchema.parse(json)
-        
         const idx = mortalities.value.findIndex((m) => m.id == data.id)
         if (idx != -1) mortalities.value.splice(idx, 1, parsed)
         return parsed
     }
 
     const destroy = async (data: MortalitySchema) => {
-        const { token, proxyUrl } = useApiStore()
-        const headers = { "Authorization": `Bearer ${token}` }
-
-        const res = await fetch(`${proxyUrl}/api/mortality/${data.id}`, { method: "DELETE", headers })
-            .catch(() => { throw new Error("Something went wrong.") })
-        if (!res.ok) throw new Error(await res.text())
-
+        const res = await api.delete(`/api/mortality/${data.id}`)
         const idx = mortalities.value.findIndex((m) => m.id == data.id)
         if (idx != -1) mortalities.value.splice(idx, 1)
         return data
@@ -101,4 +66,4 @@ export const useMortalityStore = defineStore("mortality", () => {
         destroy,
     }
 
-}, { persist: { serialize, deserialize } })
+})

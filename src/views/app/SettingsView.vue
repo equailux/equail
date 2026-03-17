@@ -107,7 +107,7 @@
 								color="primary"
 								class="w-100"
 								append-icon="mdi-logout"
-								@click="api.signOut()"
+								@click="authStore.signOut()"
 							></v-btn>
 						</div>
 					</div>
@@ -118,7 +118,7 @@
 </template>
 
 <script setup lang="ts">
-import { useApiStore } from '@/stores/api';
+import { useAuthStore } from '@/stores/auth';
 import { useNetworkStore } from '@/stores/network';
 import { Capacitor } from '@capacitor/core';
 import { onMounted, ref } from 'vue';
@@ -126,14 +126,10 @@ import { useTheme } from 'vuetify';
 
 //
 
-// --- Platform
-const isNative = Capacitor.isNativePlatform()
-
-// --- Network
+// --- Utils
 const network = useNetworkStore()
-
-// --- Api
-const api = useApiStore()
+const isNative = Capacitor.isNativePlatform()
+const authStore = useAuthStore()
 
 // --- Theme
 const theme = ref("light")

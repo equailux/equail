@@ -87,7 +87,7 @@ const router = createRouter({
     routes,
 })
 
-router.beforeEach(redirect404(router))
+// router.beforeEach(redirect404(router))
 
 const onClickBackButton: BackButtonListener = async (event) => {
     if (event.canGoBack) router.back()

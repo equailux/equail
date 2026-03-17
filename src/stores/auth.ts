@@ -1,0 +1,42 @@
+import { api } from "@/plugins/api"
+import { ref } from "vue"
+import { defineStore } from "pinia"
+import { UserSafeSchema, type UserSignInSchema } from "@/schemas/UserSchema"
+
+//
+
+export const useAuthStore = defineStore("auth", () => {
+
+    //
+
+    const user = ref<UserSafeSchema>()
+
+    //
+
+    const whoami = async () => {
+        const res = await api.get<UserSafeSchema>("/auth/me")
+        user.value = UserSafeSchema.parse(res.data)
+        return user.value
+    }
+
+    const signIn = async (data: UserSignInSchema) => {
+        const res = await api.post<UserSafeSchema>("/auth/sign-in", data)
+        user.value = UserSafeSchema.parse(res.data)
+        return user.value
+    }
+
+    const signOut = async () => {
+        await api.post<UserSafeSchema>("/auth/sign-out")
+        user.value = undefined
+    }
+
+    //
+
+    return {
+        user,
+        whoami,
+        signIn,
+        signOut,
+    }
+
+}, { persist: true })
