@@ -10,6 +10,7 @@ import AnalyticsView from "@/views/app/AnalyticsView.vue"
 import DetectionView from "@/views/app/dashboard/DetectionView.vue"
 import MortalityView from "@/views/app/dashboard/MortalityView.vue"
 import DetectionPreviewView from "@/views/app/dashboard/detection/DetectionPreviewView.vue"
+import { redirect404 } from "@/middlewares/404.middleware"
 
 //
 
@@ -76,6 +77,7 @@ const routes: RouteRecordRaw[] = [
     },
     {
         path: '/:pathMatch(.*)*',
+        name: "404",
         redirect: "/",
     },
 ]
@@ -84,6 +86,8 @@ const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes,
 })
+
+router.beforeEach(redirect404(router))
 
 const onClickBackButton: BackButtonListener = async (event) => {
     if (event.canGoBack) router.back()
