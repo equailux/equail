@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from "vue-router"
+import { App, type BackButtonListener, type StateChangeListener } from "@capacitor/app"
 import WelcomeView from "@/views/WelcomeView.vue"
 import SignInView from "@/views/auth/SignInView.vue"
 import ForgotPasswordView from "@/views/auth/ForgotPasswordView.vue"
@@ -83,6 +84,13 @@ const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes,
 })
+
+const onClickBackButton: BackButtonListener = async (event) => {
+    if (event.canGoBack) router.back()
+    else await App.exitApp()
+}
+
+App.addListener("backButton", onClickBackButton)
 
 //
 
