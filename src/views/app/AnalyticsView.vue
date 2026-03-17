@@ -56,7 +56,7 @@
 					<small class="text-grey text-caption">Monthly mortality percentage</small>
 					<ReadingLineChart
 						:color="theme.current.value.colors.accent"
-						:readings
+						:readings="mortalitiesByMonth"
 					></ReadingLineChart>
 				</div>
 			</v-col>
@@ -90,14 +90,20 @@
 import ReadingBarChart from '@/components/app/analytics/ReadingBarChart.vue';
 import ReadingLineChart from '@/components/app/analytics/ReadingLineChart.vue';
 import useReportExport from '@/composables/use-report-export';
+import type { MortalitySchema } from '@/schemas/MortalitySchema';
+import { useMortalityStore } from '@/stores/mortality';
+import { useToastStore } from '@/stores/toast';
 import { Capacitor } from '@capacitor/core';
-import { nextTick, reactive, ref } from 'vue';
-import { useTheme } from 'vuetify';
+import { storeToRefs } from 'pinia';
+import { computed, nextTick, onMounted, reactive, ref } from 'vue';
+import { useDate, useTheme } from 'vuetify';
 
 //
 
-// --- Comp
+// --- Utils
 const theme = useTheme()
+const dateCmp = useDate()
+const toastStore = useToastStore()
 
 // --- Data
 const readings = reactive<Record<string, number>>({
@@ -109,6 +115,28 @@ const readings = reactive<Record<string, number>>({
 
 // --- Platform
 const isNative = Capacitor.isNativePlatform()
+
+//
+
+// --- Mortalities
+const mortalityStore = useMortalityStore()
+const { mortalities } = storeToRefs(mortalityStore)
+const mortalitiesByMonth = computed(() => groupByMonth(mortalities.value))
+
+const groupByMonth = (mortalities: MortalitySchema[]) => {
+	const group: Record<string, number> = {}
+	const data = [...mortalities].sort((a, b) => a.date.getTime() - b.date.getTime())
+
+	for (const m of data) {
+		const month = dateCmp.format(m.date, "month")
+		if (!(month in group)) group[month] = 0
+		group[month] = group[month]! + m.count
+	}
+
+	return group
+}
+
+//
 
 // --- PDF Exporting
 const reportExportCmp = useReportExport()
@@ -124,6 +152,14 @@ const onClickExportPDF = async () => {
 	await reportExportCmp.exportPDF(el, `report-${Date.now()}.pdf`)
 	exportPDFLoading.value = false
 }
+
+//
+
+const onMountedCb = async () => {
+	await Promise.all([mortalityStore.retrieve()])
+}
+
+onMounted(async () => await onMountedCb().catch(toastStore.error))
 
 //
 
