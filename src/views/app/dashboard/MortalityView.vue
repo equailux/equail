@@ -89,21 +89,23 @@ import type { MortalityCreateSchema, MortalitySchema } from '@/schemas/Mortality
 import { useMortalityStore } from '@/stores/mortality';
 import type { SubmissionContext } from 'vee-validate';
 import { useDate } from 'vuetify';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { Capacitor } from '@capacitor/core';
 import { useNetworkStore } from '@/stores/network';
+import { useToastStore } from '@/stores/toast';
 
 //
 
-// --- Platform
-const isNative = Capacitor.isNativePlatform()
-
-// --- Network
+// --- Utils
+const dateCmp = useDate()
 const network = useNetworkStore()
+const isNative = Capacitor.isNativePlatform()
+const toastStore = useToastStore()
+
+//
 
 // --- Mortality
-const dateCmp = useDate()
 const mortalityStore = useMortalityStore()
 const { total, sorted } = storeToRefs(mortalityStore)
 
@@ -114,7 +116,7 @@ const onSubmitMortalityCreateForm = async (
 	values: MortalityCreateSchema,
 	ctx: SubmissionContext<{ [K in keyof MortalityCreateSchema]?: unknown }>
 ) => {
-	mortalityStore.create(values)
+	await mortalityStore.create(values)
 	showMortalityCreateModal.value = false
 	ctx.resetForm({ values: { count: 1, date: new Date() } })
 }
@@ -129,6 +131,14 @@ const onDecrementMortality = async (data: MortalitySchema) => {
 	data.count--
 	await mortalityStore.update(data)
 }
+
+//
+
+const onMountedCb = async () => {
+	await 	Promise.all([mortalityStore.retrieve()])
+}
+
+onMounted(() => onMountedCb().catch(toastStore.error))
 
 //
 
