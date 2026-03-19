@@ -1,5 +1,14 @@
 <template>
 	<v-app class="bg-primary">
+		<v-progress-linear
+			v-if="!alive"
+			absolute
+			indeterminate
+			style="z-index: 999;"
+			height="5"
+			location="top left"
+			:color="!alive ? `orange` : busy ? `red` : ``"
+		></v-progress-linear>
 		<router-view #="{ Component, route }">
 			<component :is="layouts[route.meta?.layout as string] || layouts.default">
 				<component :is="Component" />
@@ -24,6 +33,7 @@ import { useToastStore } from './stores/toast';
 import { storeToRefs } from 'pinia';
 import { useNetworkStore } from './stores/network';
 import DetectionLayout from './layouts/DetectionLayout.vue';
+import { useServerStore } from './stores/server';
 
 //
 
@@ -43,14 +53,20 @@ const layouts: Record<string, Component> = {
 	"default": AppLayout,
 }
 
+// --- Server
+const serverStore = useServerStore()
+const { busy, alive } = storeToRefs(serverStore)
+
 // --- Network
-watch(connected, (nv) => toast.show(`Network ${nv ? 'C' : 'Disc'}onnected`, nv ? 'success' : 'warning'))
+watch(alive, (nv) => toast.show(`Connect${nv ? `ed` : `ing`} to server.`, nv ? 'success' : 'warning'))
+watch(connected, (nv) => toast.show(`Network ${nv ? 'C' : 'Disc'}onnected.`, nv ? 'success' : 'warning'))
 
 //
 
 const onMountedCb = async () => {
 	theme.change(localStorage.getItem("theme") ?? "light")
 	await network.listen()
+	await serverStore.connect(import.meta.env.VITE_API_URL)
 }
 
 onMounted(onMountedCb)
