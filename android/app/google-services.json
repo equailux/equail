@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "956371231663",
+    "project_id": "equail-96ab1",
+    "storage_bucket": "equail-96ab1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:956371231663:android:3bf698ba2858264a94855a",
+        "android_client_info": {
+          "package_name": "com.equail.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCmTuOwDwDeNgZxjLT_u8T97YQoc-0byz0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
