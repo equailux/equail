@@ -19,6 +19,7 @@ export const useReadingStore = defineStore("reading", () => {
     const retrieve = async () => {
         const res = await api.get<ReadingSchema[]>("/api/reading?limit=10000")
         const parsed = z.array(ReadingSchema).parse(res.data)
+        parsed.sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime())
         readings.value = parsed
         return parsed
     }
