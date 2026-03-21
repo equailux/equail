@@ -22,7 +22,9 @@ Quail Management System
 
 ##### Temperature and Humidity Monitoring
  - [x] Monitor temperature and humidity
+ - [ ] Monitor environment noise
  - [x] Realtime temperature and humidity readings
+ - [ ] Realtime environment noise monitoring
 
 ##### Light Control
  - [x] Manually turn lights on and off in UI
