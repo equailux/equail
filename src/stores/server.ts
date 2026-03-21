@@ -14,7 +14,7 @@ export const useServerStore = defineStore("server", () => {
 
     //
 
-    const connect = async (server: string, heartbeat: number = 15000) => {
+    const connect = async (server: string, heartbeat: number = 7 * 60 * 1000) => {
         url.value = server
         const callback = () => Promise
             .resolve()
@@ -23,7 +23,8 @@ export const useServerStore = defineStore("server", () => {
             .then(() => alive.value = true)
             .catch(() => alive.value = false)
             .finally(() => busy.value = false)
-        interval.value = setInterval(() => callback(), heartbeat)
+        
+        interval.value = setInterval(() => !busy.value && callback(), heartbeat)
         await callback()
     }
 
