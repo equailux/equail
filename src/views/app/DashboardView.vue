@@ -128,6 +128,23 @@
 			<v-col cols="6" md="4">
 				<div class="px-3 pt-3 rounded-lg bg-primary border elevation-1">
 					<div class="d-flex align-center justify-space-between">
+						<h6 class="text-accent">NOISE</h6>
+						<div 
+							class="pa-1 rounded-lg d-flex align-center justify-center"
+							style="width: 24px; height: 24px; background-color: rgba(var(--v-theme-accent), 0.1)"
+						>
+							<v-icon size="x-small" color="accent">mdi-volume-high</v-icon>
+						</div>
+					</div>
+					<div class="mt-1 d-flex align-center ga-2">
+						<h1 class="text-accent">20</h1>
+						<span class="text-grey-darken-2 text-subtitle-2">%</span>
+					</div>
+				</div>
+			</v-col>
+			<v-col cols="6" md="4">
+				<div class="px-3 pt-3 rounded-lg bg-primary border elevation-1">
+					<div class="d-flex align-center justify-space-between">
 						<h6 class="text-accent">FEED LEVEL</h6>
 						<div 
 							class="pa-1 rounded-lg d-flex align-center justify-center"
