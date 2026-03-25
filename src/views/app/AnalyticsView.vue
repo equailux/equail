@@ -21,44 +21,120 @@
 		</v-row>
 		<v-row dense>
 			<v-col cols="12" sm="6">
-				<div class="pa-4 rounded-lg bg-primary border elevation-1">
-					<h5>Temperature</h5>
-					<small class="text-grey text-caption">Average monthly temperature in celcius</small>
-					<ReadingLineChart
-						:color="theme.current.value.colors.accent"
-						:readings="temperatureTVPair"
-					></ReadingLineChart>
-				</div>
+				<v-card 
+					border
+					class="pa-2 bg-primary"
+					rounded="lg"
+					elevation="1"
+				>
+					<template #title>
+						<h5>Temperature</h5>
+					</template>
+					<template #append>
+						<v-btn 
+							icon="mdi-file-delimited-outline"
+							class="bg-transparent"
+							:loading="exportCsvLoading"
+							@click="onClickExportCsv(temperatures)"
+						></v-btn>
+					</template>
+					<template #subtitle>
+						<small class="text-grey text-caption">Average monthly temperature in celcius</small>
+					</template>
+					<template #text>
+						<ReadingLineChart
+							:color="theme.current.value.colors.accent"
+							:readings="temperatureTVPair"
+						></ReadingLineChart>
+					</template>
+				</v-card>
 			</v-col>
 			<v-col cols="12" sm="6">
-				<div class="pa-4 rounded-lg bg-primary border elevation-1">
-					<h5>Humidity</h5>
-					<small class="text-grey text-caption">Average monthly humidity percentage</small>
-					<ReadingLineChart
-						:color="theme.current.value.colors.accent"
-						:readings="humidityTVPair"
-					></ReadingLineChart>
-				</div>
+				<v-card 
+					border
+					class="pa-2 bg-primary"
+					rounded="lg"
+					elevation="1"
+				>
+					<template #title>
+						<h5>Humidity</h5>
+					</template>
+					<template #append>
+						<v-btn 
+							icon="mdi-file-delimited-outline"
+							class="bg-transparent"
+							:loading="exportCsvLoading"
+							@click="onClickExportCsv(humidities)"
+						></v-btn>
+					</template>
+					<template #subtitle>
+						<small class="text-grey text-caption">Average monthly humidity percentage</small>
+					</template>
+					<template #text>
+						<ReadingLineChart
+							:color="theme.current.value.colors.accent"
+							:readings="humidityTVPair"
+						></ReadingLineChart>
+					</template>
+				</v-card>
 			</v-col>
 			<v-col cols="12" sm="6">
-				<div class="pa-4 rounded-lg bg-primary border elevation-1">
-					<h5>Eggs Detected</h5>
-					<small class="text-grey text-caption">Total eggs collected per month</small>
-					<ReadingBarChart
-						:color="theme.current.value.colors.accent"
-						:readings="captureDetectionsPerMonth"
-					></ReadingBarChart>
-				</div>
+				<v-card 
+					border
+					class="pa-2 bg-primary"
+					rounded="lg"
+					elevation="1"
+				>
+					<template #title>
+						<h5>Eggs Detected</h5>
+					</template>
+					<template #append>
+						<v-btn 
+							icon="mdi-file-delimited-outline"
+							class="bg-transparent"
+							:loading="exportCsvLoading"
+							@click="onClickExportCsv(detections)"
+						></v-btn>
+					</template>
+					<template #subtitle>
+						<small class="text-grey text-caption">Total eggs collected per month</small>
+					</template>
+					<template #text>
+						<ReadingBarChart
+							:color="theme.current.value.colors.accent"
+							:readings="captureDetectionsPerMonth"
+						></ReadingBarChart>
+					</template>
+				</v-card>
 			</v-col>
 			<v-col cols="12" sm="6">
-				<div class="pa-4 rounded-lg bg-primary border elevation-1">
-					<h5>Mortality Rate</h5>
-					<small class="text-grey text-caption">Monthly mortality percentage</small>
-					<ReadingLineChart
-						:color="theme.current.value.colors.accent"
-						:readings="mortalitiesByMonth"
-					></ReadingLineChart>
-				</div>
+				<v-card 
+					border
+					class="pa-2 bg-primary"
+					rounded="lg"
+					elevation="1"
+				>
+					<template #title>
+						<h5>Mortality Rate</h5>
+					</template>
+					<template #append>
+						<v-btn 
+							icon="mdi-file-delimited-outline"
+							class="bg-transparent"
+							:loading="exportCsvLoading"
+							@click="onClickExportCsv(mortalities)"
+						></v-btn>
+					</template>
+					<template #subtitle>
+						<small class="text-grey text-caption">Monthly mortality percentage</small>
+					</template>
+					<template #text>
+						<ReadingLineChart
+							:color="theme.current.value.colors.accent"
+							:readings="mortalitiesByMonth"
+						></ReadingLineChart>
+					</template>
+				</v-card>
 			</v-col>
 		</v-row>
 		<v-fab
@@ -89,8 +165,11 @@
 <script setup lang="ts">
 import ReadingBarChart from '@/components/app/analytics/ReadingBarChart.vue';
 import ReadingLineChart from '@/components/app/analytics/ReadingLineChart.vue';
+import useFileSave from '@/composables/use-file-save';
+import useReport from '@/composables/use-report';
 import useReportExport from '@/composables/use-report-export';
 import type { CaptureSchema } from '@/schemas/CaptureSchema';
+import type { DetectionSchema } from '@/schemas/DetectionSchema';
 import type { MortalitySchema } from '@/schemas/MortalitySchema';
 import type { ReadingSchema } from '@/schemas/ReadingSchema';
 import { useCaptureStore } from '@/stores/capture';
@@ -209,7 +288,8 @@ const groupMortalityByMonth = (mortalities: MortalitySchema[]) => {
 //
 
 // --- PDF Exporting
-const reportExportCmp = useReportExport()
+const reportCmp = useReport()
+const fileSaveCmp = useFileSave()
 const exportPDFLoading = ref(false)
 
 const onClickExportPDF = async () => {
@@ -219,8 +299,27 @@ const onClickExportPDF = async () => {
 	exportPDFLoading.value = true
 	await nextTick()
 
-	await reportExportCmp.exportPDF(el, `report-${Date.now()}.pdf`)
+	const pdf = await reportCmp.generatePDF(el)
+	const base64 = pdf.output('datauristring').split(',')[1]!
+	await fileSaveCmp.saveFile(base64, "pdf", `report-${Date.now()}.pdf`)
 	exportPDFLoading.value = false
+}
+
+// --- Csv Exporting
+const exportCsvLoading = ref(false)
+
+const onClickExportCsv = async (data: (ReadingSchema | DetectionSchema | MortalitySchema)[]) => {
+	const el = document.getElementById("printable")
+	if (!el) return
+
+	exportCsvLoading.value = true
+	await nextTick()
+
+	const csv = await reportCmp.generateCsv(data)
+	const base64 = btoa(unescape(encodeURIComponent(csv)))
+	
+    await fileSaveCmp.saveFile(base64, "csv", `report-${Date.now()}.csv`)
+	exportCsvLoading.value = false
 }
 
 //
