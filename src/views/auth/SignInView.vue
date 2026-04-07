@@ -46,8 +46,9 @@ const onSubmitSignIn = async (
     ctx: SubmissionContext<{ [K in keyof UserSignInSchema]?: unknown }>
 ) => {
     if (!network.connected) return toastCmp.warn("You are offline.")
+    const { email, password } = values
     await authStore
-        .signIn(values)
+        .signIn(email, password)
         .then(() => toastCmp.success("User signed-in successfully."))
         .then(() => router.push("/app/dashboard"))
         .catch((e) => toastCmp.error(e?.message))
