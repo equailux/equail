@@ -16,6 +16,7 @@ const UserSchema = z.object({
 const UserSafeSchema = UserSchema.omit({ password: true })
 const UserSignUpSchema = UserSchema.pick({ name: true, email: true, password: true })
 const UserSignInSchema = UserSchema.pick({ email: true, password: true })
+const UserForgotPasswordSchema = UserSchema.pick({ email: true })
 
 //
 
@@ -23,6 +24,7 @@ type UserSchema = z.infer<typeof UserSchema>
 type UserSafeSchema = z.infer<typeof UserSafeSchema>
 type UserSignUpSchema = z.infer<typeof UserSignUpSchema>
 type UserSignInSchema = z.infer<typeof UserSignInSchema>
+type UserForgotPasswordSchema = z.infer<typeof UserForgotPasswordSchema>
 
 //
 
@@ -31,4 +33,5 @@ export {
     UserSafeSchema,
     UserSignUpSchema,
     UserSignInSchema,
+    UserForgotPasswordSchema,
 }
