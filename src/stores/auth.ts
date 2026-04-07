@@ -1,7 +1,7 @@
-import { api } from "@/plugins/api"
-import { ref } from "vue"
 import { defineStore } from "pinia"
-import { UserSafeSchema, type UserSignInSchema } from "@/schemas/UserSchema"
+import { ref } from "vue"
+import { auth } from "@/plugins/auth"
+import { UserSchema } from "@/schemas/UserSchema"
 
 //
 
@@ -9,24 +9,38 @@ export const useAuthStore = defineStore("auth", () => {
 
     //
 
-    const user = ref<UserSafeSchema>()
+    const user = ref<UserSchema>()
 
     //
 
-    const whoami = async () => {
-        const res = await api.get<UserSafeSchema>("/auth/me")
-        user.value = UserSafeSchema.parse(res.data)
-        return user.value
+    const signUp = async (name: string, email: string, password: string) => {
+        const ares = await auth.signUp.email({ name, email, password })
+        if (ares.error) throw new Error(ares.error.message)
+        user.value = ares.data.user
+        return ares.data.user
     }
 
-    const signIn = async (data: UserSignInSchema) => {
-        const res = await api.post<UserSafeSchema>("/auth/sign-in", data)
-        user.value = UserSafeSchema.parse(res.data)
-        return user.value
+    const signIn = async (email: string, password: string) => {
+        const ares = await auth.signIn.email({ email, password })
+        if (ares.error) throw new Error(ares.error.message)
+        return ares.data.user
+    }
+
+    const signInSSO = async () => {
+        const ares = await auth.signIn.social({
+            provider: "microsoft",
+            callbackURL: window.location.href,
+            fetchOptions: { credentials: "include" },
+        })
+
+        if (ares.error) throw new Error(ares.error.message)
+        const sres = await auth.getSession()
+        if (sres.error) throw new Error(sres.error.message)
+        return sres.data!.user
     }
 
     const signOut = async () => {
-        await api.post<UserSafeSchema>("/auth/sign-out")
+        await auth.signOut()
         user.value = undefined
     }
 
@@ -34,9 +48,9 @@ export const useAuthStore = defineStore("auth", () => {
 
     return {
         user,
-        whoami,
+        signUp,
         signIn,
+        signInSSO,
         signOut,
     }
-
 }, { persist: true })
