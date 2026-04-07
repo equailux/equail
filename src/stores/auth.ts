@@ -1,7 +1,7 @@
 import { defineStore } from "pinia"
 import { ref } from "vue"
 import { auth } from "@/plugins/auth"
-import { UserSchema } from "@/schemas/UserSchema"
+import { UserSafeSchema } from "@/schemas/UserSchema"
 
 //
 
@@ -9,7 +9,7 @@ export const useAuthStore = defineStore("auth", () => {
 
     //
 
-    const user = ref<UserSchema>()
+    const user = ref<UserSafeSchema>()
 
     //
 
