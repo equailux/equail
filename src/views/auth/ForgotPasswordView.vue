@@ -9,9 +9,9 @@
 						height="128px"
 					></v-img>
                     <h2>E-Quail</h2>
-                    <small class="text-grey">Enter 6-digit code from email</small>
+                    <small class="text-grey">Enter your email to receive reset link.</small>
                     <UserForgotPasswordForm
-                        class="w-100 mt-8 pt-8 pb-4 bg-primary elevation-1"
+                        class="w-100 mt-8 pt-8 pb-4 bg-primary"
                         :disabled="!network.connected"
                         @submit="onSubmitForgotPasswordForm"
                     ></UserForgotPasswordForm>
@@ -30,7 +30,9 @@
 <script setup lang="ts">
 import UserForgotPasswordForm from '@/components/auth/UserForgotPasswordForm.vue';
 import type { UserForgotPasswordSchema } from '@/schemas/UserSchema';
+import { useAuthStore } from '@/stores/auth';
 import { useNetworkStore } from '@/stores/network';
+import { useToastStore } from '@/stores/toast';
 import type { SubmissionContext } from 'vee-validate';
 import { useRouter } from 'vue-router';
 
@@ -39,8 +41,9 @@ import { useRouter } from 'vue-router';
 // --- Network
 const network = useNetworkStore()
 
-// --- 
-const router = useRouter()
+// --- Utils
+const authStore = useAuthStore()
+const toastStore = useToastStore()
 
 //
 
@@ -48,9 +51,9 @@ const onSubmitForgotPasswordForm = async(
     values: UserForgotPasswordSchema,
     ctx: SubmissionContext<{ [K in keyof UserForgotPasswordSchema]?: unknown }>
 ) => {
-    // --- Temporary while no API
-    await new Promise(res => setTimeout(res, 1000))
-    await router.push("/auth/sign-in")
+    const callbackUrl = `${window.location.origin}/auth/reset-password`
+    await authStore.forgotPassword(values.email, callbackUrl)
+    toastStore.info("Please check your email for the reset link.")
 }
 
 //
