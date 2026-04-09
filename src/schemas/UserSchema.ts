@@ -18,6 +18,11 @@ const UserSignUpSchema = UserSchema.pick({ name: true, email: true, password: tr
 const UserSignInSchema = UserSchema.pick({ email: true, password: true })
 const UserForgotPasswordSchema = UserSchema.pick({ email: true })
 
+const UserResetPasswordSchema = UserSchema
+    .pick({ password: true })
+	.extend({ confirm: z.string().min(8) })
+	.refine(v => v.password === v.confirm, { message: "Passwords do not match.", path: ["confirm"] })
+
 //
 
 type UserSchema = z.infer<typeof UserSchema>
@@ -25,6 +30,7 @@ type UserSafeSchema = z.infer<typeof UserSafeSchema>
 type UserSignUpSchema = z.infer<typeof UserSignUpSchema>
 type UserSignInSchema = z.infer<typeof UserSignInSchema>
 type UserForgotPasswordSchema = z.infer<typeof UserForgotPasswordSchema>
+type UserResetPasswordSchema = z.infer<typeof UserResetPasswordSchema>
 
 //
 
@@ -34,4 +40,5 @@ export {
     UserSignUpSchema,
     UserSignInSchema,
     UserForgotPasswordSchema,
+    UserResetPasswordSchema,
 }
