@@ -16,6 +16,12 @@
 						class="w-75 mt-10" 
 						color="accent" 
 					>Get Started</v-btn>
+					<v-btn
+						to="/auth/sign-up"
+						class="w-75 mt-3"
+						variant="outlined"
+						color="accent"
+					>Create Account</v-btn>
 				</div>
 			</v-col>
 		</v-row>

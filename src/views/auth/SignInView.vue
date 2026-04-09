@@ -15,6 +15,12 @@
                         :disabled="!network.connected"
                         @submit="onSubmitSignIn"
                     ></UserSignInForm>
+                    <router-link to="/auth/sign-up" class="mt-1 text-decoration-none text-black">
+                        <span>
+                            <small class="text-grey">Need an account?&nbsp;</small>
+                            <small class="text-accent">Sign Up</small>
+                        </span>
+                    </router-link>
                 </div>
             </v-col>
         </v-row>
