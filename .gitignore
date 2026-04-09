@@ -14,7 +14,6 @@ yarn-error.log*
 pnpm-debug.log*
 
 # Editor directories and files
-agents*
 .idea
 .vscode
 *.suo
@@ -22,6 +21,7 @@ agents*
 *.njsproj
 *.sln
 *.sw?
+*.md
 
 # Avoid Compat Errors
 package-lock.json
