@@ -46,11 +46,23 @@ export const useAuthStore = defineStore("auth", () => {
 
     //
 
+    const resetPassword = async (password: string, token: string) => {
+        await auth.resetPassword({ newPassword: password, token })
+    }
+
+    const forgotPassword = async (email: string, redirectTo?: string) => {
+        await auth.requestPasswordReset({ email, redirectTo })
+    }
+
+    //
+
     return {
         user,
         signUp,
         signIn,
         signInSSO,
         signOut,
+        resetPassword,
+        forgotPassword,
     }
 }, { persist: true })
