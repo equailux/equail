@@ -10,7 +10,7 @@
 		></v-text-field>
 		<v-btn 
 			type="submit" 
-			text="Send Code" 
+			text="Forgot" 
 			class="w-75 my-2 mt-4" 
 			color="accent" 
 			:disabled
