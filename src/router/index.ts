@@ -3,6 +3,7 @@ import { App, type BackButtonListener, type StateChangeListener } from "@capacit
 import WelcomeView from "@/views/WelcomeView.vue"
 import SignInView from "@/views/auth/SignInView.vue"
 import ForgotPasswordView from "@/views/auth/ForgotPasswordView.vue"
+import ResetPasswordView from "@/views/auth/ResetPasswordView.vue"
 import DashboardView from "@/views/app/DashboardView.vue"
 import ControlsView from "@/views/app/ControlsView.vue"
 import SettingsView from "@/views/app/SettingsView.vue"
@@ -32,6 +33,12 @@ const routes: RouteRecordRaw[] = [
         name: "Forgot Password",
         meta: { layout: "auth" },
         component: ForgotPasswordView,
+    },
+    {
+        path: "/auth/reset-password",
+        name: "Reset Password",
+        meta: { layout: "auth" },
+        component: ResetPasswordView,
     },
     {
         path: "/app/dashboard",
