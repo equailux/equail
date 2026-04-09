@@ -19,6 +19,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     ToastQueue: typeof import('./src/components/ToastQueue.vue')['default']
     UserForgotPasswordForm: typeof import('./src/components/auth/UserForgotPasswordForm.vue')['default']
+    UserResetPasswordForm: typeof import('./src/components/auth/UserResetPasswordForm.vue')['default']
     UserSignInForm: typeof import('./src/components/auth/UserSignInForm.vue')['default']
     UserSignUpForm: typeof import('./src/components/auth/UserSignUpForm.vue')['default']
   }
