@@ -160,38 +160,6 @@
 				</div>
 			</v-col>
 		</v-row>
-		<v-row dense>
-			<v-col cols="12" sm="8">
-				<div class="pt-4">
-					<h5 class="text-accent">QUICK CONTROL</h5>
-				</div>
-			</v-col>
-		</v-row>
-		<v-row dense>
-			<v-col cols="12" sm="6">
-				<div class="pa-4 border rounded-lg d-flex align-center justify-space-between elevation-1">
-					<div class="d-flex ga-2">
-						<div 
-							class="d-flex align-center justify-center bg-accent rounded-lg"
-							style="width: 36px; height: 36px;"
-						>
-							<v-icon size="small">mdi-lightbulb-outline</v-icon>
-						</div>
-						<div class="d-flex flex-column">
-							<span class="text-subtitle-2">Coop Light</span>
-							<small class="text-caption text-grey mt-n1">Currently on</small>
-						</div>
-					</div>
-					<v-switch
-						inset
-						hide-details
-						color="accent"
-						base-color="accent"
-						:disabled="!networkStore.connected"
-					></v-switch>
-				</div>
-			</v-col>
-		</v-row>
 	</v-container>
 </template>
 
@@ -214,10 +182,6 @@ import { computed, onMounted, ref } from "vue"
 // --- Utilities
 const toastStore = useToastStore()
 const networkStore = useNetworkStore()
-
-// --- Stats
-const isLightOn = ref(false)
-const mortalityRate = ref(10)
 
 // --- Sensor Data
 const wsEvent = useWsEvent()
