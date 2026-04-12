@@ -14,14 +14,14 @@ export const useServerStore = defineStore("server", () => {
 
     //
 
-    const connect = async (server: string, heartbeat: number = 7 * 60 * 1000) => {
+    const connect = async (server: string, retry: number = 3000, heartbeat: number = 7 * 60 * 1000) => {
         url.value = server
         const callback = () => Promise
             .resolve()
             .then(() => busy.value = true)
             .then(() => fetch(server))
             .then(() => alive.value = true)
-            .catch(() => alive.value = false)
+            .catch(() => [alive.value] = [false, setTimeout(callback, retry)])
             .finally(() => busy.value = false)
         
         interval.value = setInterval(() => !busy.value && callback(), heartbeat)
