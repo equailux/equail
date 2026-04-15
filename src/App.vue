@@ -34,6 +34,8 @@ import { storeToRefs } from 'pinia';
 import { useNetworkStore } from './stores/network';
 import DetectionLayout from './layouts/DetectionLayout.vue';
 import { useServerStore } from './stores/server';
+import { Capacitor } from '@capacitor/core';
+import { StatusBar, Style } from '@capacitor/status-bar';
 
 //
 
@@ -64,9 +66,20 @@ watch(connected, (nv) => toast.show(`Network ${nv ? 'C' : 'Disc'}onnected.`, nv 
 //
 
 const onMountedCb = async () => {
-	theme.change(localStorage.getItem("theme") ?? "light")
+	// --- Theme
+	const savedTheme = localStorage.getItem("theme") ?? "light"
+	theme.change(savedTheme)
+
+	// --- Status Bar
+	const native = Capacitor.isNativePlatform()
+	if (native) StatusBar.setBackgroundColor({ color: "#00000000" })
+	if (native) StatusBar.setOverlaysWebView({ overlay: true })
+	if (native) StatusBar.setStyle({ style: savedTheme == "dark" ? Style.Dark : Style.Light })
+
+	// --- Network/Server
 	await network.listen()
 	await serverStore.connect(import.meta.env.VITE_API_URL)
+
 }
 
 onMounted(onMountedCb)
