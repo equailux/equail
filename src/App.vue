@@ -11,7 +11,10 @@
 		></v-progress-linear>
 		<router-view #="{ Component, route }">
 			<component :is="layouts[route.meta?.layout as string] || layouts.default">
-				<component :is="Component" />
+				<component 
+					:is="Component" 
+					:style="appStyle" 
+				></component>
 			</component>
 		</router-view>
 		<ToastQueue
@@ -28,7 +31,7 @@ import AuthLayout from './layouts/AuthLayout.vue';
 import DashboardLayout from './layouts/DashboardLayout.vue';
 import ToastQueue from '@/components/ToastQueue.vue'
 import { useTheme } from 'vuetify';
-import { onMounted, onUnmounted, watch, type Component } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch, type Component } from 'vue';
 import { useToastStore } from './stores/toast';
 import { storeToRefs } from 'pinia';
 import { useNetworkStore } from './stores/network';
@@ -36,6 +39,7 @@ import DetectionLayout from './layouts/DetectionLayout.vue';
 import { useServerStore } from './stores/server';
 import { Capacitor } from '@capacitor/core';
 import { StatusBar, Style } from '@capacitor/status-bar';
+import { SafeArea, type SafeAreaInsets } from "capacitor-plugin-safe-area"
 
 //
 
@@ -63,6 +67,13 @@ const { busy, alive } = storeToRefs(serverStore)
 watch(alive, (nv) => toast.show(`Connect${nv ? `ed` : `ing`} to server.`, nv ? 'success' : 'warning'))
 watch(connected, (nv) => toast.show(`Network ${nv ? 'C' : 'Disc'}onnected.`, nv ? 'success' : 'warning'))
 
+// --- Top Status Bar Fallback
+const native = Capacitor.isNativePlatform()
+const safeArea = ref<SafeAreaInsets>()
+const paddingT = computed(() => safeArea.value ? `${safeArea.value.insets.top}px` : "env(safe-area-inset-top)")
+const paddingB = computed(() => safeArea.value ? `${safeArea.value.insets.bottom}px` : "env(safe-area-inset-bottom)")
+const appStyle = computed(() => native ? { paddingTop: paddingT.value, paddingBottom: paddingB.value } : {})
+
 //
 
 const onMountedCb = async () => {
@@ -75,6 +86,7 @@ const onMountedCb = async () => {
 	if (native) StatusBar.setBackgroundColor({ color: "#00000000" })
 	if (native) StatusBar.setOverlaysWebView({ overlay: true })
 	if (native) StatusBar.setStyle({ style: savedTheme == "dark" ? Style.Dark : Style.Light })
+	safeArea.value = await SafeArea.getSafeAreaInsets()
 
 	// --- Network/Server
 	await network.listen()
