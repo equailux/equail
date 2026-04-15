@@ -1,10 +1,11 @@
 <template>
-	<v-app class="bg-primary">
+	<v-app class="bg-primary" :style="appStyle">
 		<v-progress-linear
 			v-if="!alive"
 			absolute
 			indeterminate
 			style="z-index: 999;"
+			:style="{ marginTop: `var(--safe-area-top)` }"
 			height="5"
 			location="top left"
 			:color="!alive ? `orange` : busy ? `red` : ``"
@@ -13,7 +14,6 @@
 			<component :is="layouts[route.meta?.layout as string] || layouts.default">
 				<component 
 					:is="Component" 
-					:style="appStyle" 
 				></component>
 			</component>
 		</router-view>
@@ -21,6 +21,7 @@
 			closable
 			class="position-fixed top-0 right-0 mt-1 mr-1"
 			v-model="messages"
+			:style="{ marginTop: `var(--safe-area-top)` }"
 		></ToastQueue>
 	</v-app>
 </template>
@@ -72,7 +73,7 @@ const native = Capacitor.isNativePlatform()
 const safeArea = ref<SafeAreaInsets>()
 const paddingT = computed(() => safeArea.value ? `${safeArea.value.insets.top}px` : "env(safe-area-inset-top)")
 const paddingB = computed(() => safeArea.value ? `${safeArea.value.insets.bottom}px` : "env(safe-area-inset-bottom)")
-const appStyle = computed(() => native ? { paddingTop: paddingT.value, paddingBottom: paddingB.value } : {})
+const appStyle = computed(() => native ? { '--safe-area-top': paddingT.value, '--safe-area-bottom': paddingB.value } : {})
 
 //
 
@@ -99,4 +100,19 @@ onUnmounted(network.unlisten)
 
 //
 
-</script>	
+</script>
+
+<style>
+.v-app-bar {
+	padding-top: var(--safe-area-top) !important;
+	height: calc(64px + var(--safe-area-top, 0px)) !important;
+}
+.v-bottom-navigation {
+	padding-bottom: var(--safe-area-bottom) !important;
+	height: calc(56px + var(--safe-area-bottom, 0px)) !important;
+}
+.v-main {
+	--v-layout-top: calc(64px + var(--safe-area-top, 0px)) !important;
+	--v-layout-bottom: calc(56px + var(--safe-area-bottom, 0px)) !important;
+}
+</style>	
