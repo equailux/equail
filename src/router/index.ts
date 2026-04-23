@@ -13,6 +13,7 @@ import DetectionView from "@/views/app/dashboard/DetectionView.vue"
 import MortalityView from "@/views/app/dashboard/MortalityView.vue"
 import DetectionPreviewView from "@/views/app/dashboard/detection/DetectionPreviewView.vue"
 import { redirect404 } from "@/middlewares/404.middleware"
+import SensorView from "@/views/app/config/SensorView.vue"
 
 //
 
@@ -88,6 +89,12 @@ const routes: RouteRecordRaw[] = [
         name: "Analytics",
         meta: { layout: "app" },
         component: AnalyticsView,
+    },
+    {
+        path: "/app/config/sensor",
+        name: "Config Sensor",
+        meta: { layout: "app/config" },
+        component: SensorView,
     },
     {
         path: '/:pathMatch(.*)*',
