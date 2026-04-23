@@ -11,6 +11,9 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    ActionCard: typeof import('./src/components/app/config/ActionCard.vue')['default']
+    ActionCreateForm: typeof import('./src/components/app/config/ActionCreateForm.vue')['default']
+    ActionUpdateForm: typeof import('./src/components/app/config/ActionUpdateForm.vue')['default']
     ActuatorCard: typeof import('./src/components/app/config/ActuatorCard.vue')['default']
     ActuatorCreateForm: typeof import('./src/components/app/config/ActuatorCreateForm.vue')['default']
     ActuatorUpdateForm: typeof import('./src/components/app/config/ActuatorUpdateForm.vue')['default']

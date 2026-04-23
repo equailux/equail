@@ -9,9 +9,9 @@ type ConditionOp = (typeof ConditionOp)[number]
 
 const ConditionSchema = z.object({
     id: z.coerce.number().int(),
-    output: z.number(),
+    output: z.coerce.number(),
     operator: z.enum(ConditionOp),
-    satisfied: z.boolean(),
+    satisfied: z.coerce.boolean(),
     thresholdId: z.coerce.number().int(),
     createdAt: z.coerce.date(),
     updatedAt: z.coerce.date(),
