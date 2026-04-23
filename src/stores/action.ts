@@ -21,6 +21,7 @@ export const useActionStore = defineStore("action", () => {
         
         const index = actions.value.findIndex((r) => r.id == parsed.id)
         if (index != -1) actions.value.splice(index, 1, parsed)
+        else actions.value.unshift(parsed)
         return parsed
     }
 
