@@ -62,13 +62,16 @@
 import SensorCard from "@/components/app/config/SensorCard.vue"
 import SensorCreateForm from "@/components/app/config/SensorCreateForm.vue"
 import SensorUpdateForm from "@/components/app/config/SensorUpdateForm.vue"
+import useWsEvent from "@/composables/use-ws-event"
+import type { ReadingSchema } from "@/schemas/ReadingSchema"
 import type { SensorCreateSchema, SensorSchema, SensorUpdateSchema } from "@/schemas/SensorSchema"
+import type { WsEventHandler } from "@/schemas/WsEventSchema"
 import { useNetworkStore } from "@/stores/network"
 import { useSensorStore } from "@/stores/sensor"
 import { useToastStore } from "@/stores/toast"
 import { storeToRefs } from "pinia"
 import type { SubmissionContext } from "vee-validate"
-import { onMounted, ref } from "vue"
+import { onMounted, onUnmounted, ref } from "vue"
 
 //
 
@@ -82,6 +85,7 @@ const { sensors } = storeToRefs(sensorStore)
 const showSensorCreateModal = ref(false)
 const showSensorUpdateModal = ref(false)
 const selectedSensor = ref<SensorSchema>()
+const wsEvent = useWsEvent()
 
 // --- Sensor Actions
 const onClickCopy = async (sensor: SensorSchema) => {
@@ -136,17 +140,41 @@ const onSubmitSensorUpdateForm = async (
 		.then(res => toastStore.success(`"${res.name}" updated successfully.`))
 		.then(() => showSensorUpdateModal.value = false)
 		.then(() => ctx.resetForm())
-		.catch(onFormError)
+	.catch(onFormError)
 }
 
 //
 
+const onWsEventReading: WsEventHandler<ReadingSchema> = data => {
+	for (const reading of data) {
+		const index = sensors.value.findIndex(sensor => sensor.id == reading.sensorId)
+		if (index == -1) continue
+
+		const current = sensors.value[index]
+		if (!current) continue
+
+		const sensor: SensorSchema = { ...current, lastread: new Date(reading.createdAt).getTime() }
+		sensors.value.splice(index, 1, sensor)
+		if (selectedSensor.value?.id == sensor.id) selectedSensor.value = sensor
+	}
+}
+
+const onMountedWs = async () => {
+	const url = new URL(import.meta.env.VITE_API_URL)
+	await Promise
+		.resolve()
+		.then(() => wsEvent.connect(`${url.host}/ws/app`))
+		.catch(() => toastStore.error("Failed to connect realtime."))
+	wsEvent.listen("Reading", "Create", onWsEventReading)
+}
+
 const onMountedCb = async () => {
 	if (!networkStore.connected) return toastStore.error("You are offline.")
-	await Promise.all([sensorStore.retrieve()])
+	await Promise.all([onMountedWs(), sensorStore.retrieve()])
 }
 
 onMounted(() => onMountedCb().catch(onFormError))
+onUnmounted(() => wsEvent.disconnect())
 
 //
 
