@@ -15,6 +15,7 @@ import DetectionPreviewView from "@/views/app/dashboard/detection/DetectionPrevi
 import { redirect404 } from "@/middlewares/404.middleware"
 import ActuatorView from "@/views/app/config/ActuatorView.vue"
 import SensorView from "@/views/app/config/SensorView.vue"
+import ThresholdView from "@/views/app/config/ThresholdView.vue"
 
 //
 
@@ -102,6 +103,12 @@ const routes: RouteRecordRaw[] = [
         name: "Config Sensor",
         meta: { layout: "app/config" },
         component: SensorView,
+    },
+    {
+        path: "/app/config/threshold",
+        name: "Config Threshold",
+        meta: { layout: "app/config" },
+        component: ThresholdView,
     },
     {
         path: '/:pathMatch(.*)*',
