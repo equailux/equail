@@ -17,6 +17,7 @@ import ActuatorView from "@/views/app/config/ActuatorView.vue"
 import SensorView from "@/views/app/config/SensorView.vue"
 import ThresholdView from "@/views/app/config/ThresholdView.vue"
 import ConditionView from "@/views/app/config/ConditionView.vue"
+import ActionView from "@/views/app/config/ActionView.vue"
 
 //
 
@@ -116,6 +117,12 @@ const routes: RouteRecordRaw[] = [
         name: "Config Condition",
         meta: { layout: "app/config" },
         component: ConditionView,
+    },
+    {
+        path: "/app/config/action",
+        name: "Config Action",
+        meta: { layout: "app/config" },
+        component: ActionView,
     },
     {
         path: '/:pathMatch(.*)*',
