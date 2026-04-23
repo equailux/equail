@@ -44,27 +44,25 @@
 		<v-dialog class="w-100 w-sm-75 w-md-50" v-model="showThresholdCreateModal">
 			<v-sheet class="pa-5 rounded bg-secondary">
 				<h4 class="mb-5 text-center">Create Threshold</h4>
-				<ThresholdForm
+				<ThresholdCreateForm
 					:sensors="sensors"
 					:disabled="!networkStore.connected || !sensors.length"
-					submit-text="Create Threshold"
 					@submit="onSubmitThresholdCreateForm"
 					@error="onFormError"
-				></ThresholdForm>
+				></ThresholdCreateForm>
 			</v-sheet>
 		</v-dialog>
 		<v-dialog class="w-100 w-sm-75 w-md-50" v-model="showThresholdUpdateModal">
 			<v-sheet class="pa-5 rounded bg-secondary">
 				<h4 class="mb-5 text-center">Update Threshold</h4>
-				<ThresholdForm
+				<ThresholdUpdateForm
 					v-if="selectedThreshold"
 					:threshold="selectedThreshold"
 					:sensors="sensors"
 					:disabled="!networkStore.connected || !sensors.length"
-					submit-text="Update Threshold"
 					@submit="onSubmitThresholdUpdateForm"
 					@error="onFormError"
-				></ThresholdForm>
+				></ThresholdUpdateForm>
 			</v-sheet>
 		</v-dialog>
 	</v-container>
@@ -72,7 +70,8 @@
 
 <script setup lang="ts">
 import ThresholdCard from "@/components/app/config/ThresholdCard.vue"
-import ThresholdForm from "@/components/app/config/ThresholdForm.vue"
+import ThresholdCreateForm from "@/components/app/config/ThresholdCreateForm.vue"
+import ThresholdUpdateForm from "@/components/app/config/ThresholdUpdateForm.vue"
 import {
 	ThresholdCreateSchema as ThresholdCreateFormSchema,
 	ThresholdUpdateSchema as ThresholdUpdateFormSchema,
@@ -134,7 +133,7 @@ const onFormError = (error: unknown) => {
 }
 
 const onSubmitThresholdCreateForm = async (
-	values: ThresholdCreateSchema | ThresholdUpdateSchema,
+	values: ThresholdCreateSchema,
 	ctx: SubmissionContext<{ [K in keyof ThresholdCreateSchema]?: unknown }>
 ) => {
 	if (!networkStore.connected) return toastStore.error("You are offline.")
@@ -149,7 +148,7 @@ const onSubmitThresholdCreateForm = async (
 }
 
 const onSubmitThresholdUpdateForm = async (
-	values: ThresholdCreateSchema | ThresholdUpdateSchema,
+	values: ThresholdUpdateSchema,
 	ctx: SubmissionContext<{ [K in keyof ThresholdUpdateSchema]?: unknown }>
 ) => {
 	if (!networkStore.connected) return toastStore.error("You are offline.")
