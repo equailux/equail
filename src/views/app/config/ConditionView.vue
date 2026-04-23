@@ -44,27 +44,25 @@
 		<v-dialog class="w-100 w-sm-75 w-md-50" v-model="showConditionCreateModal">
 			<v-sheet class="pa-5 rounded bg-secondary">
 				<h4 class="mb-5 text-center">Create Condition</h4>
-				<ConditionForm
+				<ConditionCreateForm
 					:thresholds="thresholds"
 					:disabled="!networkStore.connected || !thresholds.length"
-					submit-text="Create Condition"
 					@submit="onSubmitConditionCreateForm"
 					@error="onFormError"
-				></ConditionForm>
+				></ConditionCreateForm>
 			</v-sheet>
 		</v-dialog>
 		<v-dialog class="w-100 w-sm-75 w-md-50" v-model="showConditionUpdateModal">
 			<v-sheet class="pa-5 rounded bg-secondary">
 				<h4 class="mb-5 text-center">Update Condition</h4>
-				<ConditionForm
+				<ConditionUpdateForm
 					v-if="selectedCondition"
 					:condition="selectedCondition"
 					:thresholds="thresholds"
 					:disabled="!networkStore.connected || !thresholds.length"
-					submit-text="Update Condition"
 					@submit="onSubmitConditionUpdateForm"
 					@error="onFormError"
-				></ConditionForm>
+				></ConditionUpdateForm>
 			</v-sheet>
 		</v-dialog>
 	</v-container>
@@ -72,7 +70,8 @@
 
 <script setup lang="ts">
 import ConditionCard from "@/components/app/config/ConditionCard.vue"
-import ConditionForm from "@/components/app/config/ConditionForm.vue"
+import ConditionCreateForm from "@/components/app/config/ConditionCreateForm.vue"
+import ConditionUpdateForm from "@/components/app/config/ConditionUpdateForm.vue"
 import {
 	ConditionCreateSchema as ConditionCreateFormSchema,
 	ConditionUpdateSchema as ConditionUpdateFormSchema,
@@ -144,7 +143,7 @@ const onFormError = (error: unknown) => {
 }
 
 const onSubmitConditionCreateForm = async (
-	values: ConditionCreatePageSchema | ConditionUpdatePageSchema,
+	values: ConditionCreatePageSchema,
 	ctx: SubmissionContext<{ [K in keyof ConditionCreatePageSchema]?: unknown }>
 ) => {
 	if (!networkStore.connected) return toastStore.error("You are offline.")
@@ -159,8 +158,8 @@ const onSubmitConditionCreateForm = async (
 }
 
 const onSubmitConditionUpdateForm = async (
-	values: ConditionCreatePageSchema | ConditionUpdatePageSchema,
-	ctx: SubmissionContext<{ [K in keyof ConditionCreatePageSchema]?: unknown }>
+	values: ConditionUpdatePageSchema,
+	ctx: SubmissionContext<{ [K in keyof ConditionUpdatePageSchema]?: unknown }>
 ) => {
 	if (!networkStore.connected) return toastStore.error("You are offline.")
 	if (!selectedCondition.value) return toastStore.error("No condition selected.")
