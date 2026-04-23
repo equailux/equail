@@ -72,11 +72,14 @@
 import ConditionCard from "@/components/app/config/ConditionCard.vue"
 import ConditionCreateForm from "@/components/app/config/ConditionCreateForm.vue"
 import ConditionUpdateForm from "@/components/app/config/ConditionUpdateForm.vue"
+import useWsEvent from "@/composables/use-ws-event"
 import {
 	ConditionCreateSchema as ConditionCreateFormSchema,
 	ConditionUpdateSchema as ConditionUpdateFormSchema,
 	type ConditionSchema,
 } from "@/schemas/ConditionSchema"
+import type { ThresholdSchema } from "@/schemas/ThresholdSchema"
+import type { WsEventHandler } from "@/schemas/WsEventSchema"
 import { useConditionStore } from "@/stores/condition"
 import { useNetworkStore } from "@/stores/network"
 import { useThresholdStore } from "@/stores/threshold"
@@ -111,6 +114,7 @@ const { thresholds } = storeToRefs(thresholdStore)
 const showConditionCreateModal = ref(false)
 const showConditionUpdateModal = ref(false)
 const selectedCondition = ref<ConditionSchema>()
+const wsEvent = useWsEvent()
 
 const thresholdsById = computed(() => new Map(thresholds.value.map(threshold => [threshold.id, threshold.name])))
 
@@ -170,14 +174,42 @@ const onSubmitConditionUpdateForm = async (
 		.then(res => toastStore.success(`Condition for "${getThresholdName(res.thresholdId)}" updated successfully.`))
 		.then(() => showConditionUpdateModal.value = false)
 		.then(() => ctx.resetForm())
-		.catch(onFormError)
+	.catch(onFormError)
 }
 
 //
 
+const syncById = <T extends { id: number }>(items: T[], updated: T) => {
+	const index = items.findIndex(item => item.id == updated.id)
+	if (index == -1) return
+	items.splice(index, 1, updated)
+}
+
+const onWsEventCondition: WsEventHandler<ConditionSchema> = data => {
+	for (const condition of data) {
+		syncById(conditions.value, condition)
+		if (selectedCondition.value?.id == condition.id) selectedCondition.value = condition
+	}
+}
+
+const onWsEventThreshold: WsEventHandler<ThresholdSchema> = data => {
+	for (const threshold of data) syncById(thresholds.value, threshold)
+}
+
+const onMountedWs = async () => {
+	const url = new URL(import.meta.env.VITE_API_URL)
+	await Promise
+		.resolve()
+		.then(() => wsEvent.connect(`${url.host}/ws/app`))
+		.catch(() => toastStore.error("Failed to connect realtime."))
+	wsEvent.listen("Condition", "Update", onWsEventCondition)
+	wsEvent.listen("Threshold", "Update", onWsEventThreshold)
+}
+
 const onMountedCb = async () => {
 	if (!networkStore.connected) return toastStore.error("You are offline.")
 	await Promise.all([
+		onMountedWs(),
 		conditionStore.retrieve(),
 		thresholdStore.retrieve(),
 	])
@@ -187,6 +219,7 @@ const onUnmountedCb = () => {
 	showConditionCreateModal.value = false
 	showConditionUpdateModal.value = false
 	selectedCondition.value = undefined
+	wsEvent.disconnect()
 }
 
 onMounted(() => onMountedCb().catch(onFormError))

@@ -72,6 +72,7 @@
 import ThresholdCard from "@/components/app/config/ThresholdCard.vue"
 import ThresholdCreateForm from "@/components/app/config/ThresholdCreateForm.vue"
 import ThresholdUpdateForm from "@/components/app/config/ThresholdUpdateForm.vue"
+import useWsEvent from "@/composables/use-ws-event"
 import {
 	ThresholdCreateSchema as ThresholdCreateFormSchema,
 	ThresholdUpdateSchema as ThresholdUpdateFormSchema,
@@ -79,6 +80,7 @@ import {
 	type ThresholdSchema,
 	type ThresholdUpdateSchema,
 } from "@/schemas/ThresholdSchema"
+import type { WsEventHandler } from "@/schemas/WsEventSchema"
 import { useNetworkStore } from "@/stores/network"
 import { useSensorStore } from "@/stores/sensor"
 import { useThresholdStore } from "@/stores/threshold"
@@ -101,6 +103,7 @@ const { sensors } = storeToRefs(sensorStore)
 const showThresholdCreateModal = ref(false)
 const showThresholdUpdateModal = ref(false)
 const selectedThreshold = ref<ThresholdSchema>()
+const wsEvent = useWsEvent()
 
 const sensorsById = computed(() => new Map(sensors.value.map(sensor => [sensor.id, sensor.name])))
 
@@ -160,14 +163,34 @@ const onSubmitThresholdUpdateForm = async (
 		.then(res => toastStore.success(`"${res.name}" updated successfully.`))
 		.then(() => showThresholdUpdateModal.value = false)
 		.then(() => ctx.resetForm())
-		.catch(onFormError)
+	.catch(onFormError)
 }
 
 //
 
+const onWsEventThreshold: WsEventHandler<ThresholdSchema> = data => {
+	for (const threshold of data) {
+		const index = thresholds.value.findIndex(item => item.id == threshold.id)
+		if (index == -1) continue
+
+		thresholds.value.splice(index, 1, threshold)
+		if (selectedThreshold.value?.id == threshold.id) selectedThreshold.value = threshold
+	}
+}
+
+const onMountedWs = async () => {
+	const url = new URL(import.meta.env.VITE_API_URL)
+	await Promise
+		.resolve()
+		.then(() => wsEvent.connect(`${url.host}/ws/app`))
+		.catch(() => toastStore.error("Failed to connect realtime."))
+	wsEvent.listen("Threshold", "Update", onWsEventThreshold)
+}
+
 const onMountedCb = async () => {
 	if (!networkStore.connected) return toastStore.error("You are offline.")
 	await Promise.all([
+		onMountedWs(),
 		thresholdStore.retrieve(),
 		sensorStore.retrieve(),
 	])
@@ -177,6 +200,7 @@ const onUnmountedCb = () => {
 	showThresholdCreateModal.value = false
 	showThresholdUpdateModal.value = false
 	selectedThreshold.value = undefined
+	wsEvent.disconnect()
 }
 
 onMounted(() => onMountedCb().catch(onFormError))

@@ -75,11 +75,15 @@
 import ActionCard from "@/components/app/config/ActionCard.vue"
 import ActionCreateForm from "@/components/app/config/ActionCreateForm.vue"
 import ActionUpdateForm from "@/components/app/config/ActionUpdateForm.vue"
+import useWsEvent from "@/composables/use-ws-event"
 import {
 	ActionCreateSchema as ActionCreateFormSchema,
 	ActionUpdateSchema as ActionUpdateFormSchema,
 	type ActionSchema,
 } from "@/schemas/ActionSchema"
+import type { ActuatorSchema } from "@/schemas/ActuatorSchema"
+import type { ThresholdSchema } from "@/schemas/ThresholdSchema"
+import type { WsEventHandler } from "@/schemas/WsEventSchema"
 import { useActionStore } from "@/stores/action"
 import { useActuatorStore } from "@/stores/actuator"
 import { useNetworkStore } from "@/stores/network"
@@ -119,6 +123,7 @@ const { thresholds } = storeToRefs(thresholdStore)
 const showActionCreateModal = ref(false)
 const showActionUpdateModal = ref(false)
 const selectedAction = ref<ActionSchema>()
+const wsEvent = useWsEvent()
 
 const actuatorsById = computed(() => new Map(actuators.value.map(actuator => [actuator.id, actuator.name])))
 const thresholdsById = computed(() => new Map(thresholds.value.map(threshold => [threshold.id, threshold.name])))
@@ -181,14 +186,39 @@ const onSubmitActionUpdateForm = async (
 		.then(res => toastStore.success(`Action for "${getThresholdName(res.thresholdId)}" updated successfully.`))
 		.then(() => showActionUpdateModal.value = false)
 		.then(() => ctx.resetForm())
-		.catch(onFormError)
+	.catch(onFormError)
 }
 
 //
 
+const syncById = <T extends { id: number }>(items: T[], updated: T) => {
+	const index = items.findIndex(item => item.id == updated.id)
+	if (index == -1) return
+	items.splice(index, 1, updated)
+}
+
+const onWsEventActuator: WsEventHandler<ActuatorSchema> = data => {
+	for (const actuator of data) syncById(actuators.value, actuator)
+}
+
+const onWsEventThreshold: WsEventHandler<ThresholdSchema> = data => {
+	for (const threshold of data) syncById(thresholds.value, threshold)
+}
+
+const onMountedWs = async () => {
+	const url = new URL(import.meta.env.VITE_API_URL)
+	await Promise
+		.resolve()
+		.then(() => wsEvent.connect(`${url.host}/ws/app`))
+		.catch(() => toastStore.error("Failed to connect realtime."))
+	wsEvent.listen("Actuator", "Update", onWsEventActuator)
+	wsEvent.listen("Threshold", "Update", onWsEventThreshold)
+}
+
 const onMountedCb = async () => {
 	if (!networkStore.connected) return toastStore.error("You are offline.")
 	await Promise.all([
+		onMountedWs(),
 		actionStore.retrieve(),
 		actuatorStore.retrieve(),
 		thresholdStore.retrieve(),
@@ -199,6 +229,7 @@ const onUnmountedCb = () => {
 	showActionCreateModal.value = false
 	showActionUpdateModal.value = false
 	selectedAction.value = undefined
+	wsEvent.disconnect()
 }
 
 onMounted(() => onMountedCb().catch(onFormError))
