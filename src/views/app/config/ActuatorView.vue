@@ -62,13 +62,15 @@
 import ActuatorCard from "@/components/app/config/ActuatorCard.vue"
 import ActuatorCreateForm from "@/components/app/config/ActuatorCreateForm.vue"
 import ActuatorUpdateForm from "@/components/app/config/ActuatorUpdateForm.vue"
+import useWsEvent from "@/composables/use-ws-event"
 import type { ActuatorCreateSchema, ActuatorSchema, ActuatorUpdateSchema } from "@/schemas/ActuatorSchema"
+import type { WsEventHandler } from "@/schemas/WsEventSchema"
 import { useActuatorStore } from "@/stores/actuator"
 import { useNetworkStore } from "@/stores/network"
 import { useToastStore } from "@/stores/toast"
 import { storeToRefs } from "pinia"
 import type { SubmissionContext } from "vee-validate"
-import { onMounted, ref } from "vue"
+import { onMounted, onUnmounted, ref } from "vue"
 
 //
 
@@ -82,6 +84,7 @@ const { actuators } = storeToRefs(actuatorStore)
 const showActuatorCreateModal = ref(false)
 const showActuatorUpdateModal = ref(false)
 const selectedActuator = ref<ActuatorSchema>()
+const wsEvent = useWsEvent()
 
 // --- Actuator Actions
 const onClickCopy = async (actuator: ActuatorSchema) => {
@@ -136,17 +139,37 @@ const onSubmitActuatorUpdateForm = async (
 		.then(res => toastStore.success(`"${res.name}" updated successfully.`))
 		.then(() => showActuatorUpdateModal.value = false)
 		.then(() => ctx.resetForm())
-		.catch(onFormError)
+	.catch(onFormError)
 }
 
 //
 
+const onWsEventActuator: WsEventHandler<ActuatorSchema> = data => {
+	for (const actuator of data) {
+		const index = actuators.value.findIndex(item => item.id == actuator.id)
+		if (index == -1) continue
+
+		actuators.value.splice(index, 1, actuator)
+		if (selectedActuator.value?.id == actuator.id) selectedActuator.value = actuator
+	}
+}
+
+const onMountedWs = async () => {
+	const url = new URL(import.meta.env.VITE_API_URL)
+	await Promise
+		.resolve()
+		.then(() => wsEvent.connect(`${url.host}/ws/app`))
+		.catch(() => toastStore.error("Failed to connect realtime."))
+	wsEvent.listen("Actuator", "Update", onWsEventActuator)
+}
+
 const onMountedCb = async () => {
 	if (!networkStore.connected) return toastStore.error("You are offline.")
-	await Promise.all([actuatorStore.retrieve()])
+	await Promise.all([onMountedWs(), actuatorStore.retrieve()])
 }
 
 onMounted(() => onMountedCb().catch(onFormError))
+onUnmounted(() => wsEvent.disconnect())
 
 //
 </script>
