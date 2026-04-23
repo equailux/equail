@@ -56,6 +56,13 @@
 					prepend-icon="mdi-tune-variant"
 					@click="page = `Condition`"
 				></v-list-item>
+				<v-list-item
+					link
+					to="/app/config/action"
+					title="Action"
+					prepend-icon="mdi-lightning-bolt-outline"
+					@click="page = `Action`"
+				></v-list-item>
 			</v-list>
 		</v-navigation-drawer>
 		<v-app-bar class="border-b bg-primary" elevation="0">
@@ -113,6 +120,10 @@
                 <v-icon>mdi-tune-variant</v-icon>
                 <span>Condition</span>
             </v-btn>
+			<v-btn to="/app/config/action" value="Action">
+                <v-icon>mdi-lightning-bolt-outline</v-icon>
+                <span>Action</span>
+            </v-btn>
 		</v-bottom-navigation>
 	</v-layout>
 </template>
@@ -150,6 +161,7 @@ watch(
 		if (path == "/app/config/actuator") page.value = "Actuator"
 		else if (path == "/app/config/threshold") page.value = "Threshold"
 		else if (path == "/app/config/condition") page.value = "Condition"
+		else if (path == "/app/config/action") page.value = "Action"
 		else page.value = "Sensor"
 	},
 	{ immediate: true }
