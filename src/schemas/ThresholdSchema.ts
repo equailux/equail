@@ -13,7 +13,7 @@ const ThresholdSchema = z.object({
 	icon: z.string().min(1),
 	message: z.string().min(1),
 	operator: z.enum(ThresholdOp),
-	activated: z.boolean(),
+	activated: z.coerce.boolean(),
 	sensorId: z.coerce.number().int(),
 	createdAt: z.coerce.date(),
 	updatedAt: z.coerce.date(),
