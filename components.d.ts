@@ -14,6 +14,8 @@ declare module 'vue' {
     ActuatorCard: typeof import('./src/components/app/config/ActuatorCard.vue')['default']
     ActuatorCreateForm: typeof import('./src/components/app/config/ActuatorCreateForm.vue')['default']
     ActuatorUpdateForm: typeof import('./src/components/app/config/ActuatorUpdateForm.vue')['default']
+    ConditionCard: typeof import('./src/components/app/config/ConditionCard.vue')['default']
+    ConditionForm: typeof import('./src/components/app/config/ConditionForm.vue')['default']
     ImageBoundingBoxRenderer: typeof import('./src/components/app/dashboard/detection/ImageBoundingBoxRenderer.vue')['default']
     MortalityCreateForm: typeof import('./src/components/app/dashboard/MortalityCreateForm.vue')['default']
     ReadingBarChart: typeof import('./src/components/app/analytics/ReadingBarChart.vue')['default']
