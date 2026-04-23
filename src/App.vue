@@ -41,6 +41,7 @@ import { useServerStore } from './stores/server';
 import { Capacitor } from '@capacitor/core';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { SafeArea, type SafeAreaInsets } from "capacitor-plugin-safe-area"
+import AppConfigLayout from './layouts/AppConfigLayout.vue';
 
 //
 
@@ -57,6 +58,7 @@ const layouts: Record<string, Component> = {
 	"app": AppLayout,
 	"dashboard": DashboardLayout,
 	"detection": DetectionLayout,
+	"app/config": AppConfigLayout,
 	"default": AppLayout,
 }
 
