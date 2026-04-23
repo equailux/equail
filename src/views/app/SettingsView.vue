@@ -75,6 +75,24 @@
 			<v-col cols="12" sm="6">
 				<div class="border rounded-lg elevation-1 overflow-hidden">
 					<div class="pa-2 px-4 border-b">
+						<h5 class="text-grey-darken-1">DEVICES</h5>
+					</div>
+					<div class="pa-4 d-flex flex-column ">
+						<div class="pt-2">
+							<v-btn
+								to="/app/config/sensor"
+								text="Configure"
+								color="primary"
+								class="w-100"
+								append-icon="mdi-wrench"
+							></v-btn>
+						</div>
+					</div>
+				</div>
+			</v-col>
+			<v-col cols="12" sm="6">
+				<div class="border rounded-lg elevation-1 overflow-hidden">
+					<div class="pa-2 px-4 border-b">
 						<h5 class="text-grey-darken-1">ACTIONS</h5>
 					</div>
 					<div class="pa-4 d-flex flex-column ">
