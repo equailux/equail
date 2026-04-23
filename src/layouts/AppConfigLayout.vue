@@ -17,6 +17,16 @@
 					></v-list-item>
 				</v-list>
 			</template>
+			<v-divider></v-divider>
+			<v-list>
+				<v-list-item
+					link
+					to="/app/settings"
+					title="Settings"
+					prepend-icon="mdi-arrow-left"
+				></v-list-item>
+			</v-list>
+			<v-divider></v-divider>
 			<v-list density="compact" nav>
 				<v-list-item
 					link
