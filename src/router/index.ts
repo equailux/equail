@@ -16,6 +16,7 @@ import { redirect404 } from "@/middlewares/404.middleware"
 import ActuatorView from "@/views/app/config/ActuatorView.vue"
 import SensorView from "@/views/app/config/SensorView.vue"
 import ThresholdView from "@/views/app/config/ThresholdView.vue"
+import ConditionView from "@/views/app/config/ConditionView.vue"
 
 //
 
@@ -109,6 +110,12 @@ const routes: RouteRecordRaw[] = [
         name: "Config Threshold",
         meta: { layout: "app/config" },
         component: ThresholdView,
+    },
+    {
+        path: "/app/config/condition",
+        name: "Config Condition",
+        meta: { layout: "app/config" },
+        component: ConditionView,
     },
     {
         path: '/:pathMatch(.*)*',
