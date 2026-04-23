@@ -11,6 +11,9 @@ export {}
 /* prettier-ignore */
 declare module 'vue' {
   export interface GlobalComponents {
+    ActuatorCard: typeof import('./src/components/app/config/ActuatorCard.vue')['default']
+    ActuatorCreateForm: typeof import('./src/components/app/config/ActuatorCreateForm.vue')['default']
+    ActuatorUpdateForm: typeof import('./src/components/app/config/ActuatorUpdateForm.vue')['default']
     ImageBoundingBoxRenderer: typeof import('./src/components/app/dashboard/detection/ImageBoundingBoxRenderer.vue')['default']
     MortalityCreateForm: typeof import('./src/components/app/dashboard/MortalityCreateForm.vue')['default']
     ReadingBarChart: typeof import('./src/components/app/analytics/ReadingBarChart.vue')['default']
@@ -20,6 +23,8 @@ declare module 'vue' {
     SensorCard: typeof import('./src/components/app/config/SensorCard.vue')['default']
     SensorCreateForm: typeof import('./src/components/app/config/SensorCreateForm.vue')['default']
     SensorUpdateForm: typeof import('./src/components/app/config/SensorUpdateForm.vue')['default']
+    ThresholdCard: typeof import('./src/components/app/config/ThresholdCard.vue')['default']
+    ThresholdForm: typeof import('./src/components/app/config/ThresholdForm.vue')['default']
     ToastQueue: typeof import('./src/components/ToastQueue.vue')['default']
     UserForgotPasswordForm: typeof import('./src/components/auth/UserForgotPasswordForm.vue')['default']
     UserResetPasswordForm: typeof import('./src/components/auth/UserResetPasswordForm.vue')['default']

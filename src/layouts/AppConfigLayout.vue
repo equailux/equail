@@ -42,6 +42,13 @@
 					prepend-icon="mdi-toggle-switch-outline"
 					@click="page = `Actuator`"
 				></v-list-item>
+				<v-list-item
+					link
+					to="/app/config/threshold"
+					title="Threshold"
+					prepend-icon="mdi-alert-outline"
+					@click="page = `Threshold`"
+				></v-list-item>
 			</v-list>
 		</v-navigation-drawer>
 		<v-app-bar class="border-b bg-primary" elevation="0">
@@ -91,6 +98,10 @@
                 <v-icon>mdi-toggle-switch-outline</v-icon>
                 <span>Actuator</span>
             </v-btn>
+			<v-btn to="/app/config/threshold" value="Threshold">
+                <v-icon>mdi-alert-outline</v-icon>
+                <span>Threshold</span>
+            </v-btn>
 		</v-bottom-navigation>
 	</v-layout>
 </template>
@@ -126,6 +137,7 @@ watch(
 	() => route.path,
 	path => {
 		if (path == "/app/config/actuator") page.value = "Actuator"
+		else if (path == "/app/config/threshold") page.value = "Threshold"
 		else page.value = "Sensor"
 	},
 	{ immediate: true }
