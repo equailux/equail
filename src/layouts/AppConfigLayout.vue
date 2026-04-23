@@ -20,10 +20,17 @@
 			<v-list density="compact" nav>
 				<v-list-item
 					link
-					to="/app/config/esp"
-					title="Esp"
-					prepend-icon="mdi-chip"
-					@click="page = `Esp`"
+					to="/app/config/sensor"
+					title="Sensor"
+					prepend-icon="mdi-sine-wave"
+					@click="page = `Sensor`"
+				></v-list-item>
+				<v-list-item
+					link
+					to="/app/config/actuator"
+					title="Actuator"
+					prepend-icon="mdi-toggle-switch-outline"
+					@click="page = `Actuator`"
 				></v-list-item>
 			</v-list>
 		</v-navigation-drawer>
@@ -66,26 +73,32 @@
             class="position-fixed bottom-0 left-0" 
 			v-model="page"
 		>
-			<v-btn to="/app/config/esp" value="Esp">
-                <v-icon>mdi-chip-outline</v-icon>
-                <span>Esp</span>
+			<v-btn to="/app/config/sensor" value="Sensor">
+                <v-icon>mdi-sine-wave</v-icon>
+                <span>Sensor</span>
+            </v-btn>
+			<v-btn to="/app/config/actuator" value="Actuator">
+                <v-icon>mdi-toggle-switch-outline</v-icon>
+                <span>Actuator</span>
             </v-btn>
 		</v-bottom-navigation>
 	</v-layout>
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from "@/stores/auth";
-import { useNetworkStore } from "@/stores/network";
-import { Capacitor } from "@capacitor/core";
-import { computed, ref } from "vue";
-import { useDisplay } from "vuetify";
+import { useAuthStore } from "@/stores/auth"
+import { useNetworkStore } from "@/stores/network"
+import { Capacitor } from "@capacitor/core"
+import { computed, ref, watch } from "vue"
+import { useRoute } from "vue-router"
+import { useDisplay } from "vuetify"
 
 //
 
 // --- Utils
 const authStore = useAuthStore()
 const network = useNetworkStore()
+const route = useRoute()
 
 // --- User
 const page = ref("Sensor")
@@ -99,6 +112,14 @@ const isNative = Capacitor.isNativePlatform()
 
 //
 
-</script>
+watch(
+	() => route.path,
+	path => {
+		if (path == "/app/config/actuator") page.value = "Actuator"
+		else page.value = "Sensor"
+	},
+	{ immediate: true }
+)
 
-<style scoped></style>
+//
+</script>
