@@ -13,6 +13,17 @@ export const useAuthStore = defineStore("auth", () => {
 
     //
 
+    const whoami = async () => {
+        let error: any = undefined
+        await auth.getSession()
+            .then((res) => user.value = res.data?.user)
+            .catch((e) => error = e)
+
+        if (error) user.value = undefined
+        if (error) throw new Error(error)
+        return user.value
+    }
+
     const signUp = async (name: string, email: string, password: string) => {
         const ares = await auth.signUp.email({ name, email, password })
         if (ares.error) throw new Error(ares.error.message)
@@ -58,6 +69,7 @@ export const useAuthStore = defineStore("auth", () => {
 
     return {
         user,
+        whoami,
         signUp,
         signIn,
         signInSSO,
