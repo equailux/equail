@@ -3,8 +3,9 @@ import type { App } from "vue"
 
 //
 
-const config = { baseURL: `${import.meta.env.VITE_API_URL}/api/auth` }
-const auth: ReturnType<typeof createAuthClient<typeof config>> = createAuthClient(config)
+const baseURL = `${import.meta.env.VITE_API_URL}/api/auth`
+const fetchOptions = { credentials: "include" as const }
+const auth: ReturnType<typeof createAuthClient> = createAuthClient({ baseURL, fetchOptions })
 
 const install = (app: App) => {
 	app.config.globalProperties.$auth = auth
