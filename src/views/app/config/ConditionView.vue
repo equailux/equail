@@ -198,9 +198,12 @@ const onWsEventThreshold: WsEventHandler<ThresholdSchema> = data => {
 
 const onMountedWs = async () => {
 	const url = new URL(import.meta.env.VITE_API_URL)
+    url.protocol = url.protocol === "https:" ? "wss:" : "ws:"
+    url.pathname = "/ws/app"
+
 	await Promise
 		.resolve()
-		.then(() => wsEvent.connect(`${url.host}/ws/app`))
+		.then(() => wsEvent.connect(url.toString()))
 		.catch(() => toastStore.error("Failed to connect realtime."))
 	wsEvent.listen("Condition", "Update", onWsEventCondition)
 	wsEvent.listen("Threshold", "Update", onWsEventThreshold)
