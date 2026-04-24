@@ -86,7 +86,7 @@
 						</div>
 					</div>
 					<div class="mt-1 d-flex align-center ga-2">
-						<h1 class="text-accent">28.5</h1>
+						<h1 class="text-accent">{{ temperature }}</h1>
 						<span class="text-grey-darken-2 text-subtitle-2">C</span>
 					</div>
 				</div>
@@ -103,7 +103,7 @@
 						</div>
 					</div>
 					<div class="mt-1 d-flex align-center ga-2">
-						<h1 class="text-accent">65</h1>
+						<h1 class="text-accent">{{ humidity }}</h1>
 						<span class="text-grey-darken-2 text-subtitle-2">%</span>
 					</div>
 				</div>
@@ -120,7 +120,7 @@
 						</div>
 					</div>
 					<div class="mt-1 d-flex align-center ga-2">
-						<h1 class="text-accent">78</h1>
+						<h1 class="text-accent">{{ waterLevel }}</h1>
 						<span class="text-grey-darken-2 text-subtitle-2">%</span>
 					</div>
 				</div>
@@ -137,7 +137,7 @@
 						</div>
 					</div>
 					<div class="mt-1 d-flex align-center ga-2">
-						<h1 class="text-accent">20</h1>
+						<h1 class="text-accent">{{ noiseLevel }}</h1>
 						<span class="text-grey-darken-2 text-subtitle-2">%</span>
 					</div>
 				</div>
@@ -154,7 +154,7 @@
 						</div>
 					</div>
 					<div class="mt-1 d-flex align-center ga-2">
-						<h1 class="text-accent">54</h1>
+						<h1 class="text-accent">{{ feedLevel }}</h1>
 						<span class="text-grey-darken-2 text-subtitle-2">%</span>
 					</div>
 				</div>
@@ -190,6 +190,7 @@ const temperature = ref(25.9)
 const humidity = ref(65)
 const feedLevel = ref(70)
 const waterLevel = ref(80)
+const noiseLevel = ref(80)
 
 const onWsEventReading: WsEventHandler<ReadingSchema> = data => {
 	for (const { name, value } of data) {
@@ -197,6 +198,7 @@ const onWsEventReading: WsEventHandler<ReadingSchema> = data => {
 		if (name.toLowerCase().startsWith("humidity")) humidity.value = value
 		if (name.toLowerCase().startsWith("feed")) feedLevel.value = value
 		if (name.toLowerCase().startsWith("water")) waterLevel.value = value
+		if (name.toLowerCase().startsWith("noise")) noiseLevel.value = value
 	}
 }
 
