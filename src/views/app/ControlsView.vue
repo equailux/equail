@@ -36,7 +36,7 @@
 						prepend-icon="mdi-power"
 						:text="isLightOn ? `Turn Off` : `Turn On`"
 						:color="isLightOn ? `accent` : `secondary`"
-						:disabled="!network.connected"
+						:disabled="!networkStore.connected || !bulbActuator"
 						@click="isLightOn = !isLightOn"
 					></v-btn>
 					<span class="mt-3 text-grey-darken-1 text-caption">Idle - Standby mode</span>
@@ -47,18 +47,47 @@
 </template>
 
 <script setup lang="ts">
-import { useNetworkStore } from "@/stores/network";
-import { ref } from "vue"
+import type { ActuatorSchema } from "@/schemas/ActuatorSchema"
+import { useActuatorStore } from "@/stores/actuator"
+import { useNetworkStore } from "@/stores/network"
+import { storeToRefs } from "pinia"
+import { computed, onMounted, ref, watch } from "vue"
 
 //
 
-// --- Network
-const network = useNetworkStore()
+// --- Utilities
+const networkStore = useNetworkStore()
 
 // --- States
 const isLightOn = ref(false)
+const actuatorStore = useActuatorStore()
+const { actuators } = storeToRefs(actuatorStore)
+const bulbActuator = computed<ActuatorSchema | undefined>(() =>
+	actuators.value.find((actuator) => actuator.name.toLowerCase().includes("bulb"))
+)
 
 //
+
+const onMountedCb = async () => {
+	await actuatorStore.retrieve()
+	isLightOn.value = !!bulbActuator.value?.input
+}
+
+//
+
+watch(isLightOn, async (value, previousValue) => {
+	if (!bulbActuator.value || value == previousValue) return
+	if (!networkStore.connected) return
+
+	await actuatorStore.update({
+		id: bulbActuator.value.id,
+		input: value ? 1 : 0,
+	})
+})
+
+//
+
+onMounted(() => onMountedCb())
 
 </script>
 
