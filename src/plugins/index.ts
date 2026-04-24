@@ -4,11 +4,13 @@ import pinia from "./pinia"
 import api from "./api"
 import "chart.js/auto"
 import auth from "./auth"
+import motion from "./motion"
 
 //
 
 const registerPlugins = (app: App) => {
 	app.use(vuetify)
+	app.use(motion)
 	app.use(pinia)
 	app.use(auth)
 	app.use(api)
