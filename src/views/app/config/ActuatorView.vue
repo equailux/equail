@@ -18,6 +18,14 @@
 				</v-sheet>
 			</v-col>
 		</v-row>
+		<v-row v-if="!actuators.length" dense>
+			<v-col cols="12">
+				<v-sheet class="pa-6 text-center bg-primary rounded-lg">
+					<h5>No actuators yet</h5>
+					<small class="text-grey-darken-1 text-caption">Create an actuator to control connected devices from your actions.</small>
+				</v-sheet>
+			</v-col>
+		</v-row>
 		<v-row dense>
 			<v-col
 				v-for="actuator in actuators"
