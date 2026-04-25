@@ -18,6 +18,14 @@
 				</v-sheet>
 			</v-col>
 		</v-row>
+		<v-row v-if="!sensors.length" dense>
+			<v-col cols="12">
+				<v-sheet class="pa-6 text-center bg-primary rounded-lg">
+					<h5>No sensors yet</h5>
+					<small class="text-grey-darken-1 text-caption">Create a sensor to start collecting readings for your thresholds and actions.</small>
+				</v-sheet>
+			</v-col>
+		</v-row>
 		<v-row dense>
 			<v-col
 				v-for="sensor in sensors"
