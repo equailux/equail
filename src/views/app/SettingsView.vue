@@ -75,10 +75,32 @@
 			<v-col cols="12" sm="6">
 				<div class="border rounded-lg elevation-1 overflow-hidden">
 					<div class="pa-2 px-4 border-b">
-						<h5 class="text-grey-darken-1">DEVICES</h5>
+						<h5 class="text-grey-darken-1">CONFIGURATIONS</h5>
 					</div>
 					<div class="pa-4 d-flex flex-column ">
-						<div class="pt-2">
+						<div class="d-flex align-center ga-3">
+							<div 
+								class="pa-4 rounded-lg d-flex align-center justify-center"
+								style="width: 38px; height: 38px; background-color: rgba(var(--v-theme-accent), 0.1)"
+							>
+								<v-icon color="accent">mdi-code-tags</v-icon>
+							</div>
+							<div class="w-50">
+								<h5>Dev Mode</h5>
+								<small class="text-grey-darken-1 text-caption">
+									Configure devices and thresholds
+								</small>
+							</div>
+							<v-spacer></v-spacer>
+							<v-switch
+								inset
+								hide-details
+								color="accent"
+								base-color="accent"
+								v-model="devMode"
+							></v-switch>
+						</div>
+						<div v-if="devMode" class="pt-5 d-flex flex-column ">
 							<v-btn
 								to="/app/config/sensor"
 								text="Configure"
@@ -159,6 +181,9 @@ const onToggleTheme = (v: unknown) => {
 	localStorage.setItem("theme", newTheme)
 	theme.value = newTheme
 }
+
+// --- Configuration
+const devMode = ref(false)
 
 // --- Mobile App
 const appAndroidUrl = import.meta.env.VITE_APP_ANDROID_URL
