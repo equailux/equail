@@ -73,6 +73,12 @@
 					class="text-accent bg-transparent"
 					@click="isDrawer = !isDrawer"
 				></v-btn>
+				<v-btn
+					v-if="isNative"
+					to="/app/settings"
+					icon="mdi-arrow-left"
+					class="text-accent bg-transparent"
+				></v-btn>
 				<v-img
 					src="/logo.png"
 					class="ml-4"
