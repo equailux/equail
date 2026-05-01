@@ -112,7 +112,7 @@ const fetchCaptureImage = async () => {
 	isCaptureValidating.value = true
 
 	const { res, err } = await api
-		.get(`/api/capture/image/${capture.value.image}`)
+		.get(`/api/capture/image/${capture.value.image}`, { responseType: 'blob' })
 		.then((res) => ({ res, err: undefined }))
 		.catch((err) => ({ res: undefined, err }))
 
