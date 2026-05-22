@@ -121,7 +121,7 @@
 					</div>
 					<div class="mt-1 d-flex align-center ga-2">
 						<h1 class="text-accent">{{ waterLevel }}</h1>
-						<span class="text-grey-darken-2 text-subtitle-2">%</span>
+						<span class="text-grey-darken-2 text-subtitle-2">cm</span>
 					</div>
 				</div>
 			</v-col>
