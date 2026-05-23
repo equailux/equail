@@ -166,10 +166,12 @@
 <script setup lang="ts">
 import useWsEvent from "@/composables/use-ws-event"
 import type { CaptureSchema } from "@/schemas/CaptureSchema"
+import type { FeedSchema } from "@/schemas/FeedSchema"
 import type { ReadingSchema } from "@/schemas/ReadingSchema"
 import type { WsEventHandler } from "@/schemas/WsEventSchema"
 import { useCaptureStore } from "@/stores/capture"
 import { useDetectionStore } from "@/stores/detection"
+import { useFeedStore } from "@/stores/feed"
 import { useMortalityStore } from "@/stores/mortality"
 import { useNetworkStore } from "@/stores/network"
 import { useToastStore } from "@/stores/toast"
@@ -185,12 +187,19 @@ const networkStore = useNetworkStore()
 
 // --- Sensor Data
 const wsEvent = useWsEvent()
+const feedStore = useFeedStore()
 
-const temperature = ref(25.9)
-const humidity = ref(65)
-const feedLevel = ref(70)
-const waterLevel = ref(80)
-const noiseLevel = ref(80)
+const temperature = ref(0)
+const humidity = ref(0)
+const feedLevel = ref(0)
+const waterLevel = ref(0)
+const noiseLevel = ref(0)
+
+const onWsEventFeed: WsEventHandler<FeedSchema> = data => {
+	for (const { level } of data) {
+		feedLevel.value = level
+	}
+}
 
 const onWsEventReading: WsEventHandler<ReadingSchema> = data => {
 	for (const { name, value } of data) {
@@ -212,6 +221,7 @@ const onMountedWs = async () => {
 		.then(() => wsEvent.connect(url.toString()))
 		.catch(() => toastStore.error("Failed to connect realtime."))
 	wsEvent.listen("Reading", "Create", onWsEventReading)
+	wsEvent.listen("Feed", "Create", onWsEventFeed)
 }
 
 // --- Capture
@@ -256,10 +266,13 @@ const onMountedCb = async () => {
 	if (!networkStore.connected) return toastStore.error("You are offline.")
 	await Promise.all([
 		onMountedWs(),
+		feedStore.retrieve(),
 		captureStore.retrieve(),
 		detectionStore.retrieve(),
 		mortalityStore.retrieve(),
 	])
+
+	if (feedStore.latest) feedLevel.value = feedStore.latest.level
 }
 
 onMounted(onMountedCb)
