@@ -18,6 +18,7 @@ import SensorView from "@/views/app/config/SensorView.vue"
 import ThresholdView from "@/views/app/config/ThresholdView.vue"
 import ConditionView from "@/views/app/config/ConditionView.vue"
 import ActionView from "@/views/app/config/ActionView.vue"
+import FeedConfigView from "@/views/app/config/FeedConfigView.vue"
 import { redirectAuth, refreshAuth, requireAuth } from "@/middlewares/auth.middleware"
 
 //
@@ -139,6 +140,13 @@ const routes: RouteRecordRaw[] = [
         name: "Config Action",
         meta: { layout: "app/config" },
         component: ActionView,
+        beforeEnter: [refreshAuth, requireAuth],
+    },
+    {
+        path: "/app/config/feed",
+        name: "Config Feed",
+        meta: { layout: "app/config" },
+        component: FeedConfigView,
         beforeEnter: [refreshAuth, requireAuth],
     },
     {
