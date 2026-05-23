@@ -27,6 +27,16 @@
 			:disabled="isSubmitting || disabled"
 			:error-messages="stepperMsError"
 		></v-number-input>
+		<v-number-input
+			inset
+			label="Threshold (%)"
+			placeholder="Percentage (0-100)"
+			v-model="threshold"
+			:min="0"
+			:max="100"
+			:disabled="isSubmitting || disabled"
+			:error-messages="thresholdError"
+		></v-number-input>
 		<v-btn
 			type="submit"
 			text="Create Configuration"
@@ -64,12 +74,14 @@ const { handleSubmit, isSubmitting } = useForm({
 		servo1Ms: 0,
 		servo2Ms: 0,
 		stepperMs: 0,
+		threshold: 25,
 	},
 })
 
 const { value: servo1Ms, errorMessage: servo1MsError } = useField<number>("servo1Ms")
 const { value: servo2Ms, errorMessage: servo2MsError } = useField<number>("servo2Ms")
 const { value: stepperMs, errorMessage: stepperMsError } = useField<number>("stepperMs")
+const { value: threshold, errorMessage: thresholdError } = useField<number>("threshold")
 
 //
 

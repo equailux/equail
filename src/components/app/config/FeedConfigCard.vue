@@ -52,6 +52,13 @@
 					</div>
 					<span class="text-body-2 font-weight-bold">{{ config.stepperMs }} ms</span>
 				</div>
+				<div class="d-flex justify-space-between align-center">
+					<div class="d-flex align-center ga-2">
+						<v-icon size="small" color="grey-darken-1">mdi-percent-outline</v-icon>
+						<small class="text-grey-darken-1">Threshold</small>
+					</div>
+					<span class="text-body-2 font-weight-bold">{{ config.threshold }} %</span>
+				</div>
 			</v-sheet>
 		</v-card-text>
 	</v-card>
