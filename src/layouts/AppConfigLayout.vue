@@ -63,6 +63,13 @@
 					prepend-icon="mdi-lightning-bolt-outline"
 					@click="page = `Action`"
 				></v-list-item>
+				<v-list-item
+					link
+					to="/app/config/feed"
+					title="Feed"
+					prepend-icon="mdi-cog-sync"
+					@click="page = `Feed`"
+				></v-list-item>
 			</v-list>
 		</v-navigation-drawer>
 		<v-app-bar class="border-b bg-primary" elevation="0">
@@ -130,6 +137,10 @@
                 <v-icon>mdi-lightning-bolt-outline</v-icon>
                 <span>Action</span>
             </v-btn>
+			<v-btn to="/app/config/feed" value="Feed">
+                <v-icon>mdi-cog-sync</v-icon>
+                <span>Feed</span>
+            </v-btn>
 		</v-bottom-navigation>
 	</v-layout>
 </template>
@@ -168,6 +179,7 @@ watch(
 		else if (path == "/app/config/threshold") page.value = "Threshold"
 		else if (path == "/app/config/condition") page.value = "Condition"
 		else if (path == "/app/config/action") page.value = "Action"
+		else if (path == "/app/config/feed") page.value = "Feed"
 		else page.value = "Sensor"
 	},
 	{ immediate: true }
