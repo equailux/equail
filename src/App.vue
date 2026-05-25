@@ -42,10 +42,15 @@ import { Capacitor } from '@capacitor/core';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { SafeArea, type SafeAreaInsets } from "capacitor-plugin-safe-area"
 import AppConfigLayout from './layouts/AppConfigLayout.vue';
+import { PushNotifications, type PushNotificationSchema } from '@capacitor/push-notifications';
+import { useAuthStore } from './stores/auth';
+import { usePushStore } from './stores/push';
 
 //
 
 // --- Comp/Store
+const auth = useAuthStore()
+const push = usePushStore()
 const theme = useTheme()
 const toast = useToastStore()
 const network = useNetworkStore()
@@ -77,6 +82,12 @@ const paddingT = computed(() => safeArea.value ? `${safeArea.value.insets.top}px
 const paddingB = computed(() => safeArea.value ? `${safeArea.value.insets.bottom}px` : "env(safe-area-inset-bottom)")
 const appStyle = computed(() => native ? { '--safe-area-top': paddingT.value, '--safe-area-bottom': paddingB.value } : {})
 
+// --- Push Notifications
+const onReceivedPushNotification = (notification: PushNotificationSchema) => {
+	if (!notification.title || !notification.body) return
+	toast.info(notification.title)
+}
+
 //
 
 const onMountedCb = async () => {
@@ -95,6 +106,9 @@ const onMountedCb = async () => {
 	await network.listen()
 	await serverStore.connect(import.meta.env.VITE_API_URL)
 
+	// --- Push Notifications
+	if (auth.user) await push.connect()
+	if (native) PushNotifications.addListener("pushNotificationReceived", onReceivedPushNotification)
 }
 
 onMounted(onMountedCb)
