@@ -23,6 +23,10 @@ import { redirectAuth, refreshAuth, requireAuth } from "@/middlewares/auth.middl
 
 //
 
+const SystemErrorView = () => import("@/views/app/SystemErrorView.vue")
+
+//
+
 const routes: RouteRecordRaw[] = [
     {
         path: "/",
@@ -105,6 +109,13 @@ const routes: RouteRecordRaw[] = [
         name: "Analytics",
         meta: { layout: "app" },
         component: AnalyticsView,
+        beforeEnter: [refreshAuth, requireAuth],
+    },
+    {
+        path: "/app/system-error",
+        name: "System Error",
+        meta: { layout: "app" },
+        component: SystemErrorView,
         beforeEnter: [refreshAuth, requireAuth],
     },
     {
