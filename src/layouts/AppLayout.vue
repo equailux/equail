@@ -41,6 +41,13 @@
 				></v-list-item>
 				<v-list-item
 					link
+					to="/app/system-error"
+					title="System Errors"
+					prepend-icon="mdi-alert-circle-outline"
+					@click="page = `System Errors`"
+				></v-list-item>
+				<v-list-item
+					link
 					to="/app/settings"
 					title="Settings"
 					prepend-icon="mdi-cog-outline"
@@ -99,6 +106,10 @@
                 <v-icon>mdi-chart-line</v-icon>
                 <span>Analytics</span>
             </v-btn>
+			<v-btn to="/app/system-error" value="System Errors">
+                <v-icon>mdi-alert-circle-outline</v-icon>
+                <span>Errors</span>
+            </v-btn>
             <v-btn to="/app/settings" value="Settings">
                 <v-icon>mdi-cog-outline</v-icon>
                 <span>Settings</span>
@@ -108,17 +119,19 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from "@/stores/auth";
-import { useNetworkStore } from "@/stores/network";
-import { Capacitor } from "@capacitor/core";
-import { computed, ref } from "vue";
-import { useDisplay } from "vuetify";
+import { useAuthStore } from "@/stores/auth"
+import { useNetworkStore } from "@/stores/network"
+import { Capacitor } from "@capacitor/core"
+import { computed, ref, watch } from "vue"
+import { useRoute } from "vue-router"
+import { useDisplay } from "vuetify"
 
 //
 
 // --- Utils
 const authStore = useAuthStore()
 const network = useNetworkStore()
+const route = useRoute()
 
 // --- User
 const page = ref("Dashboard")
@@ -129,6 +142,20 @@ const isDrawer = ref(!smAndDown.value)
 const isMobile = computed(() => smAndDown.value)
 const isTablet = computed(() => !isMobile.value && mdAndDown.value)
 const isNative = Capacitor.isNativePlatform()
+
+//
+
+watch(
+	() => route.path,
+	path => {
+		if (path == "/app/controls") page.value = "Controls"
+		else if (path == "/app/analytics") page.value = "Analytics"
+		else if (path == "/app/system-error") page.value = "System Errors"
+		else if (path == "/app/settings") page.value = "Settings"
+		else page.value = "Dashboard"
+	},
+	{ immediate: true }
+)
 
 //
 
