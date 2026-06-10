@@ -34,7 +34,10 @@
 								hide-details
 								color="accent"
 								base-color="accent"
-								:disabled="!network.connected"
+								:disabled="!network.connected || settingsLoading"
+								:loading="settingsLoading"
+								:model-value="thresholdAlerts"
+								@update:model-value="onToggleThresholdAlerts"
 							></v-switch>
 						</div>
 					</div>
@@ -158,11 +161,13 @@
 </template>
 
 <script setup lang="ts">
-import { useAuthStore } from '@/stores/auth';
-import { useNetworkStore } from '@/stores/network';
-import { Capacitor } from '@capacitor/core';
-import { onMounted, ref } from 'vue';
-import { useTheme } from 'vuetify';
+import { useAuthStore } from "@/stores/auth"
+import { useNetworkStore } from "@/stores/network"
+import { useSettingsStore } from "@/stores/settings"
+import { useToastStore } from "@/stores/toast"
+import { Capacitor } from "@capacitor/core"
+import { onMounted, ref } from "vue"
+import { useTheme } from "vuetify"
 
 //
 
@@ -170,6 +175,36 @@ import { useTheme } from 'vuetify';
 const network = useNetworkStore()
 const isNative = Capacitor.isNativePlatform()
 const authStore = useAuthStore()
+const settingsStore = useSettingsStore()
+const toastStore = useToastStore()
+
+// --- Settings
+const settingsLoading = ref(false)
+const thresholdAlerts = ref(true)
+
+const onSettingsError = (error: unknown, fallback: string) => {
+	const message = error instanceof Error ? error.message : fallback
+	toastStore.error(message)
+}
+
+const onToggleThresholdAlerts = async (value: unknown) => {
+	if (!network.connected) return toastStore.error("You are offline.")
+
+	const previous = thresholdAlerts.value
+	const allowEnvironmentAlerts = !!value
+	thresholdAlerts.value = allowEnvironmentAlerts
+	settingsLoading.value = true
+
+	await settingsStore
+		.update({ allowEnvironmentAlerts })
+		.then(res => thresholdAlerts.value = res.allowEnvironmentAlerts)
+		.then(() => toastStore.success("Threshold alerts updated successfully."))
+		.catch(error => {
+			thresholdAlerts.value = previous
+			onSettingsError(error, "Failed to update threshold alerts.")
+		})
+		.finally(() => settingsLoading.value = false)
+}
 
 // --- Theme
 const theme = ref("light")
@@ -194,14 +229,20 @@ const onClickDownloadAndroidApp = () => {
 
 //
 
-const onMountedCb = () => {
+const onMountedCb = async () => {
 	theme.value = localStorage.getItem("theme") ?? "light"
+	if (!network.connected) return
+
+	settingsLoading.value = true
+	await settingsStore
+		.retrieve()
+		.then(res => thresholdAlerts.value = res.allowEnvironmentAlerts)
+		.catch(error => onSettingsError(error, "Failed to load settings."))
+		.finally(() => settingsLoading.value = false)
 }
 
-onMounted(onMountedCb)
+onMounted(() => onMountedCb())
 
 //
 
 </script>
-
-<style scoped></style>
