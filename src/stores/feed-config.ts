@@ -27,11 +27,16 @@ export const useFeedConfigStore = defineStore("feed-config", () => {
 		return parsed
 	}
 
+	const test = async () => {
+		await api.post(`/api/feed/test`)
+	}
+
 	//
 
 	return {
 		config,
 		retrieve,
+		test,
 		update,
 	}
 })

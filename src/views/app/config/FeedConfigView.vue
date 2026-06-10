@@ -2,9 +2,23 @@
 	<v-container class="bg-secondary" fluid>
 		<v-row dense>
 			<v-col cols="12">
-				<v-sheet color="transparent" class="pb-4">
-					<small class="text-accent">Manage feed automation timing</small>
-					<h3>Feed Configuration</h3>
+				<v-sheet
+					color="transparent"
+					class="pb-4 d-flex align-start justify-space-between ga-3"
+				>
+					<v-sheet color="transparent">
+						<small class="text-accent">Manage feed automation timing</small>
+						<h3>Feed Configuration</h3>
+					</v-sheet>
+					<v-btn
+						color="accent"
+						prepend-icon="mdi-play-circle-outline"
+						:disabled="!networkStore.connected || testing"
+						:loading="testing"
+						@click="onClickTestFeed"
+					>
+						Test
+					</v-btn>
 				</v-sheet>
 			</v-col>
 		</v-row>
@@ -60,10 +74,22 @@ const networkStore = useNetworkStore()
 const feedConfigStore = useFeedConfigStore()
 const { config } = storeToRefs(feedConfigStore)
 const showUpdateModal = ref(false)
+const testing = ref(false)
 
 // --- Actions
 const onClickEditConfig = () => {
 	showUpdateModal.value = true
+}
+
+const onClickTestFeed = async () => {
+	if (!networkStore.connected) return toastStore.error("You are offline.")
+
+	testing.value = true
+	await feedConfigStore
+		.test()
+		.then(() => toastStore.success(`Feed test started successfully.`))
+		.catch(onFormError)
+		.finally(() => testing.value = false)
 }
 
 // --- Forms
