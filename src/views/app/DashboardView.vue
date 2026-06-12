@@ -37,6 +37,35 @@
 				</div>
 			</v-col>
 			<v-col cols="12" sm="6">
+				<div class="pa-4 rounded-lg bg-primary border elevation-1">
+					<div class="d-flex align-center justify-space-between">
+						<h5 class="text-accent">EGGS COLLECTED</h5>
+						<div
+							class="pa-2 rounded-lg d-flex align-center justify-center bg-secondary"
+							style="width: 32px; height: 32px"
+						>
+							<v-icon size="x-small" color="accent">mdi-basket-outline</v-icon>
+						</div>
+					</div>
+					<div class="mt-2 d-flex align-center ga-2">
+						<h1 class="text-accent">{{ collectionsTodayTotal }}</h1>
+						<span class="text-grey-darken-2 text-subtitle-2">today</span>
+					</div>
+					<div class="d-flex align-center justify-space-between">
+						<span class="text-grey-darken-1 text-caption">
+							{{ collectionsThisMonthTotal }} eggs collected this month
+						</span>
+						<v-btn
+							to="/app/dashboard/collection"
+							size="x-small"
+							icon="mdi-arrow-right"
+							class="text-black bg-transparent"
+							:disabled="!networkStore.connected"
+						></v-btn>
+					</div>
+				</div>
+			</v-col>
+			<v-col cols="12" sm="6">
 				<div class="pa-4 rounded-lg border elevation-1" style="background-color: #f9ebeb;">
 					<div class="d-flex align-center justify-space-between">
 						<h5 class="text-grey-darken-1">MORTALITY RATE</h5>
@@ -170,6 +199,7 @@ import type { FeedSchema } from "@/schemas/FeedSchema"
 import type { ReadingSchema } from "@/schemas/ReadingSchema"
 import type { WsEventHandler } from "@/schemas/WsEventSchema"
 import { useCaptureStore } from "@/stores/capture"
+import { useCollectionStore } from "@/stores/collection"
 import { useDetectionStore } from "@/stores/detection"
 import { useFeedStore } from "@/stores/feed"
 import { useMortalityStore } from "@/stores/mortality"
@@ -260,6 +290,12 @@ const { today: mortalitiesToday, monthly: mortalitiesThisMonth } = storeToRefs(m
 const mortalitiesTodayTotal = computed(() => mortalitiesToday.value.reduce((p, c) => p + c.count, 0))
 const mortalitiesThisMonthTotal = computed(() => mortalitiesThisMonth.value.reduce((p, c) => p + c.count, 0))
 
+// --- Collection
+const collectionStore = useCollectionStore()
+const { today: collectionsToday, monthly: collectionsThisMonth } = storeToRefs(collectionStore)
+const collectionsTodayTotal = computed(() => collectionsToday.value.reduce((p, c) => p + c.count, 0))
+const collectionsThisMonthTotal = computed(() => collectionsThisMonth.value.reduce((p, c) => p + c.count, 0))
+
 //
 
 const onMountedCb = async () => {
@@ -270,6 +306,7 @@ const onMountedCb = async () => {
 		captureStore.retrieve(),
 		detectionStore.retrieve(),
 		mortalityStore.retrieve(),
+		collectionStore.retrieve(),
 	])
 
 	if (feedStore.latest) feedLevel.value = feedStore.latest.level

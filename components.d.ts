@@ -17,6 +17,7 @@ declare module 'vue' {
     ActuatorCard: typeof import('./src/components/app/config/ActuatorCard.vue')['default']
     ActuatorCreateForm: typeof import('./src/components/app/config/ActuatorCreateForm.vue')['default']
     ActuatorUpdateForm: typeof import('./src/components/app/config/ActuatorUpdateForm.vue')['default']
+    CollectionCreateForm: typeof import('./src/components/app/dashboard/CollectionCreateForm.vue')['default']
     ConditionCard: typeof import('./src/components/app/config/ConditionCard.vue')['default']
     ConditionCreateForm: typeof import('./src/components/app/config/ConditionCreateForm.vue')['default']
     ConditionUpdateForm: typeof import('./src/components/app/config/ConditionUpdateForm.vue')['default']
