@@ -22,7 +22,7 @@
 					</div>
 					<div class="mt-2 d-flex align-center ga-2">
 						<h1>{{ eggCountTotal }}</h1>
-						<span class="text-grey-lighten-2 text-subtitle-2">total</span>
+						<span class="text-grey-lighten-2 text-subtitle-2">today</span>
 					</div>
 					<div class="d-flex align-center justify-space-between">
 						<span class="text-grey-lighten-1 text-caption">+12% from yesterday</span>	
@@ -206,6 +206,7 @@ import { useMortalityStore } from "@/stores/mortality"
 import { useNetworkStore } from "@/stores/network"
 import { useToastStore } from "@/stores/toast"
 import { groupByKey } from "@/utils/group"
+import { isSameDay } from "date-fns"
 import { storeToRefs } from "pinia"
 import { computed, onMounted, ref } from "vue"
 
@@ -257,29 +258,23 @@ const onMountedWs = async () => {
 // --- Capture
 const captureStore = useCaptureStore()
 const { captures } = storeToRefs(captureStore)
-const capturesByCam = computed(() => groupByKey(captures.value, (c) => c.camera))
+const todayCaptures = computed(() => captures.value.filter(c => isSameDay(c.createdAt, new Date())))
+const latestCapture = computed(() => getLatestCapture(todayCaptures.value))
 
 // --- Detections
 const detectionStore = useDetectionStore()
 const { detections } = storeToRefs(detectionStore)
-const detectionsByCid = computed(() => groupByKey(detections.value, (d) => d.captureId))
+const eggDetections = computed(() => detections.value.filter(d => d.class.toLowerCase().includes("egg")))
+const detectionsByCid = computed(() => groupByKey(eggDetections.value, d => d.captureId))
 
 // --- Egg Summary
-const eggCountTotal = computed(() =>
-	[...capturesByCam.value.values()]
-		.reduce((p, c) => p + countNewDetections(c), 0)
-)
+const eggCountTotal = computed(() => {
+	if (!latestCapture.value) return 0
+	return detectionsByCid.value.get(latestCapture.value.id)?.length || 0
+})
 
-const countNewDetections = (captures: CaptureSchema[]) => {
-	let prev = 0, total = 0
-
-	for (const c of captures) {
-		const count = detectionsByCid.value.get(c.id)?.length || 0
-		total += count - prev
-		prev = count
-	}
-
-	return total
+const getLatestCapture = (data: CaptureSchema[]) => {
+	return [...data].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())[0]
 }
 
 //
