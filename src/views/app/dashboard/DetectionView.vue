@@ -34,7 +34,6 @@
 </template>
 
 <script setup lang="ts">
-import type { CaptureSchema } from "@/schemas/CaptureSchema"
 import { useCaptureStore } from "@/stores/capture"
 import { useDetectionStore } from "@/stores/detection"
 import { useToastStore } from "@/stores/toast"
@@ -52,30 +51,15 @@ const toastStore = useToastStore()
 // --- Capture
 const captureStore = useCaptureStore()
 const { captures } = storeToRefs(captureStore)
-const capturesByCam = computed(() => groupByKey(captures.value, (c) => c.camera))
 
 // --- Detections
 const detectionStore = useDetectionStore()
 const { detections } = storeToRefs(detectionStore)
-const detectionsByCid = computed(() => groupByKey(detections.value, (d) => d.captureId))
+const eggDetections = computed(() => detections.value.filter(d => d.class.toLowerCase().includes("egg")))
+const detectionsByCid = computed(() => groupByKey(eggDetections.value, d => d.captureId))
 
 // --- Egg Summary
-const eggCountTotal = computed(() =>
-	[...capturesByCam.value.values()]
-		.reduce((p, c) => p + countNewDetections(c), 0)
-)
-
-const countNewDetections = (captures: CaptureSchema[]) => {
-	let prev = 0, total = 0
-
-	for (const c of captures) {
-		const count = detectionsByCid.value.get(c.id)?.length || 0
-		total += count - prev
-		prev = count
-	}
-
-	return total
-}
+const eggCountTotal = computed(() => eggDetections.value.length)
 
 //
 
