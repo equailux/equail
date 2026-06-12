@@ -1,16 +1,21 @@
 <template>
 	<v-container class="bg-secondary" fluid>
 		<v-row dense justify="center">
-			<v-col cols="12" sm="6">
+			<v-col cols="12">
 				<div class="w-100 pa-2 border rounded" style="aspect-ratio: 1">
 					<ImageBoundingBoxRenderer
 						v-if="captureBlob && isCaptureValid && !isCaptureValidating"
 						class="w-100 h-100 d-flex align-center justify-center"
 						:src="captureBlob"
 						:detections="detectionsByCid"
+						:mode="mode"
+						v-model:selected-ids="selectedDetectionIds"
+						@detection-moved="onDetectionMoved"
+						@detection-drawn="onDetectionDrawn"
+						@detection-resized="onDetectionResized"
 					></ImageBoundingBoxRenderer>
-					<div 
-						v-if="isCaptureValidating || !isCaptureValid" 
+					<div
+						v-if="isCaptureValidating || !isCaptureValid"
 						class="w-100 h-100 d-flex align-center justify-center"
 					>
 						<v-empty-state
@@ -25,50 +30,54 @@
 						></v-progress-circular>
 					</div>
 				</div>
-			</v-col>
-			<v-col cols="12" sm="6">
-				<div class="d-flex align-center">
-					<span>Approval: &nbsp;</span>
-					<v-chip
-						:text="approved === undefined ? `Pending` : approved ? `Correct` : `Incorrect`"
-						:color="approved === undefined ? `yellow` : approved ? `accent` : `red`"
-					></v-chip>
+				<div class="d-flex align-center ga-2 mt-2">
+					<v-btn-toggle
+						v-model="mode"
+						mandatory
+						divided
+						color="accent"
+						class="border"
+					>
+						<v-btn
+							value="view"
+							icon="mdi-eye"
+							aria-label="View"
+							v-tooltip="`View`"
+						></v-btn>
+						<v-btn
+							value="select"
+							icon="mdi-cursor-default"
+							aria-label="Select"
+							v-tooltip="`Select`"
+						></v-btn>
+						<v-btn
+							value="drag"
+							icon="mdi-gesture-tap-hold"
+							aria-label="Drag"
+							v-tooltip="`Drag`"
+						></v-btn>
+						<v-btn
+							value="resize"
+							icon="mdi-resize"
+							aria-label="Resize"
+							v-tooltip="`Resize`"
+						></v-btn>
+						<v-btn
+							value="draw"
+							icon="mdi-brush"
+							aria-label="Draw"
+							v-tooltip="`Draw`"
+						></v-btn>
+					</v-btn-toggle>
 					<v-spacer></v-spacer>
 					<v-btn
 						size="small"
 						icon="mdi-delete-outline"
 						class="bg-transparent text-red"
-						v-tooltip="`Delete missing or invalid image.`"
-						:loading="isCaptureDeleting"
-						:disabled="isCaptureDeleting"
-						@click="onClickDeleteImage"
-					></v-btn>
-				</div>
-				<v-textarea
-					hide-details
-					class="w-100 mt-2"
-					placeholder="Describe your findings here."
-					v-model="comment"
-					:loading="remarkLoading"
-					:disabled="remarkLoading"
-					@blur="onChangeRemark(comment, approved)"
-				></v-textarea>
-				<div class="d-flex align-center ga-2 mt-2">
-					<v-btn
-						text="Incorrect"
-						class="bg-secondary border flex-grow-1"
-						prepend-icon="mdi-close"
-						:loading="remarkLoading"
-						:disabled="remarkLoading"
-						@click="onChangeRemark(comment, false)"
-					></v-btn>
-					<v-btn
-						text="Correct"
-						class="bg-accent flex-grow-1"
-						prepend-icon="mdi-check-all"
-						:loading="remarkLoading"
-						:disabled="remarkLoading"
-						@click="onChangeRemark(comment, true)"
+						v-tooltip="`Delete selected boxes.`"
+						:loading="isDetectionDeleting"
+						:disabled="isDetectionDeleting || mode != `select` || selectedDetectionIds.length <= 0"
+						@click="onClickDeleteSelectedDetections"
 					></v-btn>
 				</div>
 			</v-col>
@@ -77,22 +86,30 @@
 </template>
 
 <script setup lang="ts">
-import ImageBoundingBoxRenderer from '@/components/app/dashboard/detection/ImageBoundingBoxRenderer.vue';
-import { api } from '@/plugins/api';
-import { useCaptureStore } from '@/stores/capture';
-import { useDetectionStore } from '@/stores/detection';
-import { useRemarkStore } from '@/stores/remark';
-import { useToastStore } from '@/stores/toast';
-import { storeToRefs } from 'pinia';
-import { computed, nextTick, onMounted, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import ImageBoundingBoxRenderer from "@/components/app/dashboard/detection/ImageBoundingBoxRenderer.vue"
+import { api } from "@/plugins/api"
+import type { DetectionRawSchema } from "@/schemas/DetectionSchema"
+import { useCaptureStore } from "@/stores/capture"
+import { useDetectionStore } from "@/stores/detection"
+import { useToastStore } from "@/stores/toast"
+import { storeToRefs } from "pinia"
+import { computed, nextTick, onMounted, ref, watch } from "vue"
+import { useRoute } from "vue-router"
+
+//
+
+type BoundingBoxMode = "view" | "select" | "drag" | "resize" | "draw"
+type DetectionId = DetectionRawSchema["id"]
+type DetectionBox = DetectionRawSchema["box"]
+type DetectionMovedPayload = { id: DetectionId, box: DetectionBox }
+type DetectionResizedPayload = { id: DetectionId, box: DetectionBox }
+type DetectionDrawnPayload = { box: DetectionBox }
 
 //
 
 // --- Utilities
 const routeComp = useRoute()
 const toastStore = useToastStore()
-const routerComp = useRouter()
 
 // --- Params
 const captureId = Number(routeComp.params.cid)
@@ -104,7 +121,6 @@ const capture = computed(() => captures.value.find((c) => c.id == captureId))
 
 const captureBlob = ref<Blob>()
 const isCaptureValid = ref(true)
-const isCaptureDeleting = ref(false)
 const isCaptureValidating = ref(true)
 
 const fetchCaptureImage = async () => {
@@ -112,25 +128,16 @@ const fetchCaptureImage = async () => {
 	isCaptureValidating.value = true
 
 	const { res, err } = await api
-		.get(`/api/capture/image/${capture.value.image}`, { responseType: 'blob' })
+		.get(`/api/capture/image/${capture.value.image}`, { responseType: "blob" })
 		.then((res) => ({ res, err: undefined }))
 		.catch((err) => ({ res: undefined, err }))
 
 	if (err) isCaptureValid.value = false
 	if (err) return isCaptureValidating.value = false
-	
+
 	captureBlob.value = res!.data as Blob
 	isCaptureValid.value = true
 	isCaptureValidating.value = false
-}
-
-const onClickDeleteImage = async () => {
-	if (!capture.value) return
-	isCaptureDeleting.value = true
-	await captureStore.destroy(capture.value)
-	await routerComp.push("/app/dashboard/detection")
-	toastStore.info("Invalid image deleted successfully.")
-	isCaptureDeleting.value = false
 }
 
 //
@@ -140,38 +147,53 @@ const detectionStore = useDetectionStore()
 const { detections } = storeToRefs(detectionStore)
 const detectionsByCid = computed(() => detections.value.filter((d) => d.captureId == captureId))
 
-//
+const mode = ref<BoundingBoxMode>("view")
+const selectedDetectionIds = ref<DetectionId[]>([])
+const isDetectionDeleting = ref(false)
 
-// --- Remarks
-const remarkStore = useRemarkStore()
-const { remarks } = storeToRefs(remarkStore)
-const remarkByCid = computed(() => remarks.value.find((r) => r.captureId == captureId))
+const onDetectionMoved = async ({ id, box }: DetectionMovedPayload) => {
+	await detectionStore
+		.update({ id, box })
+		.catch(() => toastStore.error("Unable to move detection."))
+	await detectionStore.retrieve()
+}
 
-const comment = ref("")
-const approved = ref<boolean>()
-const remarkLoading = ref(false)
+const onDetectionResized = async ({ id, box }: DetectionResizedPayload) => {
+	await detectionStore
+		.update({ id, box })
+		.catch(() => toastStore.error("Unable to resize detection."))
+	await detectionStore.retrieve()
+}
 
-const onChangeRemark = async (comment: string, correct?: boolean) => {
-	remarkLoading.value = true
-	await remarkStore.create(captureId, { comment, approved: correct })
-	approved.value = correct
-	remarkLoading.value = false
+const onDetectionDrawn = async ({ box }: DetectionDrawnPayload) => {
+	await detectionStore
+		.create({ box, class: "egg", confidence: 1, captureId })
+		.catch(() => toastStore.error("Unable to create detection."))
+}
+
+const onClickDeleteSelectedDetections = async () => {
+	if (mode.value != "select" || selectedDetectionIds.value.length <= 0) return
+	isDetectionDeleting.value = true
+
+	const promises = selectedDetectionIds.value.map(id => detectionStore.destroy(id))
+	await Promise
+		.all(promises)
+		.then(() => toastStore.info("Selected detections deleted successfully."))
+		.catch(() => toastStore.error("Unable to delete selected detections."))
+
+	selectedDetectionIds.value = []
+	isDetectionDeleting.value = false
 }
 
 //
 
 const onMountedCb = async () => {
-	remarkLoading.value = true
-
-	await Promise.all([captureStore.retrieve(), detectionStore.retrieve(), remarkStore.retrieve()])
+	await Promise.all([captureStore.retrieve(), detectionStore.retrieve()])
 	await nextTick()
 	await fetchCaptureImage()
-
-	comment.value = remarkByCid.value?.comment || ""
-	approved.value = remarkByCid.value?.approved
-	remarkLoading.value = false
 }
 
+watch(mode, () => selectedDetectionIds.value = [])
 onMounted(() => onMountedCb().catch(() => toastStore.error("Something went wrong.")))
 
 //
