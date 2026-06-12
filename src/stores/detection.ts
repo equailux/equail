@@ -16,7 +16,8 @@ export const useDetectionStore = defineStore("detection", () => {
 
     const retrieve = async () => {
         const res = await api.get<DetectionSchema[]>(`/api/capture/detection`)
-        const parsed = z.array(DetectionSchema).parse(res.data)
+        const prep = res.data.map(d => ({ ...d, box: JSON.parse(d.box as unknown as string) }))
+        const parsed = z.array(DetectionSchema).parse(prep)
         detections.value = parsed
         return parsed
     }
