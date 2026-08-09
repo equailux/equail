@@ -194,7 +194,6 @@
 
 <script setup lang="ts">
 import useWsEvent from "@/composables/use-ws-event"
-import type { CaptureSchema } from "@/schemas/CaptureSchema"
 import type { FeedSchema } from "@/schemas/FeedSchema"
 import type { ReadingSchema } from "@/schemas/ReadingSchema"
 import type { WsEventHandler } from "@/schemas/WsEventSchema"
@@ -259,7 +258,6 @@ const onMountedWs = async () => {
 const captureStore = useCaptureStore()
 const { captures } = storeToRefs(captureStore)
 const todayCaptures = computed(() => captures.value.filter(c => isSameDay(c.createdAt, new Date())))
-const latestCapture = computed(() => getLatestCapture(todayCaptures.value))
 
 // --- Detections
 const detectionStore = useDetectionStore()
@@ -268,14 +266,9 @@ const eggDetections = computed(() => detections.value.filter(d => d.class.toLowe
 const detectionsByCid = computed(() => groupByKey(eggDetections.value, d => d.captureId))
 
 // --- Egg Summary
-const eggCountTotal = computed(() => {
-	if (!latestCapture.value) return 0
-	return detectionsByCid.value.get(latestCapture.value.id)?.length || 0
-})
-
-const getLatestCapture = (data: CaptureSchema[]) => {
-	return [...data].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())[0]
-}
+const eggCountTotal = computed(() =>
+	todayCaptures.value.reduce((p, c) => p + (detectionsByCid.value.get(c.id)?.length || 0), 0)
+)
 
 //
 
