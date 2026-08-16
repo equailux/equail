@@ -26,13 +26,13 @@
 				<v-sheet class="pa-4 rounded-lg bg-primary border elevation-1 d-flex align-center ga-3">
 					<v-icon color="accent">mdi-alert-circle-outline</v-icon>
 					<div>
-						<h4>{{ filteredSystemErrors.length }}</h4>
+						<h4>{{ systemErrorStore.total }}</h4>
 						<small class="text-grey-darken-1 text-caption">{{ activeDateText }}</small>
 					</div>
 				</v-sheet>
 			</v-col>
 		</v-row>
-		<v-row v-if="!loading && !filteredSystemErrors.length" dense>
+		<v-row v-if="!loading && !systemErrorStore.sorted.length" dense>
 			<v-col cols="12">
 				<v-sheet class="pa-6 text-center bg-primary rounded-lg border elevation-1">
 					<h5>No system errors found</h5>
@@ -42,7 +42,7 @@
 		</v-row>
 		<v-row dense>
 			<v-col
-				v-for="systemError in filteredSystemErrors"
+				v-for="systemError in systemErrorStore.sorted"
 				:key="systemError.id"
 				cols="12"
 				sm="6"
@@ -73,15 +73,25 @@
 				</v-card>
 			</v-col>
 		</v-row>
+		<v-row v-if="systemErrorStore.hasMore" dense>
+			<v-col cols="12" class="text-center">
+				<v-btn
+					variant="tonal"
+					color="accent"
+					:loading="loadingMore"
+					:disabled="loading || !network.connected"
+					@click="onLoadMore"
+				>Load more</v-btn>
+			</v-col>
+		</v-row>
 	</v-container>
 </template>
 
 <script setup lang="ts">
-import { SystemErrorQuerySchema, type SystemErrorSchema } from "@/schemas/SystemErrorSchema"
+import { SystemErrorQuerySchema } from "@/schemas/SystemErrorSchema"
 import { useNetworkStore } from "@/stores/network"
 import { useSystemErrorStore } from "@/stores/system-error"
 import { useToastStore } from "@/stores/toast"
-import { storeToRefs } from "pinia"
 import { computed, onMounted, reactive, ref } from "vue"
 import { useDate } from "vuetify"
 
@@ -96,18 +106,6 @@ const toastStore = useToastStore()
 const date = ref<Date | null>(new Date())
 const activeQuery = ref<SystemErrorQuerySchema>()
 const errors = reactive({ date: "" })
-
-const getStartOfDay = (date: Date) => {
-	const start = new Date(date)
-	start.setHours(0, 0, 0, 0)
-	return start
-}
-
-const getEndOfDay = (date: Date) => {
-	const end = new Date(date)
-	end.setHours(23, 59, 59, 999)
-	return end
-}
 
 const validateQuery = () => {
 	errors.date = ""
@@ -131,18 +129,8 @@ const activeDateText = computed(() => {
 
 // --- System Errors
 const loading = ref(false)
+const loadingMore = ref(false)
 const systemErrorStore = useSystemErrorStore()
-const { sorted } = storeToRefs(systemErrorStore)
-const filteredSystemErrors = computed(() => sorted.value.filter(systemError => isWithinActiveRange(systemError)))
-
-const isWithinActiveRange = (systemError: SystemErrorSchema) => {
-	if (!activeQuery.value) return true
-
-	const createdAt = systemError.createdAt.getTime()
-	const fromTime = getStartOfDay(activeQuery.value.date).getTime()
-	const toTime = getEndOfDay(activeQuery.value.date).getTime()
-	return createdAt >= fromTime && createdAt <= toTime
-}
 
 const onError = (error: unknown) => {
 	const message = error instanceof Error ? error.message : "Failed to load system errors."
@@ -170,6 +158,17 @@ const retrieveSelectedDate = async () => {
 const onUpdateDate = async (value: Date | string | null) => {
 	date.value = value ? new Date(value) : null
 	await retrieveSelectedDate()
+}
+
+const onLoadMore = async () => {
+	if (!network.connected) return toastStore.error("You are offline.")
+	if (!activeQuery.value) return
+
+	loadingMore.value = true
+	await systemErrorStore
+		.retrieveMore(activeQuery.value)
+		.catch(onError)
+		.finally(() => loadingMore.value = false)
 }
 
 //

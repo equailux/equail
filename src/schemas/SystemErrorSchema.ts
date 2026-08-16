@@ -17,14 +17,21 @@ const SystemErrorQuerySchema = SystemErrorSchema
 		date: z.coerce.date(),
 	})
 
+const SystemErrorPageSchema = z.object({
+	rows: z.array(SystemErrorSchema),
+	total: z.coerce.number().int(),
+})
+
 //
 
 type SystemErrorSchema = z.infer<typeof SystemErrorSchema>
 type SystemErrorQuerySchema = z.infer<typeof SystemErrorQuerySchema>
+type SystemErrorPageSchema = z.infer<typeof SystemErrorPageSchema>
 
 //
 
 export {
 	SystemErrorSchema,
 	SystemErrorQuerySchema,
+	SystemErrorPageSchema,
 }
