@@ -5,7 +5,7 @@ import { computed, ref } from "vue"
 
 //
 
-const PAGE_SIZE = 30
+const PAGE_SIZE = 10
 
 export const useSystemErrorStore = defineStore("system-error", () => {
 
@@ -13,8 +13,9 @@ export const useSystemErrorStore = defineStore("system-error", () => {
 
 	const systemErrors = ref<SystemErrorPageSchema["rows"]>([])
 	const total = ref(0)
+	const page = ref(1)
 	const sorted = computed(() => [...systemErrors.value].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()))
-	const hasMore = computed(() => systemErrors.value.length < total.value)
+	const pageCount = computed(() => Math.max(1, Math.ceil(total.value / PAGE_SIZE)))
 
 	//
 
@@ -34,20 +35,12 @@ export const useSystemErrorStore = defineStore("system-error", () => {
 		return SystemErrorPageSchema.parse(res.data)
 	}
 
-	const retrieve = async (query: SystemErrorQuerySchema) => {
-		const parsed = await fetchPage(query, 0)
+	const retrieve = async (query: SystemErrorQuerySchema, targetPage = 1) => {
+		const parsed = await fetchPage(query, (targetPage - 1) * PAGE_SIZE)
 		systemErrors.value = parsed.rows
 		total.value = parsed.total
+		page.value = targetPage
 		return parsed.rows
-	}
-
-	const retrieveMore = async (query: SystemErrorQuerySchema) => {
-		if (!hasMore.value) return systemErrors.value
-
-		const parsed = await fetchPage(query, systemErrors.value.length)
-		systemErrors.value.push(...parsed.rows)
-		total.value = parsed.total
-		return systemErrors.value
 	}
 
 	//
@@ -55,9 +48,9 @@ export const useSystemErrorStore = defineStore("system-error", () => {
 	return {
 		systemErrors,
 		total,
+		page,
+		pageCount,
 		sorted,
-		hasMore,
 		retrieve,
-		retrieveMore,
 	}
 })

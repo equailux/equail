@@ -73,15 +73,17 @@
 				</v-card>
 			</v-col>
 		</v-row>
-		<v-row v-if="systemErrorStore.hasMore" dense>
+		<v-row v-if="systemErrorStore.pageCount > 1" dense>
 			<v-col cols="12" class="text-center">
-				<v-btn
-					variant="tonal"
+				<v-pagination
+					:model-value="systemErrorStore.page"
+					:length="systemErrorStore.pageCount"
+					:disabled="loading || loadingPage || !network.connected"
+					:total-visible="5"
+					density="comfortable"
 					color="accent"
-					:loading="loadingMore"
-					:disabled="loading || !network.connected"
-					@click="onLoadMore"
-				>Load more</v-btn>
+					@update:model-value="onChangePage"
+				></v-pagination>
 			</v-col>
 		</v-row>
 	</v-container>
@@ -129,7 +131,7 @@ const activeDateText = computed(() => {
 
 // --- System Errors
 const loading = ref(false)
-const loadingMore = ref(false)
+const loadingPage = ref(false)
 const systemErrorStore = useSystemErrorStore()
 
 const onError = (error: unknown) => {
@@ -137,12 +139,12 @@ const onError = (error: unknown) => {
 	toastStore.error(message)
 }
 
-const retrieve = async (query: SystemErrorQuerySchema) => {
+const retrieve = async (query: SystemErrorQuerySchema, targetPage = 1) => {
 	if (!network.connected) return toastStore.error("You are offline.")
 
 	loading.value = true
 	await systemErrorStore
-		.retrieve(query)
+		.retrieve(query, targetPage)
 		.then(() => activeQuery.value = query)
 		.catch(onError)
 		.finally(() => loading.value = false)
@@ -160,15 +162,15 @@ const onUpdateDate = async (value: Date | string | null) => {
 	await retrieveSelectedDate()
 }
 
-const onLoadMore = async () => {
+const onChangePage = async (targetPage: number) => {
 	if (!network.connected) return toastStore.error("You are offline.")
 	if (!activeQuery.value) return
 
-	loadingMore.value = true
+	loadingPage.value = true
 	await systemErrorStore
-		.retrieveMore(activeQuery.value)
+		.retrieve(activeQuery.value, targetPage)
 		.catch(onError)
-		.finally(() => loadingMore.value = false)
+		.finally(() => loadingPage.value = false)
 }
 
 //
