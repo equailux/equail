@@ -44,6 +44,7 @@ const options: ChartOptions<"line"> = {
 				color: "#aaa",
 				font: { size: 12 },
 				maxTicksLimit: 5,
+				//@ts-ignore
 				precision: 0,
 			},
 		},
