@@ -20,6 +20,28 @@ const options: ChartOptions<"bar"> = {
 	responsive: true,
 	maintainAspectRatio: false,
 	plugins: { legend: { display: false } },
+	scales: {
+		y: {
+			beginAtZero: true,
+			ticks: {
+				color: "#aaa",
+				font: { size: 12 },
+				precision: 0,
+			},
+			afterBuildTicks: (scale) => {
+				const step = 5
+				const defaultPeak = 15
+				const values = scale.chart.data.datasets.flatMap((d) => (d.data as number[]) ?? [])
+				const peak = values.length ? Math.max(0, ...values) : defaultPeak
+
+				const ticks: { value: number }[] = []
+				for (let v = 0; v <= peak; v += step) ticks.push({ value: v })
+				if (ticks[ticks.length - 1]?.value !== peak) ticks.push({ value: peak })
+
+				scale.ticks = ticks
+			},
+		},
+	},
 }
 
 //
