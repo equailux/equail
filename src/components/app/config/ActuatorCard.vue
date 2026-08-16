@@ -52,27 +52,59 @@
 					<span class="text-body-2">{{ dateCmp.format(new Date(actuator.updatedAt), "fullDateTime12") }}</span>
 				</v-sheet>
 			</v-sheet>
+			<v-divider></v-divider>
+			<v-sheet color="transparent" class="d-flex align-center justify-space-between ga-3">
+				<v-sheet color="transparent" class="d-flex flex-column">
+					<small class="text-grey-darken-1 text-caption">Status</small>
+					<v-chip
+						size="small"
+						variant="flat"
+						:color="isActive ? 'accent' : 'grey'"
+					>{{ isActive ? "Active" : "Inactive" }}</v-chip>
+				</v-sheet>
+				<v-switch
+					inset
+					hide-details
+					color="accent"
+					density="compact"
+					class="flex-grow-0"
+					:label="isActive ? 'Deactivate' : 'Activate'"
+					:model-value="isActive"
+					:loading="busy"
+					:disabled="disabled || busy"
+					@update:model-value="onUpdateActive"
+				></v-switch>
+			</v-sheet>
 		</v-card-text>
 	</v-card>
 </template>
 
 <script setup lang="ts">
 import type { ActuatorSchema } from "@/schemas/ActuatorSchema"
+import { computed } from "vue"
 import { useDate } from "vuetify"
 
 //
 
-defineProps<{
+const props = defineProps<{
 	actuator: ActuatorSchema
+	busy?: boolean
+	disabled?: boolean
 }>()
 
 const emit = defineEmits<{
 	copy: [actuator: ActuatorSchema]
 	edit: [actuator: ActuatorSchema]
 	delete: [actuator: ActuatorSchema]
+	toggle: [actuator: ActuatorSchema, input: number]
 }>()
 
 const dateCmp = useDate()
+const isActive = computed(() => props.actuator.input != 0)
+
+//
+
+const onUpdateActive = (value: boolean | null) => emit("toggle", props.actuator, value ? 1 : 0)
 
 //
 </script>

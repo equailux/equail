@@ -35,9 +35,12 @@
 			>
 				<ActuatorCard
 					:actuator="actuator"
+					:busy="togglingIds.includes(actuator.id)"
+					:disabled="!networkStore.connected"
 					@copy="onClickCopy"
 					@edit="onClickEditActuator"
 					@delete="onClickDeleteActuator"
+					@toggle="onToggleActuator"
 				></ActuatorCard>
 			</v-col>
 		</v-row>
@@ -92,6 +95,7 @@ const { actuators } = storeToRefs(actuatorStore)
 const showActuatorCreateModal = ref(false)
 const showActuatorUpdateModal = ref(false)
 const selectedActuator = ref<ActuatorSchema>()
+const togglingIds = ref<number[]>([])
 const wsEvent = useWsEvent()
 
 // --- Actuator Actions
@@ -105,6 +109,18 @@ const onClickCopy = async (actuator: ActuatorSchema) => {
 const onClickEditActuator = (actuator: ActuatorSchema) => {
 	selectedActuator.value = actuator
 	showActuatorUpdateModal.value = true
+}
+
+const onToggleActuator = async (actuator: ActuatorSchema, input: number) => {
+	if (!networkStore.connected) return toastStore.error("You are offline.")
+	if (togglingIds.value.includes(actuator.id)) return
+
+	togglingIds.value.push(actuator.id)
+	await actuatorStore
+		.update({ id: actuator.id, input })
+		.then(res => toastStore.success(`"${res.name}" ${res.input ? "activated" : "deactivated"}.`))
+		.catch(e => toastStore.error(e?.message || "Failed to update actuator."))
+		.finally(() => togglingIds.value = togglingIds.value.filter(id => id != actuator.id))
 }
 
 const onClickDeleteActuator = async (actuator: ActuatorSchema) => {
