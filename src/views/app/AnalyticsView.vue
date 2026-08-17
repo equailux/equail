@@ -254,7 +254,9 @@ const countCaptureDetections = (capture: CaptureSchema, captures: CaptureSchema[
 	const captureDetections = detectionsByCid.value.get(capture.id)?.length || 0
 	const prevCapture = captures[index - 1]!
 	const prevCaptureDetections = detectionsByCid.value.get(prevCapture.id)?.length || 0
-	return captureDetections - prevCaptureDetections
+
+	// Only new eggs count, a tray emptied by a collection drops the count instead
+	return Math.max(0, captureDetections - prevCaptureDetections)
 }
 
 const sumCapturesWithCountByMonth = (captures: (CaptureSchema & { count: number })[]) => {

@@ -15,7 +15,7 @@ export const useCaptureStore = defineStore("capture", () => {
     //
 
     const retrieve = async () => {
-        const res = await api.get<CaptureSchema[]>("/api/capture")
+        const res = await api.get<CaptureSchema[]>("/api/capture?limit=100000")
         const parsed = z.array(CaptureSchema).parse(res.data)
         captures.value = parsed
         return parsed

@@ -49,7 +49,7 @@ export const useDetectionStore = defineStore("detection", () => {
 	}
 
 	const retrieve = async () => {
-		const res = await api.get<DetectionApiResponse[]>(`/api/capture/detection`)
+		const res = await api.get<DetectionApiResponse[]>(`/api/capture/detection?limit=100000`)
 		const parsed = z.array(DetectionSchema).parse(res.data.map(parseDetection))
 		detections.value = parsed
 		return parsed

@@ -10,6 +10,11 @@ const FeedSchema = z.object({
 	updatedAt: z.coerce.date(),
 })
 
+const FeedManualSchema = z.object({
+	direction: z.enum(["Forward", "Backward"]),
+	durationMs: z.coerce.number().int().min(50).max(3000),
+})
+
 const FeedQuerySchema = FeedSchema.partial()
 const FeedCreateSchema = FeedSchema.pick({ level: true, detectionId: true })
 const FeedUpdateSchema = FeedSchema.pick({ level: true, detectionId: true }).partial()
@@ -17,10 +22,11 @@ const FeedUpdateSchema = FeedSchema.pick({ level: true, detectionId: true }).par
 //
 
 type FeedSchema = z.infer<typeof FeedSchema>
+type FeedManualSchema = z.infer<typeof FeedManualSchema>
 type FeedQuerySchema = z.infer<typeof FeedQuerySchema>
 type FeedCreateSchema = z.infer<typeof FeedCreateSchema>
 type FeedUpdateSchema = z.infer<typeof FeedUpdateSchema>
 
 //
 
-export { FeedSchema, FeedQuerySchema, FeedCreateSchema, FeedUpdateSchema }
+export { FeedSchema, FeedManualSchema, FeedQuerySchema, FeedCreateSchema, FeedUpdateSchema }

@@ -79,6 +79,9 @@ const onChangeReadings = async (readings: Record<string, number>) => {
 		backgroundColor: getGradient(),
 		fill: true,
 		borderWidth: 2,
+		// A lone month draws no line, show its point so the card is not blank
+		pointRadius: labels.length < 2 ? 4 : 0,
+		pointBackgroundColor: props.color,
 	}
 
 	data.labels = labels

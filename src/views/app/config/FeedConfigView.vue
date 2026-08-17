@@ -37,6 +37,13 @@
 					@edit="onClickEditConfig"
 				></FeedConfigCard>
 			</v-col>
+			<v-col cols="12" sm="6" md="4">
+				<FeedManualCard
+					:disabled="!networkStore.connected"
+					:moving="moving"
+					@move="onMoveManual"
+				></FeedManualCard>
+			</v-col>
 		</v-row>
 		<v-dialog class="w-100 w-sm-75 w-md-50" v-model="showUpdateModal">
 			<v-sheet class="pa-5 rounded bg-secondary">
@@ -56,7 +63,9 @@
 <script setup lang="ts">
 import FeedConfigCard from "@/components/app/config/FeedConfigCard.vue"
 import FeedConfigUpdateForm from "@/components/app/config/FeedConfigUpdateForm.vue"
+import FeedManualCard from "@/components/app/config/FeedManualCard.vue"
 import type { FeedConfigUpdateSchema } from "@/schemas/FeedConfigSchema"
+import type { FeedManualSchema } from "@/schemas/FeedSchema"
 import { useFeedConfigStore } from "@/stores/feed-config"
 import { useNetworkStore } from "@/stores/network"
 import { useToastStore } from "@/stores/toast"
@@ -76,6 +85,9 @@ const { config } = storeToRefs(feedConfigStore)
 const showUpdateModal = ref(false)
 const testing = ref(false)
 
+// --- Manual Control
+const moving = ref<FeedManualSchema["direction"] | null>(null)
+
 // --- Actions
 const onClickEditConfig = () => {
 	showUpdateModal.value = true
@@ -90,6 +102,20 @@ const onClickTestFeed = async () => {
 		.then(() => toastStore.success(`Feed test started successfully.`))
 		.catch(onFormError)
 		.finally(() => testing.value = false)
+}
+
+const onMoveManual = async (command: FeedManualSchema) => {
+	if (!networkStore.connected) return toastStore.error("You are offline.")
+
+	// --- Keep the buttons locked until the motor finished its nudge.
+	moving.value = command.direction
+	const settle = new Promise(resolve => setTimeout(resolve, command.durationMs))
+
+	await feedConfigStore
+		.manual(command)
+		.then(() => settle)
+		.catch(onFormError)
+		.finally(() => moving.value = null)
 }
 
 // --- Forms
