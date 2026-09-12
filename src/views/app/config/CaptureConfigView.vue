@@ -37,13 +37,6 @@
 					@edit="onClickEditConfig"
 				></CaptureConfigCard>
 			</v-col>
-			<v-col cols="12" sm="6" md="4">
-				<CaptureManualCard
-					:disabled="!networkStore.connected"
-					:capturing="capturing"
-					@capture="onClickCapture"
-				></CaptureManualCard>
-			</v-col>
 		</v-row>
 		<v-dialog class="w-100 w-sm-75 w-md-50" v-model="showUpdateModal">
 			<v-sheet class="pa-5 rounded bg-secondary">
@@ -63,7 +56,6 @@
 <script setup lang="ts">
 import CaptureConfigCard from "@/components/app/config/CaptureConfigCard.vue"
 import CaptureConfigUpdateForm from "@/components/app/config/CaptureConfigUpdateForm.vue"
-import CaptureManualCard from "@/components/app/config/CaptureManualCard.vue"
 import type { CaptureConfigFormSchema } from "@/schemas/CaptureConfigSchema"
 import { useCaptureConfigStore } from "@/stores/capture-config"
 import { useNetworkStore } from "@/stores/network"
