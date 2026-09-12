@@ -13,7 +13,7 @@
 				<div class="pa-4 rounded-lg bg-accent border elevation-1">
 					<div class="d-flex align-center justify-space-between">
 						<h5 class="text-grey-lighten-1">EGGS DETECTED</h5>
-						<div 
+						<div
 							class="pa-2 rounded-lg d-flex align-center justify-center"
 							style="width: 32px; height: 32px; background-color: rgba(var(--v-theme-primary), 0.1)"
 						>
@@ -21,11 +21,13 @@
 						</div>
 					</div>
 					<div class="mt-2 d-flex align-center ga-2">
-						<h1>{{ eggCountTotal }}</h1>
-						<span class="text-grey-lighten-2 text-subtitle-2">today</span>
+						<h1>{{ eggCountLatest }}</h1>
+						<span class="text-grey-lighten-2 text-subtitle-2">latest capture</span>
 					</div>
 					<div class="d-flex align-center justify-space-between">
-						<span class="text-grey-lighten-1 text-caption">+12% from yesterday</span>	
+						<span class="text-grey-lighten-1 text-caption">
+							{{ eggSummaryLabel }}
+						</span>
 						<v-btn
 							to="/app/dashboard/detection"
 							size="x-small"
@@ -165,6 +167,7 @@
 
 <script setup lang="ts">
 import useWsEvent from "@/composables/use-ws-event"
+import type { CaptureSchema } from "@/schemas/CaptureSchema"
 import type { FeedSchema } from "@/schemas/FeedSchema"
 import type { ReadingSchema } from "@/schemas/ReadingSchema"
 import type { WsEventHandler } from "@/schemas/WsEventSchema"
@@ -175,7 +178,7 @@ import { useMortalityStore } from "@/stores/mortality"
 import { useNetworkStore } from "@/stores/network"
 import { useToastStore } from "@/stores/toast"
 import { groupByKey } from "@/utils/group"
-import { isSameDay } from "date-fns"
+import { format, isSameDay } from "date-fns"
 import { storeToRefs } from "pinia"
 import { computed, onMounted, ref } from "vue"
 
@@ -239,6 +242,23 @@ const detectionsByCid = computed(() => groupByKey(eggDetections.value, d => d.ca
 const eggCountTotal = computed(() =>
 	todayCaptures.value.reduce((p, c) => p + (detectionsByCid.value.get(c.id)?.length || 0), 0)
 )
+
+const latestCapture = computed(() =>
+	captures.value.reduce<CaptureSchema | null>(
+		(p, c) => (!p || c.createdAt > p.createdAt ? c : p),
+		null
+	)
+)
+
+const eggCountLatest = computed(() =>
+	latestCapture.value ? detectionsByCid.value.get(latestCapture.value.id)?.length || 0 : 0
+)
+
+const eggSummaryLabel = computed(() => {
+	if (!latestCapture.value) return "No captures yet"
+	const time = format(latestCapture.value.createdAt, "MMM d, h:mm a")
+	return `${eggCountTotal.value} today · last at ${time}`
+})
 
 //
 
