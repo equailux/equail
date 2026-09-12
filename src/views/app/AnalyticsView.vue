@@ -191,11 +191,28 @@ const dateCmp = useDate()
 const isNative = Capacitor.isNativePlatform()
 const toastStore = useToastStore()
 
+// --- Ordering
+// Chart data is built as Record<string, number> keyed by month label, whose
+// insertion order does not necessarily match chronological order. Reorder
+// the record's keys using the actual dates behind each month label.
+const orderByChronology = (group: Record<string, number>, dates: Date[]): Record<string, number> => {
+	const sorted = [...dates].sort((a, b) => a.getTime() - b.getTime())
+	const order: string[] = []
+	for (const d of sorted) {
+		const key = dateCmp.format(d, "month")
+		if (!order.includes(key)) order.push(key)
+	}
+
+	const result: Record<string, number> = {}
+	for (const key of order) if (key in group) result[key] = group[key]!
+	return result
+}
+
 // --- Readings
 const readingStore = useReadingStore()
 const { temperatures, humidities } = storeToRefs(readingStore)
-const humidityTVPair = computed(() => getAverageReadingsPerMonth(humidities.value))
-const temperatureTVPair = computed(() => getAverageReadingsPerMonth(temperatures.value))
+const humidityTVPair = computed(() => orderByChronology(getAverageReadingsPerMonth(humidities.value), humidities.value.map((r) => r.createdAt)))
+const temperatureTVPair = computed(() => orderByChronology(getAverageReadingsPerMonth(temperatures.value), temperatures.value.map((r) => r.createdAt)))
 
 const groupReadingsByMonth = (readings: ReadingSchema[]) => {
 	const group: Record<string, ReadingSchema[]> = {}
@@ -223,7 +240,7 @@ const getAverageReadingsPerMonth = (readings: ReadingSchema[]) => {
 const captureStore = useCaptureStore()
 const { captures } = storeToRefs(captureStore)
 const capturesByCam = computed(() => groupByKey(captures.value, (c) => c.camera))
-const captureDetectionsPerMonth = computed(() => countCaptureDetectionsPerMonth(capturesByCam.value))
+const captureDetectionsPerMonth = computed(() => orderByChronology(countCaptureDetectionsPerMonth(capturesByCam.value), captures.value.map((c) => c.createdAt)))
 
 // --- Detections
 const detectionStore = useDetectionStore()
@@ -272,7 +289,7 @@ const sumCapturesWithCountByMonth = (captures: (CaptureSchema & { count: number 
 // --- Mortalities
 const mortalityStore = useMortalityStore()
 const { mortalities } = storeToRefs(mortalityStore)
-const mortalitiesByMonth = computed(() => groupMortalityByMonth(mortalities.value))
+const mortalitiesByMonth = computed(() => orderByChronology(groupMortalityByMonth(mortalities.value), mortalities.value.map((m) => m.date)))
 
 const groupMortalityByMonth = (mortalities: MortalitySchema[]) => {
 	const group: Record<string, number> = {}
