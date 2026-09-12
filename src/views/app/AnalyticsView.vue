@@ -255,7 +255,7 @@ const countCaptureDetections = (capture: CaptureSchema, captures: CaptureSchema[
 	const prevCapture = captures[index - 1]!
 	const prevCaptureDetections = detectionsByCid.value.get(prevCapture.id)?.length || 0
 
-	// Only new eggs count, a tray emptied by a collection drops the count instead
+	// Only new eggs count, a tray that has been emptied drops the count instead
 	return Math.max(0, captureDetections - prevCaptureDetections)
 }
 

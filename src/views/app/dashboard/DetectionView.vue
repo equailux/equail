@@ -70,7 +70,6 @@
 <script setup lang="ts">
 import type { CaptureSchema } from "@/schemas/CaptureSchema"
 import { useCaptureStore } from "@/stores/capture"
-import { useCollectionStore } from "@/stores/collection"
 import { useDetectionStore } from "@/stores/detection"
 import { useToastStore } from "@/stores/toast"
 import { groupByKey } from "@/utils/group"
@@ -120,18 +119,11 @@ const emptyText = computed(() => {
 	return "No detections for the selected date."
 })
 
-// --- Collection
-const collectionStore = useCollectionStore()
-const { collections } = storeToRefs(collectionStore)
-const filteredCollections = computed(() => collections.value.filter(c => isSameDay(c.collectAt, date.value)))
-const collectionsTotal = computed(() => filteredCollections.value.reduce((p, c) => p + c.count, 0))
-
 // --- Egg Summary
-const latestCaptureEggCount = computed(() => {
+const eggCountTotal = computed(() => {
 	if (!latestCapture.value) return 0
 	return countDetections(latestCapture.value)
 })
-const eggCountTotal = computed(() => latestCaptureEggCount.value + collectionsTotal.value)
 
 const getLatestCapture = (data: CaptureSchema[]) => {
 	return [...data].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())[0]
@@ -140,7 +132,7 @@ const getLatestCapture = (data: CaptureSchema[]) => {
 //
 
 const onMountedCb = async () => {
-	await Promise.all([captureStore.retrieve(), detectionStore.retrieve(), collectionStore.retrieve()])
+	await Promise.all([captureStore.retrieve(), detectionStore.retrieve()])
 }
 
 onMounted(() => onMountedCb().catch(() => toastStore.error("Something went wrong.")))

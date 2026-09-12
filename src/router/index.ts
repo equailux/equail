@@ -24,7 +24,6 @@ import { redirectAuth, refreshAuth, requireAuth } from "@/middlewares/auth.middl
 //
 
 const SystemErrorView = () => import("@/views/app/SystemErrorView.vue")
-const CollectionView = () => import("@/views/app/dashboard/CollectionView.vue")
 
 //
 
@@ -89,13 +88,6 @@ const routes: RouteRecordRaw[] = [
         name: "Mortality",
         meta: { layout: "dashboard" },
         component: MortalityView,
-        beforeEnter: [refreshAuth, requireAuth],
-    },
-    {
-        path: "/app/dashboard/collection",
-        name: "Collection",
-        meta: { layout: "dashboard" },
-        component: CollectionView,
         beforeEnter: [refreshAuth, requireAuth],
     },
     {
