@@ -122,13 +122,13 @@
                 <v-icon>mdi-lightning-bolt-outline</v-icon>
                 <span>Automation</span>
             </v-btn>
-			<v-btn to="/app/config/feed" value="Feed">
-                <v-icon>mdi-cog-sync</v-icon>
-                <span>Feed</span>
-            </v-btn>
 			<v-btn to="/app/config/camera" value="Camera">
                 <v-icon>mdi-camera-outline</v-icon>
                 <span>Camera</span>
+            </v-btn>
+			<v-btn to="/app/config/feed" value="Feed">
+                <v-icon>mdi-cog-sync</v-icon>
+                <span>Feed</span>
             </v-btn>
 		</v-bottom-navigation>
 	</v-layout>
