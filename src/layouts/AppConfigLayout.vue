@@ -56,6 +56,13 @@
 					prepend-icon="mdi-cog-sync"
 					@click="page = `Feed`"
 				></v-list-item>
+				<v-list-item
+					link
+					to="/app/config/camera"
+					title="Camera"
+					prepend-icon="mdi-camera-outline"
+					@click="page = `Camera`"
+				></v-list-item>
 			</v-list>
 		</v-navigation-drawer>
 		<v-app-bar class="border-b bg-primary" elevation="0">
@@ -119,6 +126,10 @@
                 <v-icon>mdi-cog-sync</v-icon>
                 <span>Feed</span>
             </v-btn>
+			<v-btn to="/app/config/camera" value="Camera">
+                <v-icon>mdi-camera-outline</v-icon>
+                <span>Camera</span>
+            </v-btn>
 		</v-bottom-navigation>
 	</v-layout>
 </template>
@@ -156,6 +167,7 @@ watch(
 		if (path == "/app/config/actuator") page.value = "Actuator"
 		else if (path.startsWith("/app/config/automation")) page.value = "Automation"
 		else if (path == "/app/config/feed") page.value = "Feed"
+		else if (path == "/app/config/camera") page.value = "Camera"
 		else page.value = "Sensor"
 	},
 	{ immediate: true }

@@ -17,6 +17,7 @@ import ActuatorView from "@/views/app/config/ActuatorView.vue"
 import SensorView from "@/views/app/config/SensorView.vue"
 import AutomationView from "@/views/app/config/AutomationView.vue"
 import FeedConfigView from "@/views/app/config/FeedConfigView.vue"
+import CaptureConfigView from "@/views/app/config/CaptureConfigView.vue"
 import { redirectAuth, refreshAuth, requireAuth } from "@/middlewares/auth.middleware"
 
 //
@@ -154,6 +155,13 @@ const routes: RouteRecordRaw[] = [
         name: "Config Feed",
         meta: { layout: "app/config" },
         component: FeedConfigView,
+        beforeEnter: [refreshAuth, requireAuth],
+    },
+    {
+        path: "/app/config/camera",
+        name: "Config Camera",
+        meta: { layout: "app/config" },
+        component: CaptureConfigView,
         beforeEnter: [refreshAuth, requireAuth],
     },
     {
