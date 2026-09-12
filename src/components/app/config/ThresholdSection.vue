@@ -1,23 +1,5 @@
 <template>
-	<v-container class="bg-secondary" fluid>
-		<v-row dense>
-			<v-col cols="6">
-				<v-sheet color="transparent" class="pb-4">
-					<small class="text-accent">Manage your thresholds</small>
-					<h3>Threshold Management</h3>
-				</v-sheet>
-			</v-col>
-			<v-col cols="6">
-				<v-sheet color="transparent" class="pb-4 d-flex justify-end">
-					<v-btn
-						icon="mdi-plus"
-						class="bg-transparent"
-						:disabled="!networkStore.connected || !sensors.length"
-						@click="onClickCreateThreshold"
-					></v-btn>
-				</v-sheet>
-			</v-col>
-		</v-row>
+	<v-sheet color="transparent">
 		<v-row v-if="!thresholds.length" dense>
 			<v-col cols="12">
 				<v-sheet class="pa-6 text-center bg-primary rounded-lg">
@@ -65,14 +47,13 @@
 				></ThresholdUpdateForm>
 			</v-sheet>
 		</v-dialog>
-	</v-container>
+	</v-sheet>
 </template>
 
 <script setup lang="ts">
 import ThresholdCard from "@/components/app/config/ThresholdCard.vue"
 import ThresholdCreateForm from "@/components/app/config/ThresholdCreateForm.vue"
 import ThresholdUpdateForm from "@/components/app/config/ThresholdUpdateForm.vue"
-import useWsEvent from "@/composables/use-ws-event"
 import {
 	ThresholdCreateSchema as ThresholdCreateFormSchema,
 	ThresholdUpdateSchema as ThresholdUpdateFormSchema,
@@ -80,14 +61,13 @@ import {
 	type ThresholdSchema,
 	type ThresholdUpdateSchema,
 } from "@/schemas/ThresholdSchema"
-import type { WsEventHandler } from "@/schemas/WsEventSchema"
 import { useNetworkStore } from "@/stores/network"
 import { useSensorStore } from "@/stores/sensor"
 import { useThresholdStore } from "@/stores/threshold"
 import { useToastStore } from "@/stores/toast"
 import { storeToRefs } from "pinia"
 import type { SubmissionContext } from "vee-validate"
-import { computed, onMounted, onUnmounted, ref } from "vue"
+import { computed, onUnmounted, ref } from "vue"
 
 //
 
@@ -102,22 +82,22 @@ const { thresholds } = storeToRefs(thresholdStore)
 const { sensors } = storeToRefs(sensorStore)
 const showThresholdCreateModal = ref(false)
 const showThresholdUpdateModal = ref(false)
-const selectedThreshold = ref<ThresholdSchema>()
-const wsEvent = useWsEvent()
+const selectedThresholdId = ref<number>()
 
 const sensorsById = computed(() => new Map(sensors.value.map(sensor => [sensor.id, sensor.name])))
+const selectedThreshold = computed(() => thresholds.value.find(threshold => threshold.id == selectedThresholdId.value))
 
 // --- Threshold Actions
 const getSensorName = (sensorId: number) => sensorsById.value.get(sensorId) ?? `Sensor #${sensorId}`
 
-const onClickCreateThreshold = () => {
+const openCreate = () => {
 	if (!networkStore.connected) return toastStore.error("You are offline.")
 	if (!sensors.value.length) return toastStore.error("Create a sensor first before adding a threshold.")
 	showThresholdCreateModal.value = true
 }
 
 const onClickEditThreshold = (threshold: ThresholdSchema) => {
-	selectedThreshold.value = threshold
+	selectedThresholdId.value = threshold.id
 	showThresholdUpdateModal.value = true
 }
 
@@ -168,46 +148,15 @@ const onSubmitThresholdUpdateForm = async (
 
 //
 
-const onWsEventThreshold: WsEventHandler<ThresholdSchema> = data => {
-	for (const threshold of data) {
-		const index = thresholds.value.findIndex(item => item.id == threshold.id)
-		if (index == -1) continue
-
-		thresholds.value.splice(index, 1, threshold)
-		if (selectedThreshold.value?.id == threshold.id) selectedThreshold.value = threshold
-	}
-}
-
-const onMountedWs = async () => {
-	const url = new URL(import.meta.env.VITE_API_URL)
-    url.protocol = url.protocol === "https:" ? "wss:" : "ws:"
-    url.pathname = "/ws/app"
-
-	await Promise
-		.resolve()
-		.then(() => wsEvent.connect(url.toString()))
-		.catch(() => toastStore.error("Failed to connect realtime."))
-	wsEvent.listen("Threshold", "Update", onWsEventThreshold)
-}
-
-const onMountedCb = async () => {
-	if (!networkStore.connected) return toastStore.error("You are offline.")
-	await Promise.all([
-		onMountedWs(),
-		thresholdStore.retrieve(),
-		sensorStore.retrieve(),
-	])
-}
-
 const onUnmountedCb = () => {
 	showThresholdCreateModal.value = false
 	showThresholdUpdateModal.value = false
-	selectedThreshold.value = undefined
-	wsEvent.disconnect()
+	selectedThresholdId.value = undefined
 }
 
-onMounted(() => onMountedCb().catch(onFormError))
 onUnmounted(onUnmountedCb)
+
+defineExpose({ openCreate })
 
 //
 </script>

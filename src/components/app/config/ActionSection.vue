@@ -1,23 +1,5 @@
 <template>
-	<v-container class="bg-secondary" fluid>
-		<v-row dense>
-			<v-col cols="6">
-				<v-sheet color="transparent" class="pb-4">
-					<small class="text-accent">Manage your actions</small>
-					<h3>Action Management</h3>
-				</v-sheet>
-			</v-col>
-			<v-col cols="6">
-				<v-sheet color="transparent" class="pb-4 d-flex justify-end">
-					<v-btn
-						icon="mdi-plus"
-						class="bg-transparent"
-						:disabled="!networkStore.connected || !thresholds.length || !actuators.length"
-						@click="onClickCreateAction"
-					></v-btn>
-				</v-sheet>
-			</v-col>
-		</v-row>
+	<v-sheet color="transparent">
 		<v-row v-if="!actions.length" dense>
 			<v-col cols="12">
 				<v-sheet class="pa-6 text-center bg-primary rounded-lg">
@@ -68,22 +50,18 @@
 				></ActionUpdateForm>
 			</v-sheet>
 		</v-dialog>
-	</v-container>
+	</v-sheet>
 </template>
 
 <script setup lang="ts">
 import ActionCard from "@/components/app/config/ActionCard.vue"
 import ActionCreateForm from "@/components/app/config/ActionCreateForm.vue"
 import ActionUpdateForm from "@/components/app/config/ActionUpdateForm.vue"
-import useWsEvent from "@/composables/use-ws-event"
 import {
 	ActionCreateSchema as ActionCreateFormSchema,
 	ActionUpdateSchema as ActionUpdateFormSchema,
 	type ActionSchema,
 } from "@/schemas/ActionSchema"
-import type { ActuatorSchema } from "@/schemas/ActuatorSchema"
-import type { ThresholdSchema } from "@/schemas/ThresholdSchema"
-import type { WsEventHandler } from "@/schemas/WsEventSchema"
 import { useActionStore } from "@/stores/action"
 import { useActuatorStore } from "@/stores/actuator"
 import { useNetworkStore } from "@/stores/network"
@@ -91,7 +69,7 @@ import { useThresholdStore } from "@/stores/threshold"
 import { useToastStore } from "@/stores/toast"
 import { storeToRefs } from "pinia"
 import type { SubmissionContext } from "vee-validate"
-import { computed, onMounted, onUnmounted, ref } from "vue"
+import { computed, onUnmounted, ref } from "vue"
 import z from "zod"
 
 //
@@ -122,17 +100,17 @@ const { actuators } = storeToRefs(actuatorStore)
 const { thresholds } = storeToRefs(thresholdStore)
 const showActionCreateModal = ref(false)
 const showActionUpdateModal = ref(false)
-const selectedAction = ref<ActionSchema>()
-const wsEvent = useWsEvent()
+const selectedActionId = ref<number>()
 
 const actuatorsById = computed(() => new Map(actuators.value.map(actuator => [actuator.id, actuator.name])))
 const thresholdsById = computed(() => new Map(thresholds.value.map(threshold => [threshold.id, threshold.name])))
+const selectedAction = computed(() => actions.value.find(action => action.id == selectedActionId.value))
 
 // --- Action Actions
 const getActuatorName = (actuatorId: number) => actuatorsById.value.get(actuatorId) ?? `Actuator #${actuatorId}`
 const getThresholdName = (thresholdId: number) => thresholdsById.value.get(thresholdId) ?? `Threshold #${thresholdId}`
 
-const onClickCreateAction = () => {
+const openCreate = () => {
 	if (!networkStore.connected) return toastStore.error("You are offline.")
 	if (!thresholds.value.length) return toastStore.error("Create a threshold first before adding an action.")
 	if (!actuators.value.length) return toastStore.error("Create an actuator first before adding an action.")
@@ -140,7 +118,7 @@ const onClickCreateAction = () => {
 }
 
 const onClickEditAction = (action: ActionSchema) => {
-	selectedAction.value = action
+	selectedActionId.value = action.id
 	showActionUpdateModal.value = true
 }
 
@@ -191,52 +169,15 @@ const onSubmitActionUpdateForm = async (
 
 //
 
-const syncById = <T extends { id: number }>(items: T[], updated: T) => {
-	const index = items.findIndex(item => item.id == updated.id)
-	if (index == -1) return
-	items.splice(index, 1, updated)
-}
-
-const onWsEventActuator: WsEventHandler<ActuatorSchema> = data => {
-	for (const actuator of data) syncById(actuators.value, actuator)
-}
-
-const onWsEventThreshold: WsEventHandler<ThresholdSchema> = data => {
-	for (const threshold of data) syncById(thresholds.value, threshold)
-}
-
-const onMountedWs = async () => {
-	const url = new URL(import.meta.env.VITE_API_URL)
-    url.protocol = url.protocol === "https:" ? "wss:" : "ws:"
-    url.pathname = "/ws/app"
-
-	await Promise
-		.resolve()
-		.then(() => wsEvent.connect(url.toString()))
-		.catch(() => toastStore.error("Failed to connect realtime."))
-	wsEvent.listen("Actuator", "Update", onWsEventActuator)
-	wsEvent.listen("Threshold", "Update", onWsEventThreshold)
-}
-
-const onMountedCb = async () => {
-	if (!networkStore.connected) return toastStore.error("You are offline.")
-	await Promise.all([
-		onMountedWs(),
-		actionStore.retrieve(),
-		actuatorStore.retrieve(),
-		thresholdStore.retrieve(),
-	])
-}
-
 const onUnmountedCb = () => {
 	showActionCreateModal.value = false
 	showActionUpdateModal.value = false
-	selectedAction.value = undefined
-	wsEvent.disconnect()
+	selectedActionId.value = undefined
 }
 
-onMounted(() => onMountedCb().catch(onFormError))
 onUnmounted(onUnmountedCb)
+
+defineExpose({ openCreate })
 
 //
 </script>

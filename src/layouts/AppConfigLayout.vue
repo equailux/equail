@@ -44,24 +44,10 @@
 				></v-list-item>
 				<v-list-item
 					link
-					to="/app/config/threshold"
-					title="Threshold"
-					prepend-icon="mdi-alert-outline"
-					@click="page = `Threshold`"
-				></v-list-item>
-				<v-list-item
-					link
-					to="/app/config/condition"
-					title="Condition"
-					prepend-icon="mdi-tune-variant"
-					@click="page = `Condition`"
-				></v-list-item>
-				<v-list-item
-					link
-					to="/app/config/action"
-					title="Action"
+					to="/app/config/automation"
+					title="Automation"
 					prepend-icon="mdi-lightning-bolt-outline"
-					@click="page = `Action`"
+					@click="page = `Automation`"
 				></v-list-item>
 				<v-list-item
 					link
@@ -125,17 +111,9 @@
                 <v-icon>mdi-toggle-switch-outline</v-icon>
                 <span>Actuator</span>
             </v-btn>
-			<v-btn to="/app/config/threshold" value="Threshold">
-                <v-icon>mdi-alert-outline</v-icon>
-                <span>Threshold</span>
-            </v-btn>
-			<v-btn to="/app/config/condition" value="Condition">
-                <v-icon>mdi-tune-variant</v-icon>
-                <span>Condition</span>
-            </v-btn>
-			<v-btn to="/app/config/action" value="Action">
+			<v-btn to="/app/config/automation" value="Automation">
                 <v-icon>mdi-lightning-bolt-outline</v-icon>
-                <span>Action</span>
+                <span>Automation</span>
             </v-btn>
 			<v-btn to="/app/config/feed" value="Feed">
                 <v-icon>mdi-cog-sync</v-icon>
@@ -176,9 +154,7 @@ watch(
 	() => route.path,
 	path => {
 		if (path == "/app/config/actuator") page.value = "Actuator"
-		else if (path == "/app/config/threshold") page.value = "Threshold"
-		else if (path == "/app/config/condition") page.value = "Condition"
-		else if (path == "/app/config/action") page.value = "Action"
+		else if (path.startsWith("/app/config/automation")) page.value = "Automation"
 		else if (path == "/app/config/feed") page.value = "Feed"
 		else page.value = "Sensor"
 	},

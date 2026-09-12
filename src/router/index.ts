@@ -15,9 +15,7 @@ import DetectionPreviewView from "@/views/app/dashboard/detection/DetectionPrevi
 import { redirect404 } from "@/middlewares/404.middleware"
 import ActuatorView from "@/views/app/config/ActuatorView.vue"
 import SensorView from "@/views/app/config/SensorView.vue"
-import ThresholdView from "@/views/app/config/ThresholdView.vue"
-import ConditionView from "@/views/app/config/ConditionView.vue"
-import ActionView from "@/views/app/config/ActionView.vue"
+import AutomationView from "@/views/app/config/AutomationView.vue"
 import FeedConfigView from "@/views/app/config/FeedConfigView.vue"
 import { redirectAuth, refreshAuth, requireAuth } from "@/middlewares/auth.middleware"
 
@@ -133,25 +131,23 @@ const routes: RouteRecordRaw[] = [
         beforeEnter: [refreshAuth, requireAuth],
     },
     {
-        path: "/app/config/threshold",
-        name: "Config Threshold",
+        path: "/app/config/automation/:tab(threshold|condition|action)?",
+        name: "Config Automation",
         meta: { layout: "app/config" },
-        component: ThresholdView,
+        component: AutomationView,
         beforeEnter: [refreshAuth, requireAuth],
+    },
+    {
+        path: "/app/config/threshold",
+        redirect: "/app/config/automation/threshold",
     },
     {
         path: "/app/config/condition",
-        name: "Config Condition",
-        meta: { layout: "app/config" },
-        component: ConditionView,
-        beforeEnter: [refreshAuth, requireAuth],
+        redirect: "/app/config/automation/condition",
     },
     {
         path: "/app/config/action",
-        name: "Config Action",
-        meta: { layout: "app/config" },
-        component: ActionView,
-        beforeEnter: [refreshAuth, requireAuth],
+        redirect: "/app/config/automation/action",
     },
     {
         path: "/app/config/feed",
