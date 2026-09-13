@@ -180,7 +180,7 @@ import { useToastStore } from "@/stores/toast"
 import { groupByKey } from "@/utils/group"
 import { format, isSameDay } from "date-fns"
 import { storeToRefs } from "pinia"
-import { computed, onMounted, ref } from "vue"
+import { computed, onMounted, ref, type Ref } from "vue"
 
 //
 
@@ -198,19 +198,28 @@ const feedLevel = ref(0)
 const waterLevel = ref(0)
 const noiseLevel = ref(0)
 
+/** Keeps the last displayed reading when the incoming value is null/undefined/NaN. */
+const setReading = (reading: Ref<number>, value: number | null | undefined) => {
+	if (value === null || value === undefined) return
+	const parsed = Number(value)
+	if (!Number.isFinite(parsed)) return
+	reading.value = parsed
+}
+
 const onWsEventFeed: WsEventHandler<FeedSchema> = data => {
 	for (const { level } of data) {
-		feedLevel.value = level
+		setReading(feedLevel, level)
 	}
 }
 
 const onWsEventReading: WsEventHandler<ReadingSchema> = data => {
 	for (const { name, value } of data) {
-		if (name.toLowerCase().startsWith("temperature")) temperature.value = value
-		if (name.toLowerCase().startsWith("humidity")) humidity.value = value
-		if (name.toLowerCase().startsWith("feed")) feedLevel.value = value
-		if (name.toLowerCase().startsWith("water")) waterLevel.value = value
-		if (name.toLowerCase().startsWith("noise")) noiseLevel.value = value
+		if (!name) continue
+		if (name.toLowerCase().startsWith("temperature")) setReading(temperature, value)
+		if (name.toLowerCase().startsWith("humidity")) setReading(humidity, value)
+		if (name.toLowerCase().startsWith("feed")) setReading(feedLevel, value)
+		if (name.toLowerCase().startsWith("water")) setReading(waterLevel, value)
+		if (name.toLowerCase().startsWith("noise")) setReading(noiseLevel, value)
 	}
 }
 
@@ -280,7 +289,7 @@ const onMountedCb = async () => {
 		mortalityStore.retrieve(),
 	])
 
-	if (feedStore.latest) feedLevel.value = feedStore.latest.level
+	if (feedStore.latest) setReading(feedLevel, feedStore.latest.level)
 }
 
 onMounted(onMountedCb)
