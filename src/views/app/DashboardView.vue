@@ -180,7 +180,7 @@ import { useToastStore } from "@/stores/toast"
 import { groupByKey } from "@/utils/group"
 import { format, isSameDay } from "date-fns"
 import { storeToRefs } from "pinia"
-import { computed, onMounted, ref, type Ref } from "vue"
+import { computed, onMounted, onUnmounted, ref, type Ref } from "vue"
 
 //
 
@@ -194,7 +194,7 @@ const feedStore = useFeedStore()
 
 const temperature = ref(0)
 const humidity = ref(0)
-const feedLevel = ref(0)
+const feedLevel = computed(() => feedStore.latest?.level ?? 0)
 const waterLevel = ref(0)
 const noiseLevel = ref(0)
 
@@ -207,9 +207,7 @@ const setReading = (reading: Ref<number>, value: number | null | undefined) => {
 }
 
 const onWsEventFeed: WsEventHandler<FeedSchema> = data => {
-	for (const { level } of data) {
-		setReading(feedLevel, level)
-	}
+	feedStore.receive(data)
 }
 
 const onWsEventReading: WsEventHandler<ReadingSchema> = data => {
@@ -217,7 +215,6 @@ const onWsEventReading: WsEventHandler<ReadingSchema> = data => {
 		if (!name) continue
 		if (name.toLowerCase().startsWith("temperature")) setReading(temperature, value)
 		if (name.toLowerCase().startsWith("humidity")) setReading(humidity, value)
-		if (name.toLowerCase().startsWith("feed")) setReading(feedLevel, value)
 		if (name.toLowerCase().startsWith("water")) setReading(waterLevel, value)
 		if (name.toLowerCase().startsWith("noise")) setReading(noiseLevel, value)
 	}
@@ -289,10 +286,10 @@ const onMountedCb = async () => {
 		mortalityStore.retrieve(),
 	])
 
-	if (feedStore.latest) setReading(feedLevel, feedStore.latest.level)
 }
 
 onMounted(onMountedCb)
+onUnmounted(wsEvent.disconnect)
 
 //
 </script>

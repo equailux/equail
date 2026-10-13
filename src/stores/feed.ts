@@ -15,11 +15,24 @@ export const useFeedStore = defineStore("feed", () => {
 
 	//
 
+	const receive = (data: unknown[]) => {
+		for (const item of data) {
+			const result = FeedSchema.safeParse(item)
+			if (!result.success) continue
+			const feed = result.data
+			const current = latest.value
+			if (!current || feed.createdAt > current.createdAt ||
+				(feed.createdAt.getTime() === current.createdAt.getTime() && feed.id >= current.id)) {
+				latest.value = feed
+			}
+		}
+	}
+
 	const retrieve = async () => {
 		const res = await api.get<FeedSchema[]>(`/api/feed`, { params: { limit: 1 } })
 		const parsed = z.array(FeedSchema).parse(res.data)
 		feeds.value = parsed
-		if (parsed.length > 0) latest.value = parsed[0]
+		receive(parsed)
 		return parsed
 	}
 
@@ -29,5 +42,6 @@ export const useFeedStore = defineStore("feed", () => {
 		latest,
 		feeds,
 		retrieve,
+		receive,
 	}
 })
